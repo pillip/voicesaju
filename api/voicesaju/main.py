@@ -20,6 +20,7 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.users.routers.device import router as device_router
 
 logger = logging.getLogger(__name__)
 
@@ -130,6 +131,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         """
         adapter = get_auth_adapter()
         return AuthSession(access_token=adapter.start_login())
+
+    # ---- Device (anonymous tracking) ---------------------------------
+    # ISSUE-024 (FR-003, FR-013). Mounts `POST /api/v1/auth/device`.
+    app.include_router(device_router)
 
     return app
 
