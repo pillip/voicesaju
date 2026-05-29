@@ -16,6 +16,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from voicesaju.config import get_settings
+from voicesaju.db import (
+    models as _models,  # noqa: F401  (registers models on Base.metadata)
+)
 from voicesaju.db.base import Base
 from voicesaju.db.engine import build_async_url
 
