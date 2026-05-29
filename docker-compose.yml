@@ -1,0 +1,53 @@
+# docker-compose.yml — Local development services for VoiceSaju (Phase 1 PoC).
+#
+# Brings up PostgreSQL 16 + Redis 7 with named volumes for persistent state.
+# Connection strings are documented in `api/.env.example` and `docs/RUNBOOK.md`.
+#
+# Usage:
+#   docker compose up -d        # start in background
+#   docker compose ps           # check status
+#   docker compose logs -f      # tail logs
+#   docker compose down         # stop (data persists via named volumes)
+#   docker compose down -v      # stop AND wipe data
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: voicesaju-postgres
+    environment:
+      POSTGRES_USER: voicesaju
+      POSTGRES_PASSWORD: voicesaju
+      POSTGRES_DB: voicesaju
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voicesaju -d voicesaju"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: voicesaju-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: voicesaju_postgres_data
+  redis_data:
+    name: voicesaju_redis_data
