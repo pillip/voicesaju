@@ -36,10 +36,13 @@ packages = ["voicesaju"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-ra --strict-markers"
+addopts = "-ra --strict-markers -m 'not integration'"
 testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "integration: requires external services (Postgres/Redis); excluded by default.",
+]
 
 [tool.ruff]
 line-length = 88
