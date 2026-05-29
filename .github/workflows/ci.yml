@@ -32,8 +32,8 @@ jobs:
           enable-cache: true
           cache-dependency-glob: api/uv.lock
 
-      - name: Sync dependencies
-        run: uv sync --frozen
+      - name: Sync dependencies (incl. dev extras)
+        run: uv sync --frozen --extra dev
 
       - name: Ruff (lint)
         run: uv run ruff check .
