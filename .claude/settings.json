@@ -1,0 +1,100 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/kit/bin/cc-statusline",
+    "padding": 0
+  },
+  "hooks": {
+    "SubagentStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/agent_state.py\" ] && HOOK_ROOT=\"$R\" python3 \"$R/.claude/hooks/agent_state.py\" || true'"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/agent_state.py\" ] && HOOK_ROOT=\"$R\" python3 \"$R/.claude/hooks/agent_state.py\" || true'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/agent_state.py\" ] && HOOK_ROOT=\"$R\" python3 \"$R/.claude/hooks/agent_state.py\" || true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/secret_guard.py\" ] && python3 \"$R/.claude/hooks/secret_guard.py\" || true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/dangerous_command_guard.py\" ] && python3 \"$R/.claude/hooks/dangerous_command_guard.py\" || true'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/agent_state.py\" ] && HOOK_ROOT=\"$R\" python3 \"$R/.claude/hooks/agent_state.py\" || true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/autoformat.py\" ] && python3 \"$R/.claude/hooks/autoformat.py\" || true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/autotest.py\" ] && python3 \"$R/.claude/hooks/autotest.py\" || true'"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'R=$(git rev-parse --show-toplevel 2>/dev/null || echo \".\"); G=$(git rev-parse --git-dir 2>/dev/null || echo \".git\"); [ -f \"$G/commondir\" ] && R=$(cd \"$G/$(cat \"$G/commondir\")/..\" && pwd); [ -f \"$R/.claude/hooks/agent_state.py\" ] && HOOK_ROOT=\"$R\" python3 \"$R/.claude/hooks/agent_state.py\" || true'"
+          }
+        ]
+      }
+    ]
+  }
+}

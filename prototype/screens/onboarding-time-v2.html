@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>시각 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .ob-meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .ob-meta a { color: var(--cream-300); }
+  .ob-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-12); min-height: 100dvh; padding: var(--space-20) var(--space-6) var(--space-16); align-items: center; }
+  @media (min-width: 768px) { .ob-grid { grid-template-columns: 1fr 1.2fr; gap: var(--space-16); padding: var(--space-20) var(--space-12); } }
+  .ob-mark { position: relative; font-family: var(--font-mincho); font-weight: 900; font-size: clamp(140px, 32vw, 280px); line-height: 0.85; letter-spacing: -0.04em; color: var(--baekrim-200); text-shadow: 0 0 30px rgba(155, 42, 26, 0.06); }
+  .ob-mark__sub { font-family: var(--font-mono); font-size: var(--text-caption); color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase; margin-top: var(--space-4); }
+  .ob-mark__handnote { margin-top: var(--space-4); font-family: var(--font-brush); font-size: var(--text-lead); color: var(--cream-400); transform: rotate(-2deg); display: inline-block; }
+  .ob-form { max-width: 32ch; }
+  .ob-form__q { font-family: var(--font-display-han); font-size: var(--text-h3); color: var(--cream-50); line-height: 1.3; margin-bottom: var(--space-3); }
+  .ob-form__hint { font-family: var(--font-body); font-size: var(--text-body); color: var(--cream-300); line-height: 1.7; margin-bottom: var(--space-10); }
+  .ob-form__hint em { font-style: normal; color: var(--baekrim-200); background: linear-gradient(180deg, transparent 60%, rgba(155, 42, 26, 0.22) 60%); }
+  .ob-input-block { margin-bottom: var(--space-8); }
+  .ob-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-12); }
+  .ob-cta { font-family: var(--font-display-han); font-size: var(--text-h3); color: var(--baekrim-200); text-decoration: underline; text-decoration-color: var(--vermilion-300); text-decoration-thickness: 3px; text-underline-offset: 8px; }
+  .ob-cta:hover { color: var(--amber-300); }
+  .ob-cta:disabled, .ob-cta[aria-disabled="true"] { color: var(--cream-500); text-decoration-color: var(--hanji-300); cursor: not-allowed; pointer-events: none; }
+
+  .time-input { display: flex; align-items: baseline; gap: var(--space-3); }
+  .time-input input { width: 72px; font-family: var(--font-mono); font-size: var(--text-h3); text-align: center; }
+  .time-input .sep { font-family: var(--font-mono); font-size: var(--text-h3); color: var(--cream-400); }
+
+  .unknown-card { margin-top: var(--space-6); padding: var(--space-5); border-left: 2px solid var(--amber-400); background: var(--hanji-700); position: relative; }
+  .unknown-card::after { content: ''; position: absolute; inset: 0; background: var(--grain-light); mix-blend-mode: overlay; pointer-events: none; }
+  .unknown-card p { font-family: var(--font-body); color: var(--cream-200); line-height: 1.65; }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="ob-meta">
+  <a href="onboarding-birth-v2.html">← BACK</a>
+  <span>STEP 2 / 4 · 時</span>
+  <span>VoiceSaju</span>
+</div>
+
+<main>
+  <div class="state state--default">
+    <div class="ob-grid">
+      <aside>
+        <h2 class="ob-mark">時</h2>
+        <p class="ob-mark__sub">BORN · HOUR</p>
+        <p class="ob-mark__handnote">몇 시쯤이었어?</p>
+      </aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">태어난 시각.</h1>
+        <p class="ob-form__hint">모르면 <em>모름</em>으로 가도 돼.<br>큰 줄기는 봐줄게.</p>
+
+        <div class="ob-input-block">
+          <label class="input-label">HH : MM (24h)</label>
+          <div class="time-input">
+            <input class="input" type="text" value="14" maxlength="2">
+            <span class="sep">:</span>
+            <input class="input" type="text" value="30" maxlength="2">
+          </div>
+          <label class="check-item">
+            <input type="checkbox"><span class="check-item__box"></span><span>시간 모름</span>
+          </label>
+        </div>
+
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+          <a href="onboarding-gender-v2.html" class="ob-cta">다음 →</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <div class="ob-grid">
+      <aside><h2 class="ob-mark" style="opacity: 0.4;">時</h2></aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">잠시만…</h1>
+        <div class="cluster gap-3" style="margin-top: var(--space-8);">
+          <span class="spinner"></span><span class="t-meta c-cream-300" style="letter-spacing: 0.1em;">사주 계산 중</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <div class="ob-grid">
+      <aside>
+        <h2 class="ob-mark">時</h2>
+        <p class="ob-mark__sub">UNKNOWN</p>
+        <p class="ob-mark__handnote">시 모름.</p>
+      </aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">시간 모름으로 갈게.</h1>
+        <p class="ob-form__hint">디테일은 좀 흐릿하지만<br><em>큰 흐름은 그대로</em> 봐줄게.</p>
+
+        <div class="ob-input-block">
+          <label class="input-label">HH : MM</label>
+          <div class="time-input">
+            <input class="input" type="text" disabled value="--" style="width: 72px; text-align: center;">
+            <span class="sep" style="color: var(--cream-500);">:</span>
+            <input class="input" type="text" disabled value="--" style="width: 72px; text-align: center;">
+          </div>
+          <label class="check-item">
+            <input type="checkbox" checked><span class="check-item__box"></span><span>시간 모름</span>
+          </label>
+        </div>
+
+        <div class="unknown-card">
+          <p>시간 모를 때는 일주 위주로 풀어줄게. 큰 줄기는 봐도 디테일은 살짝 흐릿해. 그래도 괜찮아.</p>
+        </div>
+
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+          <a href="onboarding-gender-v2.html" class="ob-cta">다음 →</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <div class="ob-grid">
+      <aside><h2 class="ob-mark" style="color: var(--state-error); opacity: 0.6;">虛</h2></aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">그건 시간이 아니야.</h1>
+        <p class="ob-form__hint"><em>25시?</em> 누님도 못 봐.</p>
+        <div class="ob-input-block">
+          <div class="time-input">
+            <input class="input" type="text" value="25" aria-invalid="true">
+            <span class="sep">:</span>
+            <input class="input" type="text" value="30">
+          </div>
+          <p class="input-error">시 범위 0~23.</p>
+        </div>
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span><span class="stepper-dot"></span>
+          </div>
+          <button class="ob-cta" disabled>다음 →</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">UNKNOWN</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

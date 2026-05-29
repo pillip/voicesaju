@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>인트로 + 페이월 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="category.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__meta">연애 · 1997-03-15</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <p class="text-center" style="color: var(--amber-400); font-size: 12px;">✦</p>
+      <div class="voice-player__character mt-8" aria-hidden="true"></div>
+
+      <hr class="divider mt-8" style="margin-bottom: var(--space-6);">
+
+      <div class="subtitle-band" aria-live="polite">
+        <span class="subtitle-line subtitle-line--past">어디 보자… 1997년생 무자년…</span>
+        <span class="subtitle-line subtitle-line--current">음, 재미있네.</span>
+      </div>
+
+      <div class="stack gap-3 mt-16">
+        <a href="payment.html" class="btn btn-primary btn--lg btn--full">▷ 본격 풀이 받기 · ₩4,900</a>
+        <a href="payment.html" class="btn btn-ghost btn--full">구독하면 다 포함 · ₩9,900/월</a>
+      </div>
+    </div>
+
+    <div class="state state--loading">
+      <p class="text-center" style="color: var(--amber-400); font-size: 12px;">✦</p>
+      <div class="voice-player__character mt-8" aria-hidden="true" style="opacity: 0.3;"></div>
+      <hr class="divider mt-8" style="margin-bottom: var(--space-6);">
+      <div class="subtitle-band">
+        <span class="subtitle-line subtitle-line--past c-cream-400">...</span>
+      </div>
+      <div class="cluster gap-3 mt-8"><span class="spinner"></span><span class="t-meta c-cream-300">목소리 깨우는 중</span></div>
+    </div>
+
+    <div class="state state--empty">
+      <p class="text-center" style="color: var(--cream-500); font-size: 12px;">✦</p>
+      <div class="voice-player__character mt-8" aria-hidden="true" style="opacity: 0.2;"></div>
+      <hr class="divider mt-8" style="margin-bottom: var(--space-6);">
+      <div class="subtitle-band">
+        <span class="subtitle-line subtitle-line--past c-cream-400">이미 들었다고?</span>
+      </div>
+      <div class="stack gap-3 mt-16">
+        <a href="payment.html" class="btn btn-primary btn--lg btn--full">▷ 본격 풀이 받기 · ₩4,900</a>
+        <a href="reading-play.html" class="btn btn-ghost btn--full">바로 풀이로 →</a>
+      </div>
+    </div>
+
+    <div class="state state--error">
+      <p class="text-center" style="color: var(--state-error); font-size: 12px;">✦</p>
+      <div class="voice-player__character mt-8" aria-hidden="true" style="opacity: 0.2; filter: grayscale(1);"></div>
+      <hr class="divider mt-8" style="margin-bottom: var(--space-6);">
+      <div class="subtitle-band">
+        <span class="subtitle-line subtitle-line--past c-cream-200">목소리가 잠겼네.</span>
+        <span class="subtitle-line subtitle-line--current c-cream-200">글로만 봐줘.</span>
+      </div>
+      <div class="stack gap-3 mt-16">
+        <a href="payment.html" class="btn btn-primary btn--full">▷ 글로 풀이 받기 · ₩4,900</a>
+        <button class="btn btn-ghost btn--full" onclick="location.reload()">다시 시도</button>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">REVISIT</button>
+  <button class="state-switcher__btn" data-target="error">TTS ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

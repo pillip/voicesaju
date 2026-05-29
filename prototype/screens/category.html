@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>카테고리 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="landing.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__brand">VoiceSaju</span>
+  <span class="nav-top__menu" aria-label="정보">ⓘ</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <h1 class="t-h2 display-han c-cream-50">뭐가 제일<br>궁금해?</h1>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-12);">
+
+      <div class="stack gap-6">
+        <a href="reading-intro.html" class="chip chip--love">
+          <div class="chip__title">연애</div>
+          <div class="chip__sub">결혼? 헤어짐? 짝사랑?</div>
+        </a>
+        <a href="reading-intro.html" class="chip chip--work">
+          <div class="chip__title">직장</div>
+          <div class="chip__sub">이직? 상사? 사업?</div>
+        </a>
+        <a href="reading-intro.html" class="chip chip--money">
+          <div class="chip__title">금전</div>
+          <div class="chip__sub">빚? 투자? 가난할까?</div>
+        </a>
+      </div>
+
+      <hr class="divider mt-24" style="margin-bottom: var(--space-4);">
+      <div class="text-right">
+        <a href="tarot.html" class="btn btn-ghost">오늘의 타로 한 장 →</a>
+      </div>
+    </div>
+
+    <div class="state state--loading">
+      <h1 class="t-h2 display-han c-cream-300">뭐가 제일<br>궁금해?</h1>
+      <hr class="divider divider--short mt-12" style="margin-bottom: var(--space-12);">
+      <div class="stack gap-6">
+        <div class="chip"><div class="chip__title c-cream-400">연애</div><div class="chip__sub">결혼? 헤어짐? 짝사랑?</div></div>
+        <div class="chip"><div class="chip__title c-cream-400">직장</div><div class="chip__sub">이직? 상사? 사업?</div></div>
+        <div class="chip"><div class="chip__title c-cream-400">금전</div><div class="chip__sub">빚? 투자? 가난할까?</div></div>
+      </div>
+      <div class="cluster gap-3 mt-12"><span class="spinner"></span><span class="t-meta c-cream-300">캐릭터 깨우는 중</span></div>
+    </div>
+
+    <div class="state state--empty">
+      <h1 class="t-h2 display-han c-cream-50">뭐가 제일<br>궁금해?</h1>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-12);">
+      <p class="t-body c-cream-300">아직 카테고리가 준비 안 됐어.<br>잠시 후 다시 들어와줘.</p>
+    </div>
+
+    <div class="state state--error">
+      <h1 class="t-h2 display-han c-cream-50">잠시 별기운이 약하네.</h1>
+      <p class="t-body c-cream-300 mt-4">잠시 후에 다시 들어와줘.</p>
+      <button class="btn btn-secondary mt-12" onclick="location.reload()">다시 시도</button>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">EMPTY</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

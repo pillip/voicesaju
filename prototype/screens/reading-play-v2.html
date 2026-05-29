@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>풀이 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .reading-meta {
+    position: absolute;
+    top: var(--space-6);
+    left: var(--space-6);
+    right: var(--space-6);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--hanji-300);
+    text-transform: uppercase;
+    z-index: 10;
+  }
+  .reading-meta a { color: var(--cream-300); }
+  .reading-meta a:hover { color: var(--amber-300); }
+
+  .reading-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+    padding: var(--space-20) var(--space-6) var(--space-32);
+    max-width: var(--container-wide);
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .reading-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      padding: var(--space-24) var(--space-12) var(--space-32);
+      gap: var(--space-16);
+    }
+  }
+
+  /* 좌측: 한지/먹 사진 + 명식 layered */
+  .saju-stage {
+    position: sticky;
+    top: var(--space-12);
+    align-self: start;
+  }
+  .saju-stage__photo {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg,
+        rgba(10, 6, 4, 0.5) 0%,
+        rgba(26, 18, 8, 0.75) 100%),
+      url('https://picsum.photos/seed/voicesaju-ink-paper/800/600?grayscale&blur=1');
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: multiply;
+    margin-bottom: var(--space-6);
+  }
+  .saju-stage__photo::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--grain-strong);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .saju-stage__photo__caption {
+    position: absolute;
+    bottom: var(--space-4);
+    left: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--baekrim-200);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .saju-stage__photo__caption::before {
+    content: '— ';
+    color: var(--vermilion-100);
+  }
+
+  .saju-stage__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--cream-400);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-3);
+  }
+
+  .saju-stage__handnote {
+    margin-top: var(--space-5);
+    font-family: var(--font-brush);
+    color: var(--baekrim-200);
+    font-size: var(--text-h3);
+    transform: rotate(-2deg);
+    display: inline-block;
+    line-height: 1;
+  }
+
+  /* 우측: 풀이 본문 (잡지 펼침면 아니라, 술자리 메모) */
+  .reading-body {
+    position: relative;
+  }
+
+  .reading-body__subtitle {
+    border-top: 1px solid var(--hanji-300);
+    border-bottom: 1px solid var(--hanji-300);
+    padding: var(--space-6) 0;
+    font-family: var(--font-display-han);
+    font-size: var(--text-lead);
+    line-height: 1.6;
+    color: var(--cream-100);
+    margin-bottom: var(--space-8);
+  }
+  .reading-body__subtitle .past { color: var(--cream-300); display: block; margin-bottom: var(--space-2); }
+  .reading-body__subtitle .current { color: var(--amber-300); display: block; }
+
+  .reading-body__content p {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--cream-100);
+    line-height: 1.7;
+    margin-bottom: var(--space-5);
+  }
+  .reading-body__content p:first-of-type::first-letter {
+    font-family: var(--font-mincho);
+    font-weight: 900;
+    font-size: 3.2em;
+    line-height: 0.9;
+    float: left;
+    padding-right: 0.12em;
+    padding-top: 0.06em;
+    color: var(--vermilion-300);
+  }
+  .reading-body__content em {
+    font-style: normal;
+    color: var(--baekrim-200);
+    background: linear-gradient(180deg, transparent 60%, rgba(155, 42, 26, 0.22) 60%);
+    padding: 0 2px;
+  }
+  .reading-body__content .ellipsis {
+    color: var(--cream-400);
+    display: block;
+    margin-top: var(--space-3);
+  }
+
+  /* 종결 도장 — 풀이의 마침표 */
+  .reading-body__sign {
+    margin-top: var(--space-12);
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--hanji-300);
+  }
+  .reading-body__sign__by {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--cream-300);
+    font-size: var(--text-meta);
+  }
+  .reading-body__sign__date {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cream-400);
+    letter-spacing: 0.2em;
+  }
+
+  /* 하단 nav (몰입형) */
+  .nav-bottom-v2 {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    padding: var(--space-4) var(--space-6) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--hanji-800) 96%, transparent);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--hanji-300);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    z-index: 30;
+  }
+  .nav-bottom-v2__play {
+    width: 44px; height: 44px;
+    background: var(--vermilion-300);
+    color: var(--baekrim-200);
+    display: grid; place-items: center;
+    font-size: 14px;
+    transform: rotate(-2deg);
+  }
+  .nav-bottom-v2__progress {
+    flex: 1;
+    height: 1px;
+    background: var(--hanji-300);
+    position: relative;
+  }
+  .nav-bottom-v2__progress::after {
+    content: '';
+    position: absolute; inset: 0;
+    width: 38%;
+    background: var(--amber-400);
+  }
+  .nav-bottom-v2__time {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--cream-300);
+    letter-spacing: 0.1em;
+  }
+  .nav-bottom-v2__back {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--cream-300);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* 모바일에서 명식이 너무 작아지지 않게 */
+  @media (max-width: 767px) {
+    .saju-stage { position: static; }
+    .saju-stage__photo { aspect-ratio: 16/9; }
+  }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="reading-meta">
+  <a href="category.html">← BACK</a>
+  <span>READING · LOVE</span>
+  <span>02:47 a.m.</span>
+</div>
+
+<main class="reading-grid">
+
+  <div class="state state--default" style="display: contents;">
+
+    <aside class="saju-stage">
+      <div class="saju-stage__label">명 식 / chart</div>
+      <div class="saju-tile">
+        <div class="saju-tile__col">
+          <div class="saju-tile__col__pillar">YEAR</div>
+          <div class="saju-tile__col__char">丁</div>
+          <div class="saju-tile__col__element">火</div>
+        </div>
+        <div class="saju-tile__col">
+          <div class="saju-tile__col__pillar">MONTH</div>
+          <div class="saju-tile__col__char">辛</div>
+          <div class="saju-tile__col__element">金</div>
+        </div>
+        <div class="saju-tile__col">
+          <div class="saju-tile__col__pillar">DAY</div>
+          <div class="saju-tile__col__char">甲</div>
+          <div class="saju-tile__col__element">木</div>
+        </div>
+        <div class="saju-tile__col">
+          <div class="saju-tile__col__pillar">HOUR</div>
+          <div class="saju-tile__col__char saju-tile__col__char--missing">?</div>
+          <div class="saju-tile__col__element">—</div>
+        </div>
+      </div>
+      <p class="saju-stage__handnote">시간은 모름.<br>큰 줄기는 봐줄게.</p>
+    </aside>
+
+    <article class="reading-body">
+
+      <div class="reading-body__subtitle" aria-live="polite">
+        <span class="past">"...직장 상사가 너 좀 미워하지?"</span>
+        <span class="past">"그건 네 잘못 아니야."</span>
+        <span class="current">"근데 너도 좀 받아쳐야겠다."</span>
+      </div>
+
+      <div class="reading-body__content">
+        <p>너 사실 곧은 사람이야. 곧은 거 좋아. 근데 너무 곧기만 하면 부러진다고. 가끔은 좀 휘어줘야 살아남아.</p>
+
+        <p>지금 옆에 너 깎으려는 사람 있잖아. 너보다 <em>작은 사람</em>인데 자기보다 네가 커 보이니까 자꾸 흠집 내려고 하는 거야. 그게 다야.</p>
+
+        <p>네 잘못 아니야. 근데 그렇다고 가만히 있으면 너만 손해. 받아치라고. 구체적으로 어떻게 받아칠지는 다음 질문에서 알려줄게.</p>
+
+        <p>그리고 너 요즘 잠 못 자지. 그것도 다 그 사람 때문이야.</p>
+
+        <span class="ellipsis">...일단 한 모금 마시고.</span>
+      </div>
+
+      <div class="reading-body__sign">
+        <span class="seal seal--sm" aria-hidden="true">明</span>
+        <span class="reading-body__sign__by">— signed, 누님</span>
+        <span class="reading-body__sign__date">2026.05.29 · 02:47</span>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="state state--loading" style="display: contents;">
+    <aside class="saju-stage">
+      <div class="saju-stage__label">명 식 / chart</div>
+      <div class="saju-tile" style="opacity: 0.4;">
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">YEAR</div><div class="saju-tile__col__char">丁</div></div>
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">MONTH</div><div class="saju-tile__col__char">辛</div></div>
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">DAY</div><div class="saju-tile__col__char">甲</div></div>
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">HOUR</div><div class="saju-tile__col__char saju-tile__col__char--missing">?</div></div>
+      </div>
+    </aside>
+    <article class="reading-body">
+      <div class="reading-body__subtitle">
+        <span class="past">"...어디 봐봐."</span>
+        <span class="current">"잠시만."</span>
+      </div>
+      <div class="cluster gap-3" style="margin-top: var(--space-6);">
+        <span class="spinner"></span>
+        <span class="t-meta c-cream-300" style="letter-spacing: 0.15em;">누님이 첫 문장 고르는 중</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="state state--empty" style="display: contents;">
+    <aside class="saju-stage">
+      <div class="saju-stage__label">명 식 / chart</div>
+      <div class="saju-tile">
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">YEAR</div><div class="saju-tile__col__char">丁</div></div>
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">MONTH</div><div class="saju-tile__col__char">辛</div></div>
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">DAY</div><div class="saju-tile__col__char">甲</div></div>
+        <div class="saju-tile__col"><div class="saju-tile__col__pillar">HOUR</div><div class="saju-tile__col__char saju-tile__col__char--missing">?</div></div>
+      </div>
+      <p class="saju-stage__handnote">한 잔 끝.</p>
+    </aside>
+    <article class="reading-body">
+      <div class="reading-body__subtitle">
+        <span class="current">"...풀이 끝났네."</span>
+      </div>
+      <p class="t-body c-cream-200" style="margin-top: var(--space-6);">꼬리질문 세 개 줄게. 들어볼래?</p>
+      <a href="reading-followup.html" class="landing-cta" style="display:inline-block; margin-top: var(--space-8);">꼬리질문 듣기 →</a>
+
+      <div class="reading-body__sign">
+        <span class="seal seal--sm" aria-hidden="true">明</span>
+        <span class="reading-body__sign__by">— signed, 누님</span>
+        <span class="reading-body__sign__date">2026.05.29 · 02:49</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="state state--error" style="display: contents;">
+    <aside class="saju-stage">
+      <div class="saju-stage__label" style="color: var(--state-error);">ERROR</div>
+      <p class="t-meta c-cream-400" style="margin-top: var(--space-3);">별기운이 잠시 약해.</p>
+    </aside>
+    <article class="reading-body">
+      <div class="reading-body__subtitle" style="border-color: var(--state-error);">
+        <span class="current">"...환불 처리됐어."</span>
+      </div>
+      <p class="t-body c-cream-200" style="margin-top: var(--space-6);">잠시 후 다시 들려줄게.</p>
+      <div class="cluster gap-3" style="margin-top: var(--space-8);">
+        <a href="category.html" class="landing-cta">다시 시도</a>
+        <a href="../index.html" class="landing-secondary">처음으로</a>
+      </div>
+    </article>
+  </div>
+
+</main>
+
+<nav class="nav-bottom-v2">
+  <button class="nav-bottom-v2__play" aria-label="일시정지">❚❚</button>
+  <span class="nav-bottom-v2__time">0:42</span>
+  <div class="nav-bottom-v2__progress" aria-hidden="true"></div>
+  <span class="nav-bottom-v2__time">1:38</span>
+  <a href="category.html" class="nav-bottom-v2__back">EXIT</a>
+</nav>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">END</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

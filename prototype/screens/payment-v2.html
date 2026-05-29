@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>결제 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .meta a { color: var(--cream-300); }
+
+  /* 흐려진 배경 (지난 화면 잔상) */
+  .blurred-bg {
+    position: fixed; inset: 0;
+    padding: var(--space-20) var(--space-12);
+    opacity: 0.3;
+    filter: blur(4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blurred-bg__hanja {
+    font-family: var(--font-mincho); font-weight: 900;
+    font-size: 240px; line-height: 0.85;
+    color: var(--cat-love);
+    position: absolute; bottom: -40px; left: -30px;
+  }
+
+  /* sheet */
+  .sheet-stage {
+    min-height: 100dvh;
+    display: flex; justify-content: center; align-items: flex-end;
+    padding: var(--space-12) var(--space-4) 0;
+    position: relative; z-index: 5;
+  }
+  .sheet {
+    background: var(--hanji-700);
+    border-top: 2px solid var(--vermilion-300);
+    width: 100%; max-width: 480px;
+    padding: var(--space-10) var(--space-8) var(--space-8);
+    position: relative;
+    isolation: isolate;
+  }
+  .sheet::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--grain-strong);
+    mix-blend-mode: overlay; pointer-events: none;
+  }
+  .sheet__handle {
+    width: 40px; height: 3px; background: var(--cream-500);
+    margin: 0 auto var(--space-6); border-radius: 2px;
+  }
+  .sheet__label {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase;
+  }
+  .sheet__title {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--cream-50); margin-top: var(--space-2);
+  }
+  .sheet__detail {
+    font-family: var(--font-body); font-size: var(--text-body);
+    color: var(--cream-300); margin-top: var(--space-2);
+  }
+
+  .sheet__divider { border: 0; border-top: 1px solid var(--hanji-300); margin: var(--space-6) 0; }
+
+  .sheet__price-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--space-4); margin: var(--space-6) 0;
+  }
+  .sheet__price {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(56px, 14vw, 80px); line-height: 1;
+    color: var(--cream-50); letter-spacing: -0.02em;
+  }
+  .sheet__price__note {
+    font-family: var(--font-brush); font-size: var(--text-lead);
+    color: var(--vermilion-100); transform: rotate(-2deg);
+    display: inline-block; line-height: 1;
+  }
+
+  .sheet__pay { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-6); }
+  .pay-btn {
+    padding: var(--space-4) var(--space-6);
+    font-family: var(--font-body); font-size: var(--text-body);
+    font-weight: 500; cursor: pointer;
+    transition: all var(--dur-fast) var(--ease-out);
+    border: none; text-align: center;
+  }
+  .pay-btn--toss { background: var(--amber-400); color: var(--ink-900); }
+  .pay-btn--toss:hover { background: var(--amber-300); }
+  .pay-btn--kakao { background: transparent; color: var(--cream-100); border: 1px solid var(--cream-500); }
+  .pay-btn--kakao:hover { border-color: var(--amber-400); color: var(--amber-300); }
+  .pay-btn:focus-visible { outline: 2px solid var(--amber-200); outline-offset: 3px; }
+
+  .sheet__free-hint {
+    margin-top: var(--space-6); text-align: center;
+  }
+  .sheet__free-hint a {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-400); font-size: var(--text-meta);
+    text-decoration: underline; text-decoration-color: var(--hanji-300);
+    text-underline-offset: 6px;
+  }
+  .sheet__free-hint a:hover { color: var(--amber-300); }
+
+  /* 결제 처리 spinner */
+  .sheet__processing { text-align: center; padding: var(--space-12) 0; }
+  .sheet__processing .spinner { margin: 0 auto var(--space-4); width: 32px; height: 32px; }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="meta">
+  <a href="reading-intro-v2.html">← 닫기</a>
+  <span>PAYMENT</span>
+  <span>02:48 a.m.</span>
+</div>
+
+<aside class="blurred-bg" aria-hidden="true">
+  <span class="blurred-bg__hanja">戀</span>
+</aside>
+
+<main class="sheet-stage">
+  <div class="sheet">
+    <div class="sheet__handle" aria-hidden="true"></div>
+
+    <div class="state state--default">
+      <p class="sheet__label">PAYMENT · 1회</p>
+      <h2 class="sheet__title">결제</h2>
+      <p class="sheet__detail">연애 · 사주 풀이 + 꼬리질문 3개</p>
+
+      <hr class="sheet__divider">
+
+      <div class="sheet__price-row">
+        <span class="sheet__price">₩4,900</span>
+        <span class="sheet__price__note">한 잔 값.</span>
+      </div>
+
+      <p class="sheet__label" style="font-size: 10px;">VAT 포함</p>
+
+      <div class="sheet__pay">
+        <button class="pay-btn pay-btn--toss">토스페이로 결제</button>
+        <button class="pay-btn pay-btn--kakao">카카오페이로 결제</button>
+      </div>
+
+      <p class="sheet__free-hint">
+        <a href="login-v2.html">먼저 가입하면 1회 무료 →</a>
+      </p>
+    </div>
+
+    <div class="state state--loading">
+      <p class="sheet__label">PAYMENT · 진행 중</p>
+      <h2 class="sheet__title">결제 중…</h2>
+      <p class="sheet__detail">결제창에서 진행해줘.</p>
+      <hr class="sheet__divider">
+      <div class="sheet__processing">
+        <div class="spinner"></div>
+        <p class="t-meta c-cream-300" style="letter-spacing: 0.1em;">잠시만</p>
+      </div>
+    </div>
+
+    <div class="state state--empty">
+      <p class="sheet__label">SUBSCRIBER</p>
+      <h2 class="sheet__title">결제 안 해도 돼.</h2>
+      <p class="sheet__detail">이번 달 풀이 1회 포함이야.</p>
+      <hr class="sheet__divider">
+      <div class="sheet__price-row">
+        <span class="sheet__price" style="text-decoration: line-through; text-decoration-color: var(--vermilion-300); color: var(--cream-400);">₩4,900</span>
+        <span class="sheet__price__note">구독중.</span>
+      </div>
+      <div class="sheet__pay">
+        <a href="reading-play-v2.html" class="pay-btn pay-btn--toss" style="display:block; text-decoration:none;">바로 풀이로 가기</a>
+      </div>
+    </div>
+
+    <div class="state state--error">
+      <p class="sheet__label" style="color: var(--state-error);">PAYMENT · FAILED</p>
+      <h2 class="sheet__title">결제가 안 됐네.</h2>
+      <p class="sheet__detail">카드사에서 막혔어. 다른 카드로 해볼까?</p>
+      <hr class="sheet__divider">
+      <div class="sheet__price-row">
+        <span class="sheet__price">₩4,900</span>
+        <span class="sheet__price__note" style="color: var(--state-error);">실패.</span>
+      </div>
+      <div class="sheet__pay">
+        <button class="pay-btn pay-btn--toss">다시 시도</button>
+        <a href="category-v2.html" class="pay-btn pay-btn--kakao" style="display:block; text-decoration:none;">취소하고 돌아가기</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">PROCESSING</button>
+  <button class="state-switcher__btn" data-target="empty">SUBSCRIBER</button>
+  <button class="state-switcher__btn" data-target="error">FAILED</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

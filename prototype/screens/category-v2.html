@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>카테고리 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  /* 화면 전체 grid — 좌측 세로 nav + 우측 메인 */
+  .cat-page {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    min-height: 100dvh;
+  }
+  @media (min-width: 768px) {
+    .cat-page { grid-template-columns: 60px 1fr; }
+  }
+
+  /* 좌측 세로 nav */
+  .cat-vnav {
+    border-right: 1px solid var(--hanji-300);
+    display: flex; flex-direction: column;
+    justify-content: space-between; align-items: center;
+    padding: var(--space-6) var(--space-3);
+    background: var(--hanji-900);
+  }
+  .cat-vnav__back {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--cream-300); letter-spacing: 0.2em;
+    writing-mode: vertical-rl;
+    text-transform: uppercase;
+  }
+  .cat-vnav__brand {
+    writing-mode: vertical-rl;
+    font-family: var(--font-display); font-style: italic;
+    font-size: var(--text-meta); color: var(--amber-300);
+    letter-spacing: 0.05em;
+  }
+  .cat-vnav__brand::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 4px; background: var(--vermilion-300);
+    margin-right: var(--space-2);
+  }
+  .cat-vnav__step {
+    writing-mode: vertical-rl;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--cream-400); letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  /* 우측 메인 */
+  .cat-main {
+    padding: var(--space-12) var(--space-6) var(--space-16);
+    max-width: 720px;
+    width: 100%;
+  }
+  @media (min-width: 768px) {
+    .cat-main { padding: var(--space-16) var(--space-12); }
+  }
+
+  .cat-h {
+    font-family: var(--font-display-han);
+    font-size: clamp(40px, 9vw, 64px);
+    line-height: 1; letter-spacing: -0.02em;
+    color: var(--cream-50);
+    margin-bottom: var(--space-2);
+  }
+  .cat-sub {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-300); font-size: var(--text-lead);
+    margin-bottom: var(--space-12);
+  }
+
+  .cat-list {
+    display: flex; flex-direction: column;
+    gap: var(--space-2);
+    border-top: 1px solid var(--hanji-300);
+  }
+  .cat-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-8) 0;
+    border-bottom: 1px solid var(--hanji-300);
+    cursor: pointer;
+    transition: padding var(--dur-base) var(--ease-out);
+    background: none; border-left: none; border-right: none; border-top: none;
+    text-align: left;
+    color: inherit;
+  }
+  .cat-row:hover { padding-left: var(--space-4); }
+  .cat-row:focus-visible { outline: 1px solid var(--amber-200); outline-offset: 4px; }
+  .cat-row__hanja {
+    font-family: var(--font-mincho); font-weight: 900;
+    font-size: clamp(60px, 12vw, 96px);
+    line-height: 0.9;
+    text-shadow: 0 0 20px rgba(155, 42, 26, 0.08);
+  }
+  .cat-row__main {
+    display: flex; flex-direction: column; gap: var(--space-1);
+  }
+  .cat-row__name {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--cream-50); line-height: 1;
+  }
+  .cat-row__detail {
+    font-family: var(--font-body); font-size: var(--text-body);
+    color: var(--cream-300); line-height: 1.5;
+  }
+  .cat-row__arrow {
+    font-family: var(--font-mono); color: var(--cream-400);
+    font-size: var(--text-body);
+    transition: transform var(--dur-fast), color var(--dur-fast);
+  }
+  .cat-row:hover .cat-row__arrow { color: var(--amber-300); transform: translateX(6px); }
+
+  .cat-row--love  { --cat-color: var(--cat-love); }
+  .cat-row--work  { --cat-color: var(--cat-work); }
+  .cat-row--money { --cat-color: var(--cat-money); }
+  .cat-row__hanja { color: var(--cat-color); }
+  .cat-row--love  .cat-row__hanja { color: var(--cat-love); }
+  .cat-row--work  .cat-row__hanja { color: var(--cat-work); }
+  .cat-row--money .cat-row__hanja { color: var(--cat-money); }
+
+  .cat-row:hover .cat-row__hanja { color: var(--amber-300); }
+
+  /* 우측 하단 타로 링크 */
+  .cat-tarot-link {
+    margin-top: var(--space-12);
+    display: flex; justify-content: flex-end;
+  }
+  .cat-tarot-link a {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-400); font-size: var(--text-body);
+    text-decoration: underline; text-decoration-color: var(--hanji-300);
+    text-underline-offset: 6px;
+  }
+  .cat-tarot-link a:hover { color: var(--amber-300); }
+
+  @media (max-width: 767px) {
+    .cat-row { grid-template-columns: 64px 1fr auto; }
+    .cat-row__hanja { font-size: 56px; }
+  }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="cat-page">
+  <aside class="cat-vnav">
+    <a href="onboarding-gender-v2.html" class="cat-vnav__back">← BACK</a>
+    <span class="cat-vnav__brand">VoiceSaju</span>
+    <span class="cat-vnav__step">CATEGORY</span>
+  </aside>
+
+  <main class="cat-main">
+
+    <div class="state state--default">
+      <h1 class="cat-h">뭐가 제일<br>궁금해?</h1>
+      <p class="cat-sub">— pick one.</p>
+
+      <div class="cat-list">
+        <a href="reading-intro-v2.html" class="cat-row cat-row--love">
+          <span class="cat-row__hanja">戀</span>
+          <span class="cat-row__main">
+            <span class="cat-row__name">연애</span>
+            <span class="cat-row__detail">결혼? 헤어짐? 짝사랑?</span>
+          </span>
+          <span class="cat-row__arrow">→</span>
+        </a>
+        <a href="reading-intro-v2.html" class="cat-row cat-row--work">
+          <span class="cat-row__hanja">業</span>
+          <span class="cat-row__main">
+            <span class="cat-row__name">직장</span>
+            <span class="cat-row__detail">이직? 상사? 사업?</span>
+          </span>
+          <span class="cat-row__arrow">→</span>
+        </a>
+        <a href="reading-intro-v2.html" class="cat-row cat-row--money">
+          <span class="cat-row__hanja">財</span>
+          <span class="cat-row__main">
+            <span class="cat-row__name">금전</span>
+            <span class="cat-row__detail">빚? 투자? 가난할까?</span>
+          </span>
+          <span class="cat-row__arrow">→</span>
+        </a>
+      </div>
+
+      <div class="cat-tarot-link">
+        <a href="tarot-v2.html">오늘의 타로 한 장만 →</a>
+      </div>
+    </div>
+
+    <div class="state state--loading">
+      <h1 class="cat-h" style="color: var(--cream-300);">뭐가 제일<br>궁금해?</h1>
+      <p class="cat-sub" style="opacity: 0.5;">— pick one.</p>
+      <div class="cat-list">
+        <div class="cat-row" style="opacity: 0.4;"><span class="cat-row__hanja" style="color: var(--hanji-300);">戀</span><span class="cat-row__main"><span class="cat-row__name">연애</span></span><span></span></div>
+        <div class="cat-row" style="opacity: 0.4;"><span class="cat-row__hanja" style="color: var(--hanji-300);">業</span><span class="cat-row__main"><span class="cat-row__name">직장</span></span><span></span></div>
+        <div class="cat-row" style="opacity: 0.4;"><span class="cat-row__hanja" style="color: var(--hanji-300);">財</span><span class="cat-row__main"><span class="cat-row__name">금전</span></span><span></span></div>
+      </div>
+      <div class="cluster gap-3 mt-8"><span class="spinner"></span><span class="t-meta c-cream-300" style="letter-spacing: 0.15em;">누님 깨우는 중</span></div>
+    </div>
+
+    <div class="state state--empty">
+      <h1 class="cat-h">한 번만 더<br>골라줘.</h1>
+      <p class="cat-sub">— 비회원은 첫 한 번만 무료.</p>
+      <div class="cat-list">
+        <a href="login-v2.html" class="cat-row cat-row--love"><span class="cat-row__hanja">戀</span><span class="cat-row__main"><span class="cat-row__name">연애</span><span class="cat-row__detail">이번엔 가입하고 가야 해.</span></span><span class="cat-row__arrow">→</span></a>
+        <a href="login-v2.html" class="cat-row cat-row--work"><span class="cat-row__hanja">業</span><span class="cat-row__main"><span class="cat-row__name">직장</span><span class="cat-row__detail">1초 가입으로.</span></span><span class="cat-row__arrow">→</span></a>
+        <a href="login-v2.html" class="cat-row cat-row--money"><span class="cat-row__hanja">財</span><span class="cat-row__main"><span class="cat-row__name">금전</span><span class="cat-row__detail">결과는 영구 저장.</span></span><span class="cat-row__arrow">→</span></a>
+      </div>
+    </div>
+
+    <div class="state state--error">
+      <h1 class="cat-h">잠시 별기운이<br>약하네.</h1>
+      <p class="cat-sub">— 잠시 후에.</p>
+      <button class="ob-cta" style="font-family: var(--font-display-han); font-size: var(--text-h3); color: var(--baekrim-200); text-decoration: underline; text-decoration-color: var(--vermilion-300); text-decoration-thickness: 3px; text-underline-offset: 8px; background: none; border: none; cursor: pointer;" onclick="location.reload()">다시 시도 →</button>
+    </div>
+
+  </main>
+</div>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">NON-MEMBER</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>명대사 카드 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400;1,500&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <span class="nav-top__brand">VoiceSaju</span>
+  <a href="../index.html" class="nav-top__back">닫기</a>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <p class="t-caption c-cream-300 text-center">오늘의 한 줄</p>
+
+      <div class="quote-card-stage mt-6">
+        <div class="quote-card-preview" data-cat="love">
+          <p class="quote-card-preview__category">LOVE</p>
+          <p class="quote-card-preview__line">"그 사람은 너랑<br>코드가 안 맞아."</p>
+          <p class="quote-card-preview__watermark">VoiceSaju</p>
+        </div>
+      </div>
+
+      <hr class="divider mt-8" style="margin-bottom: var(--space-6);">
+
+      <p class="t-caption c-cream-300">공유하기</p>
+      <div class="share-row mt-4">
+        <button class="share-btn">인스타 스토리</button>
+        <button class="share-btn">카톡</button>
+        <button class="share-btn">저장</button>
+      </div>
+
+      <p class="t-meta c-success mt-6">히스토리에 저장됨 ✓</p>
+
+      <hr class="divider mt-8" style="margin-bottom: var(--space-4);">
+      <a href="../index.html" class="btn btn-secondary btn--full">처음으로</a>
+    </div>
+
+    <div class="state state--loading">
+      <p class="t-caption c-cream-500 text-center">한 줄 고르는 중</p>
+      <div class="quote-card-stage mt-6">
+        <div class="quote-card-preview skeleton" style="background: var(--ink-700);">
+          <p class="quote-card-preview__category" style="color: var(--cream-500);">LOVE</p>
+          <p class="quote-card-preview__line c-cream-500">...</p>
+          <p class="quote-card-preview__watermark">VoiceSaju</p>
+        </div>
+      </div>
+      <div class="cluster gap-3 mt-8 center"><span class="spinner"></span><span class="t-meta c-cream-300">기다려줘</span></div>
+    </div>
+
+    <div class="state state--empty">
+      <p class="t-caption c-cream-300 text-center">가입하면 영구 저장</p>
+      <div class="quote-card-stage mt-6">
+        <div class="quote-card-preview" data-cat="love">
+          <p class="quote-card-preview__category">LOVE</p>
+          <p class="quote-card-preview__line">"그 사람은 너랑<br>코드가 안 맞아."</p>
+          <p class="quote-card-preview__watermark">VoiceSaju</p>
+        </div>
+      </div>
+      <hr class="divider mt-8" style="margin-bottom: var(--space-4);">
+      <div class="card card--amber">
+        <p class="t-body c-cream-50">가입하면 영구 저장. 1초.</p>
+        <p class="t-meta c-cream-300 mt-2">로그아웃하면 결과 사라져.</p>
+      </div>
+      <a href="login.html" class="btn btn-primary btn--full mt-6">1초 가입</a>
+    </div>
+
+    <div class="state state--error">
+      <p class="t-caption c-cream-300 text-center">공유 미리보기가 안 보일 수 있어</p>
+      <div class="quote-card-stage mt-6">
+        <div class="quote-card-preview" data-cat="love">
+          <p class="quote-card-preview__category">LOVE</p>
+          <p class="quote-card-preview__line">"그 사람은 너랑<br>코드가 안 맞아."</p>
+          <p class="quote-card-preview__watermark">VoiceSaju</p>
+        </div>
+      </div>
+      <hr class="divider mt-8" style="margin-bottom: var(--space-6);">
+      <div class="share-row">
+        <button class="share-btn">저장</button>
+        <button class="share-btn">URL 복사</button>
+      </div>
+      <p class="t-meta c-error mt-4">미리보기 생성 실패. 저장은 됐어.</p>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">NON-MEMBER</button>
+  <button class="state-switcher__btn" data-target="error">OG ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

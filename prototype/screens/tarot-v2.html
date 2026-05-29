@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>데일리 타로 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400;1,500&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .tarot-meta {
+    position: absolute;
+    top: var(--space-6);
+    left: var(--space-6);
+    right: var(--space-6);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--hanji-300);
+    text-transform: uppercase;
+    z-index: 10;
+  }
+  .tarot-meta a { color: var(--cream-300); }
+  .tarot-meta__quota {
+    font-family: var(--font-brush);
+    font-size: var(--text-lead);
+    color: var(--vermilion-100);
+    letter-spacing: 0;
+    text-transform: none;
+    transform: rotate(-2deg);
+  }
+
+  .tarot-page {
+    min-height: 100dvh;
+    padding: var(--space-20) var(--space-6) var(--space-16);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+
+  .tarot-header {
+    font-family: var(--font-display-han);
+    font-size: clamp(40px, 9vw, 64px);
+    line-height: 1.05;
+    color: var(--cream-50);
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.02em;
+  }
+  .tarot-header__date {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--cream-400);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+  .tarot-header__sub {
+    font-family: var(--font-mincho);
+    color: var(--vermilion-100);
+    font-size: var(--text-lead);
+    letter-spacing: 0.05em;
+    margin-top: var(--space-2);
+  }
+
+  .tarot-stage-v2 {
+    margin: var(--space-16) 0 var(--space-12);
+    position: relative;
+  }
+
+  .tarot-card-v2 {
+    /* main styles in styles.css */
+  }
+
+  .tarot-stage-v2__hanja-bg {
+    position: absolute;
+    font-family: var(--font-mincho);
+    font-weight: 900;
+    font-size: clamp(200px, 50vw, 400px);
+    color: var(--vermilion-500);
+    opacity: 0.18;
+    line-height: 0.8;
+    z-index: 0;
+    transform: rotate(-3deg);
+    pointer-events: none;
+  }
+  .tarot-stage-v2 .tarot-card-v2 { z-index: 2; }
+
+  /* === Spread (5장 부채꼴) === */
+  .tarot-spread {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    height: 460px;
+    margin: 0 auto;
+    z-index: 2;
+    perspective: 2400px;
+    perspective-origin: 50% 50%;
+  }
+  .spread-card {
+    position: absolute;
+    width: 200px;
+    height: 333px;
+    /* 부모 가운데에 명시적 정렬 — layout 변화에 무관 */
+    top: 50%;
+    left: 50%;
+    margin-top: -166.5px;  /* -height/2 */
+    margin-left: -100px;   /* -width/2 */
+    cursor: pointer;
+    transition:
+      transform 600ms cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 500ms var(--ease-out),
+      filter 400ms var(--ease-out);
+    background: none;
+    border: none;
+    padding: 0;
+    transform-origin: center center;
+    transform-style: preserve-3d;
+  }
+  /* 기본 위치 — translate만 (회전은 __pose가 담당) */
+  .spread-card[data-pos="1"] { transform: translate(-180px, 48px); z-index: 1; }
+  .spread-card[data-pos="2"] { transform: translate(-92px, 8px);   z-index: 2; }
+  .spread-card[data-pos="3"] { transform: translate(0px, -4px);    z-index: 3; }
+  .spread-card[data-pos="4"] { transform: translate(92px, 8px);    z-index: 2; }
+  .spread-card[data-pos="5"] { transform: translate(180px, 48px);  z-index: 1; }
+
+  /* hover — 위치만 변화 (회전은 __pose 유지) */
+  .spread-card[data-pos="1"]:hover { transform: translate(-184px, 16px); z-index: 6; }
+  .spread-card[data-pos="2"]:hover { transform: translate(-94px, -24px); z-index: 6; }
+  .spread-card[data-pos="3"]:hover { transform: translate(0px, -36px);   z-index: 6; }
+  .spread-card[data-pos="4"]:hover { transform: translate(94px, -24px);  z-index: 6; }
+  .spread-card[data-pos="5"]:hover { transform: translate(184px, 16px);  z-index: 6; }
+
+  .spread-card:focus-visible { outline: 2px solid var(--amber-200); outline-offset: 6px; }
+
+  /* === Pose wrapper — 회전 담당 (위치와 분리) === */
+  .spread-card__pose {
+    position: relative;
+    width: 200px;
+    height: 333px;
+    transform-origin: center center;
+    transition: transform 380ms cubic-bezier(0.65, 0, 0.35, 1);
+    transform-style: preserve-3d;
+  }
+  .spread-card[data-pos="1"] .spread-card__pose { transform: rotate(-22deg); }
+  .spread-card[data-pos="2"] .spread-card__pose { transform: rotate(-11deg); }
+  .spread-card[data-pos="3"] .spread-card__pose { transform: rotate(0deg); }
+  .spread-card[data-pos="4"] .spread-card__pose { transform: rotate(11deg); }
+  .spread-card[data-pos="5"] .spread-card__pose { transform: rotate(22deg); }
+
+  /* === 1단계: is-moving — 가운데로 모이기 (회전 유지) === */
+  .spread-card.is-moving { z-index: 10; }
+  .spread-card[data-pos="1"].is-moving { transform: translate(0px, 48px); }
+  .spread-card[data-pos="2"].is-moving { transform: translate(0px, 8px); }
+  .spread-card[data-pos="3"].is-moving { transform: translate(0px, -4px); }
+  .spread-card[data-pos="4"].is-moving { transform: translate(0px, 8px); }
+  .spread-card[data-pos="5"].is-moving { transform: translate(0px, 48px); }
+
+  /* === 2단계: is-centered — 가운데 도착 후 회전 0도 === */
+  .spread-card.is-centered .spread-card__pose { transform: rotate(0deg); }
+
+  /* === 3단계: aria-pressed=true — 3D flip === */
+  .spread-card__inner {
+    position: relative;
+    width: 200px;
+    height: 333px;
+    transform-style: preserve-3d;
+    transition: transform 500ms cubic-bezier(0.65, 0, 0.35, 1);
+    transform-origin: center center;
+  }
+  .spread-card[aria-pressed="true"] .spread-card__inner {
+    transform: rotateY(180deg);
+  }
+
+  /* 버려진 카드: 그 자리에서 빠르게 fade out (위치/회전 변화 없음) */
+  .spread-card.is-discarded {
+    opacity: 0;
+    pointer-events: none;
+    filter: blur(3px);
+    /* transition을 빠르게 (transform 변화 없으니 opacity/filter만) */
+    transition: opacity 280ms ease-out, filter 280ms ease-out !important;
+  }
+  /* transform 변화 없음 — 원래 자리 그대로 */
+  .spread-card[data-pos="1"].is-discarded { transform: translate(-180px, 48px); }
+  .spread-card[data-pos="2"].is-discarded { transform: translate(-92px, 8px); }
+  .spread-card[data-pos="4"].is-discarded { transform: translate(92px, 8px); }
+  .spread-card[data-pos="5"].is-discarded { transform: translate(180px, 48px); }
+
+  /* face (앞/뒷면 공통) — 3D flip */
+  .spread-card__face {
+    position: absolute;
+    top: 0; left: 0;
+    width: 200px; height: 333px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .spread-card__face--front { transform: rotateY(180deg); }
+  @media (max-width: 767px) {
+    .spread-card__pose  { width: 130px; height: 217px; }
+    .spread-card__inner { width: 130px; height: 217px; }
+    .spread-card__face  { width: 130px; height: 217px; }
+  }
+
+  /* 뒷면 — 한지 + 命 한자 (작게) */
+  .spread-card__back {
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(108, 29, 17, 0.45) 0%, transparent 55%),
+      linear-gradient(180deg, var(--hanji-500) 0%, var(--hanji-700) 100%);
+    background-blend-mode: overlay;
+    border: 1px solid var(--hanji-300);
+    box-shadow:
+      inset 0 0 60px rgba(10, 6, 4, 0.7),
+      3px 4px 0 rgba(10, 6, 4, 0.4);
+    display: grid; place-items: center;
+    overflow: hidden;
+    /* position: absolute는 .spread-card__face에서 상속 (relative로 override 금지) */
+  }
+  .spread-card__back::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--grain-strong);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .spread-card__back__hanja {
+    font-family: var(--font-mincho);
+    font-weight: 900;
+    font-size: 84px;
+    color: var(--baekrim-200);
+    line-height: 1;
+    transform: rotate(-2deg);
+    opacity: 0.85;
+    text-shadow: 0 0 24px rgba(155, 42, 26, 0.5);
+  }
+  .spread-card__back__corner {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--vermilion-100);
+    letter-spacing: 0.25em;
+    opacity: 0.6;
+    top: var(--space-2); left: var(--space-2);
+  }
+
+  /* 앞면 — 풀이 카드 */
+  .spread-card__front {
+    background:
+      radial-gradient(ellipse at 30% 25%, rgba(217, 196, 154, 0.1) 0%, transparent 50%),
+      linear-gradient(180deg, var(--hanji-500) 0%, var(--hanji-700) 100%);
+    background-blend-mode: overlay;
+    border: 1px solid var(--hanji-300);
+    box-shadow:
+      inset 0 0 60px rgba(10, 6, 4, 0.6),
+      4px 6px 0 rgba(10, 6, 4, 0.4);
+    padding: var(--space-4) var(--space-3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    /* position: absolute는 .spread-card__face에서 상속 (relative로 override 금지) */
+  }
+  .spread-card__front::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--grain-strong);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .spread-card__front__num {
+    font-family: var(--font-mincho);
+    font-weight: 900;
+    font-size: 11px;
+    color: var(--vermilion-100);
+    letter-spacing: 0.15em;
+  }
+  .spread-card__front__symbol {
+    font-family: var(--font-mincho);
+    font-size: 76px;
+    line-height: 1;
+    color: var(--baekrim-200);
+    font-weight: 900;
+    text-shadow: 0 0 24px rgba(155, 42, 26, 0.3);
+  }
+  .spread-card__front__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-meta);
+    color: var(--cream-100);
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  /* 모바일: 카드 작게 + 부채꼴 (selected 시 세로 위치 그대로) */
+  @media (max-width: 767px) {
+    .tarot-spread { height: 380px; max-width: 360px; perspective: 1800px; }
+    .spread-card {
+      width: 130px; height: 217px;
+      margin-top: -108.5px;  /* -height/2 */
+      margin-left: -65px;    /* -width/2 */
+    }
+    .spread-card[data-pos="1"] { transform: translate(-115px, 32px); }
+    .spread-card[data-pos="2"] { transform: translate(-60px, 6px); }
+    .spread-card[data-pos="3"] { transform: translate(0px, -2px); }
+    .spread-card[data-pos="4"] { transform: translate(60px, 6px); }
+    .spread-card[data-pos="5"] { transform: translate(115px, 32px); }
+
+    .spread-card[data-pos="1"] .spread-card__pose { transform: rotate(-18deg); }
+    .spread-card[data-pos="2"] .spread-card__pose { transform: rotate(-9deg); }
+    .spread-card[data-pos="3"] .spread-card__pose { transform: rotate(0deg); }
+    .spread-card[data-pos="4"] .spread-card__pose { transform: rotate(9deg); }
+    .spread-card[data-pos="5"] .spread-card__pose { transform: rotate(18deg); }
+
+    .spread-card[data-pos="1"]:hover { transform: translate(-118px, 12px); }
+    .spread-card[data-pos="2"]:hover { transform: translate(-62px, -16px); }
+    .spread-card[data-pos="3"]:hover { transform: translate(0px, -22px); }
+    .spread-card[data-pos="4"]:hover { transform: translate(62px, -16px); }
+    .spread-card[data-pos="5"]:hover { transform: translate(118px, 12px); }
+
+    .spread-card[data-pos="1"].is-moving { transform: translate(0px, 32px); }
+    .spread-card[data-pos="2"].is-moving { transform: translate(0px, 6px); }
+    .spread-card[data-pos="3"].is-moving { transform: translate(0px, -2px); }
+    .spread-card[data-pos="4"].is-moving { transform: translate(0px, 6px); }
+    .spread-card[data-pos="5"].is-moving { transform: translate(0px, 32px); }
+
+    .spread-card[data-pos="1"].is-discarded { transform: translate(-115px, 32px); }
+    .spread-card[data-pos="2"].is-discarded { transform: translate(-60px, 6px); }
+    .spread-card[data-pos="4"].is-discarded { transform: translate(60px, 6px); }
+    .spread-card[data-pos="5"].is-discarded { transform: translate(115px, 32px); }
+    .spread-card__back__hanja { font-size: 54px; }
+    .spread-card__front__symbol { font-size: 50px; }
+  }
+
+  .tarot-tap-hint-v2 {
+    margin-top: var(--space-8);
+    font-family: var(--font-brush);
+    font-size: var(--text-lead);
+    color: var(--baekrim-200);
+    transform: rotate(-1.5deg);
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  /* reveal section — flip 끝나면 fade-in으로 등장 */
+  .reveal-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 500ms ease-out, visibility 0s linear 500ms;
+  }
+  .reveal-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 500ms ease-out;
+  }
+  .reveal-show-hide {
+    transition: opacity 300ms ease-out;
+  }
+  .reveal-hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tap-hint-hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+    transition: opacity 300ms ease-out;
+  }
+
+  /* === Tarot Card v2 with 3D flip + lift === */
+  .tarot-card-v2 {
+    perspective: 1200px;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .tarot-card-v2__inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 900ms cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .tarot-card-v2[aria-pressed="true"] .tarot-card-v2__inner {
+    transform: rotateY(180deg);
+  }
+  .tarot-card-v2.is-lifted {
+    transform: rotate(0deg) translateY(-16px) scale(1.05);
+    transition: transform 280ms var(--ease-out);
+  }
+  .tarot-card-v2__face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .tarot-card-v2__face--front {
+    transform: rotateY(180deg);
+  }
+
+  /* 카드 뒷면 — 한지 + 月 한자 큰 글씨 + 인주 모서리 */
+  .tarot-card-v2__back {
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(108, 29, 17, 0.45) 0%, transparent 55%),
+      linear-gradient(180deg, var(--hanji-500) 0%, var(--hanji-700) 100%);
+    background-blend-mode: overlay;
+    border: 1px solid var(--hanji-300);
+    box-shadow:
+      inset 0 0 80px rgba(10, 6, 4, 0.7),
+      4px 6px 0 rgba(10, 6, 4, 0.4);
+    display: grid; place-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .tarot-card-v2__back::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--grain-strong);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .tarot-card-v2__back__hanja {
+    font-family: var(--font-mincho);
+    font-weight: 900;
+    font-size: 96px;
+    color: var(--baekrim-200);
+    line-height: 1;
+    transform: rotate(-2deg);
+    text-shadow: 0 0 24px rgba(155, 42, 26, 0.5);
+    opacity: 0.85;
+  }
+  .tarot-card-v2__back__corner-tl,
+  .tarot-card-v2__back__corner-br {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--vermilion-100);
+    letter-spacing: 0.25em;
+    opacity: 0.7;
+  }
+  .tarot-card-v2__back__corner-tl {
+    top: var(--space-3); left: var(--space-3);
+  }
+  .tarot-card-v2__back__corner-br {
+    bottom: var(--space-3); right: var(--space-3);
+    transform: rotate(180deg);
+  }
+
+  /* 앞면은 기존 .tarot-card-v2__paper 유지 */
+
+  .tarot-reveal {
+    max-width: 32ch;
+    margin: var(--space-8) auto 0;
+    text-align: left;
+    border-top: 1px solid var(--hanji-300);
+    border-bottom: 1px solid var(--hanji-300);
+    padding: var(--space-6) 0;
+    position: relative;
+  }
+  .tarot-reveal__line {
+    font-family: var(--font-display-han);
+    font-size: var(--text-h3);
+    line-height: 1.5;
+    color: var(--cream-100);
+  }
+  .tarot-reveal__line .past { color: var(--cream-300); display: block; }
+  .tarot-reveal__line .current { color: var(--amber-300); display: block; }
+
+  .tarot-reveal__seal {
+    position: absolute;
+    bottom: -28px; right: -20px;
+  }
+
+  .tarot-actions {
+    margin-top: var(--space-12);
+    display: flex;
+    gap: var(--space-6);
+    justify-content: center;
+    align-items: baseline;
+  }
+  .tarot-actions a {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--baekrim-200);
+    font-size: var(--text-body);
+    text-decoration: underline;
+    text-decoration-color: var(--vermilion-300);
+    text-underline-offset: 6px;
+  }
+  .tarot-actions a:hover { color: var(--amber-300); }
+
+  .tarot-controls-v2 {
+    margin-top: var(--space-8);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    border-top: 1px solid var(--hanji-300);
+    padding-top: var(--space-4);
+    max-width: 32ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tarot-footer {
+    margin-top: auto;
+    padding-top: var(--space-12);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--hanji-300);
+    text-transform: uppercase;
+  }
+  .tarot-footer__hanja {
+    font-family: var(--font-mincho);
+    font-size: 22px;
+    line-height: 1;
+    color: var(--hanji-300);
+    margin-top: var(--space-2);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="tarot-meta">
+  <a href="../index.html">← BACK</a>
+  <span>TAROT · TODAY</span>
+  <span class="tarot-meta__quota">무료 1회 남음</span>
+</div>
+
+<main class="tarot-page">
+
+  <div class="state state--default">
+    <p class="tarot-header__date">MAY 29 · WED</p>
+    <h1 class="tarot-header">오늘의 카드</h1>
+    <p class="tarot-header__sub">月 · The Moon</p>
+
+    <div class="tarot-stage-v2">
+      <span class="tarot-stage-v2__hanja-bg" aria-hidden="true">月</span>
+      <div class="tarot-spread" role="group" aria-label="다섯 장 중 하나 골라">
+
+        <button class="spread-card" data-pos="1" type="button" aria-pressed="false" aria-label="첫 번째 카드">
+          <div class="spread-card__pose">
+            <div class="spread-card__inner">
+              <div class="spread-card__face spread-card__back">
+                <span class="spread-card__back__corner">VS</span>
+                <span class="spread-card__back__hanja">命</span>
+              </div>
+              <div class="spread-card__face spread-card__face--front spread-card__front">
+                <div class="spread-card__front__num">XVIII</div>
+                <div class="spread-card__front__symbol">月</div>
+                <div class="spread-card__front__name">The Moon</div>
+              </div>
+            </div>
+          </div>
+        </button>
+
+        <button class="spread-card" data-pos="2" type="button" aria-pressed="false" aria-label="두 번째 카드">
+          <div class="spread-card__pose">
+            <div class="spread-card__inner">
+              <div class="spread-card__face spread-card__back">
+                <span class="spread-card__back__corner">VS</span>
+                <span class="spread-card__back__hanja">命</span>
+              </div>
+              <div class="spread-card__face spread-card__face--front spread-card__front">
+                <div class="spread-card__front__num">XVIII</div>
+                <div class="spread-card__front__symbol">月</div>
+                <div class="spread-card__front__name">The Moon</div>
+              </div>
+            </div>
+          </div>
+        </button>
+
+        <button class="spread-card" data-pos="3" type="button" aria-pressed="false" aria-label="세 번째 카드">
+          <div class="spread-card__pose">
+            <div class="spread-card__inner">
+              <div class="spread-card__face spread-card__back">
+                <span class="spread-card__back__corner">VS</span>
+                <span class="spread-card__back__hanja">命</span>
+              </div>
+              <div class="spread-card__face spread-card__face--front spread-card__front">
+                <div class="spread-card__front__num">XVIII</div>
+                <div class="spread-card__front__symbol">月</div>
+                <div class="spread-card__front__name">The Moon</div>
+              </div>
+            </div>
+          </div>
+        </button>
+
+        <button class="spread-card" data-pos="4" type="button" aria-pressed="false" aria-label="네 번째 카드">
+          <div class="spread-card__pose">
+            <div class="spread-card__inner">
+              <div class="spread-card__face spread-card__back">
+                <span class="spread-card__back__corner">VS</span>
+                <span class="spread-card__back__hanja">命</span>
+              </div>
+              <div class="spread-card__face spread-card__face--front spread-card__front">
+                <div class="spread-card__front__num">XVIII</div>
+                <div class="spread-card__front__symbol">月</div>
+                <div class="spread-card__front__name">The Moon</div>
+              </div>
+            </div>
+          </div>
+        </button>
+
+        <button class="spread-card" data-pos="5" type="button" aria-pressed="false" aria-label="다섯 번째 카드">
+          <div class="spread-card__pose">
+            <div class="spread-card__inner">
+              <div class="spread-card__face spread-card__back">
+                <span class="spread-card__back__corner">VS</span>
+                <span class="spread-card__back__hanja">命</span>
+              </div>
+              <div class="spread-card__face spread-card__face--front spread-card__front">
+                <div class="spread-card__front__num">XVIII</div>
+                <div class="spread-card__front__symbol">月</div>
+                <div class="spread-card__front__name">The Moon</div>
+              </div>
+            </div>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <p class="tarot-tap-hint-v2">다섯 장 중 한 장 골라</p>
+
+    <!-- reveal section: 처음엔 hidden, flip 끝나면 JS로 보임 -->
+    <div class="tarot-reveal reveal-hidden" aria-live="polite">
+      <div class="tarot-reveal__line">
+        <span class="past">"오늘은…</span>
+        <span class="past">숨겨진 진실이 보이는 날.</span>
+        <span class="current">섣불리 결정하지 말게나."</span>
+      </div>
+      <span class="seal seal--sm tarot-reveal__seal" aria-hidden="true">月</span>
+    </div>
+
+    <div class="tarot-controls-v2 reveal-hidden">
+      <button class="nav-bottom-v2__play" style="position:static; transform:rotate(-2deg);" aria-label="일시정지">❚❚</button>
+      <span class="nav-bottom-v2__time">0:12</span>
+      <div class="nav-bottom-v2__progress"></div>
+      <span class="nav-bottom-v2__time">0:38</span>
+    </div>
+
+    <div class="tarot-actions reveal-hidden">
+      <a href="reading-end-v2.html">한 줄 공유</a>
+      <span class="handwritten" style="font-size: var(--text-meta); color: var(--cream-500);">·</span>
+      <a href="me-v2.html">히스토리에 저장</a>
+    </div>
+
+    <div class="tarot-footer reveal-show-hide">
+      <div>EST. 2026 · MAJOR ARCANA 22</div>
+      <div class="tarot-footer__hanja">甲 乙 丙 丁 戊 己 庚 辛 壬 癸</div>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <p class="tarot-header__date">MAY 29 · WED</p>
+    <h1 class="tarot-header">오늘의 카드</h1>
+
+    <div class="tarot-stage-v2">
+      <div class="tarot-card-v2" style="transform: rotate(0deg) translateY(-12px) scale(1.04);">
+        <div class="tarot-card-v2__inner" style="transform: rotateY(90deg);">
+          <div class="tarot-card-v2__face tarot-card-v2__back">
+            <span class="tarot-card-v2__back__hanja">命</span>
+          </div>
+          <div class="tarot-card-v2__face tarot-card-v2__face--front tarot-card-v2__paper">
+            <div class="tarot-card-v2__num">XVIII</div>
+            <div class="tarot-card-v2__symbol">月</div>
+            <div class="tarot-card-v2__name">The Moon</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cluster gap-3" style="margin-top: var(--space-6);">
+      <span class="spinner"></span>
+      <span class="t-meta c-cream-300" style="letter-spacing: 0.15em;">도사가 깨어나는 중</span>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <p class="tarot-header__date">MAY 29 · WED</p>
+    <h1 class="tarot-header">오늘의 카드</h1>
+    <p class="tarot-header__sub">月 · The Moon</p>
+
+    <div class="tarot-stage-v2">
+      <span class="tarot-stage-v2__hanja-bg" aria-hidden="true">月</span>
+      <div class="tarot-spread">
+        <button class="spread-card" data-pos="3" type="button" aria-pressed="true" disabled aria-label="선택된 카드"
+                style="transition: none !important; transform: translate(0, -4px) !important;">
+          <div class="spread-card__pose"
+               style="transition: none !important; transform: rotate(0deg) !important;">
+            <div class="spread-card__inner"
+                 style="transition: none !important; transform: rotateY(180deg) !important;">
+              <div class="spread-card__face spread-card__back">
+                <span class="spread-card__back__corner">VS</span>
+                <span class="spread-card__back__hanja">命</span>
+              </div>
+              <div class="spread-card__face spread-card__face--front spread-card__front">
+                <div class="spread-card__front__num">XVIII</div>
+                <div class="spread-card__front__symbol">月</div>
+                <div class="spread-card__front__name">The Moon</div>
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="tarot-reveal" aria-live="polite">
+      <div class="tarot-reveal__line">
+        <span class="past">"오늘은…</span>
+        <span class="past">숨겨진 진실이 보이는 날.</span>
+        <span class="current">섣불리 결정하지 말게나."</span>
+      </div>
+      <span class="seal seal--sm tarot-reveal__seal" aria-hidden="true">月</span>
+    </div>
+
+    <div class="tarot-controls-v2">
+      <button class="nav-bottom-v2__play" style="position:static; transform:rotate(-2deg);" aria-label="일시정지">❚❚</button>
+      <span class="nav-bottom-v2__time">0:12</span>
+      <div class="nav-bottom-v2__progress"></div>
+      <span class="nav-bottom-v2__time">0:38</span>
+    </div>
+
+    <div class="tarot-actions">
+      <a href="reading-end.html">한 줄 공유</a>
+      <span class="handwritten" style="font-size: var(--text-meta); color: var(--cream-500);">·</span>
+      <a href="me.html">히스토리에 저장</a>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <p class="tarot-header__date">MAY 29 · WED</p>
+    <h1 class="tarot-header">이번 주는 다 봤어.</h1>
+    <p class="tarot-header__sub" style="color: var(--state-error);">QUOTA EXHAUSTED</p>
+
+    <div class="tarot-stage-v2">
+      <div class="tarot-card-v2" style="transform: rotate(-2deg); opacity: 0.35; filter: grayscale(0.6);">
+        <div class="tarot-card-v2__inner">
+          <div class="tarot-card-v2__face tarot-card-v2__back">
+            <span class="tarot-card-v2__back__hanja">空</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tarot-reveal" style="text-align: center;">
+      <p class="t-body c-cream-200">구독하면 매일 받을 수 있어.<br>사주도 매달 하나 끼워줄게.</p>
+      <div style="margin-top: var(--space-4); display: flex; gap: var(--space-3); justify-content: center; align-items: baseline;">
+        <a href="payment.html" class="landing-cta" style="font-size: var(--text-lead);">구독하기</a>
+        <span class="handwritten handwritten--price">₩9,900/월</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">CARD BACK</button>
+  <button class="state-switcher__btn" data-target="loading">FLIPPING</button>
+  <button class="state-switcher__btn" data-target="empty">REVEALED</button>
+  <button class="state-switcher__btn" data-target="error">EXHAUSTED</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+
+// Spread: 5장 중 하나 선택 → 가운데로 모임 → 회전 0도 → flip → reveal
+// setTimeout 기반 (가운데 카드도 동일 흐름 보장 — transform 변화 없어도 진행)
+const spreadCards = document.querySelectorAll('.spread-card');
+let isSpreadLocked = false;
+
+spreadCards.forEach(card => {
+  card.addEventListener('click', () => {
+    if (isSpreadLocked) return;
+    isSpreadLocked = true;
+
+    // Phase 1 (0ms): 다른 카드 fade-out + 선택 카드 가운데로 모임 (회전 유지)
+    spreadCards.forEach(c => {
+      if (c !== card) c.classList.add('is-discarded');
+    });
+    card.classList.add('is-moving');
+
+    // Phase 2 (650ms): 가운데 도착 → 회전 0도
+    setTimeout(() => {
+      card.classList.add('is-centered');
+    }, 650);
+
+    // Phase 3 (1100ms): 정자세 도착 → flip 시작
+    setTimeout(() => {
+      card.setAttribute('aria-pressed', 'true');
+    }, 1100);
+
+    // Phase 4 (1700ms): flip 끝 → reveal section fade-in
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-hidden').forEach(el => {
+        el.classList.remove('reveal-hidden');
+        el.classList.add('reveal-visible');
+      });
+      document.querySelector('.tarot-footer.reveal-show-hide')?.classList.add('reveal-hide');
+    }, 1700);
+
+    const hint = document.querySelector('.tarot-tap-hint-v2');
+    if (hint) hint.style.opacity = '0';
+  });
+
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      card.click();
+    }
+  });
+});
+
+// Reset when going back to default via state-switcher
+document.querySelector('.state-switcher__btn[data-target="default"]')?.addEventListener('click', () => {
+  spreadCards.forEach(c => {
+    c.classList.remove('is-moving', 'is-centered', 'is-discarded');
+    c.setAttribute('aria-pressed', 'false');
+  });
+  isSpreadLocked = false;
+  const hint = document.querySelector('.tarot-tap-hint-v2');
+  if (hint) hint.style.opacity = '';
+  // reveal section 다시 hidden
+  document.querySelectorAll('.reveal-visible').forEach(el => {
+    el.classList.remove('reveal-visible');
+    el.classList.add('reveal-hidden');
+  });
+  document.querySelector('.tarot-footer.reveal-show-hide')?.classList.remove('reveal-hide');
+});
+</script>
+</body>
+</html>

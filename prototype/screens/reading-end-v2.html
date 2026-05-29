@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>명대사 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400;1,500&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .meta a { color: var(--cream-300); }
+
+  .end-page {
+    min-height: 100dvh;
+    padding: var(--space-20) var(--space-6) var(--space-16);
+    display: flex; flex-direction: column;
+    align-items: center;
+  }
+
+  .end-title {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase;
+    margin-bottom: var(--space-6);
+  }
+
+  /* Quote card — 1080×1920 인스타 스토리 비율 */
+  .quote-card {
+    aspect-ratio: 9 / 16;
+    max-width: 360px; width: 100%;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(217, 196, 154, 0.08) 0%, transparent 60%),
+      linear-gradient(180deg, var(--hanji-700) 0%, var(--hanji-900) 100%);
+    background-blend-mode: overlay;
+    padding: var(--space-12) var(--space-6) var(--space-8);
+    position: relative; overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    border: 1px solid var(--hanji-300);
+    box-shadow: 6px 8px 0 rgba(10, 6, 4, 0.5);
+    transform: rotate(-1.5deg);
+    isolation: isolate;
+  }
+  .quote-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--grain-strong);
+    mix-blend-mode: overlay; pointer-events: none;
+  }
+  .quote-card[data-cat="love"]  { --quote-cat: var(--cat-love); }
+  .quote-card[data-cat="work"]  { --quote-cat: var(--cat-work); }
+  .quote-card[data-cat="money"] { --quote-cat: var(--cat-money); }
+  .quote-card[data-cat="tarot"] { --quote-cat: var(--cat-tarot); }
+
+  .quote-card__cat {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--quote-cat, var(--cat-love));
+    letter-spacing: 0.4em; text-transform: uppercase;
+  }
+  .quote-card__cat::before { content: '— '; }
+
+  .quote-card__line {
+    align-self: center;
+    font-family: var(--font-display-han);
+    font-size: clamp(24px, 6vw, 30px); line-height: 1.4;
+    color: var(--baekrim-200);
+    letter-spacing: -0.01em;
+  }
+  .quote-card__line::before {
+    content: '"'; display: block;
+    font-family: var(--font-mincho); font-weight: 900;
+    font-size: 2.5em; line-height: 0.6;
+    color: var(--quote-cat, var(--cat-love));
+    margin-bottom: var(--space-2);
+    opacity: 0.7;
+  }
+
+  .quote-card__foot {
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .quote-card__brand {
+    font-family: var(--font-display); font-style: italic;
+    font-size: var(--text-meta); color: var(--cream-400);
+  }
+  .quote-card__date {
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--cream-500); letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* 인주 도장 — 카드 위 우측 하단 */
+  .quote-card__seal {
+    position: absolute;
+    bottom: var(--space-10); right: var(--space-5);
+    z-index: 3;
+  }
+
+  /* save status */
+  .save-status {
+    margin-top: var(--space-8);
+    font-family: var(--font-body); font-size: var(--text-meta);
+    color: var(--state-success);
+    display: flex; align-items: center; gap: var(--space-2);
+  }
+  .save-status::before {
+    content: '✓'; color: var(--state-success); font-weight: bold;
+  }
+
+  /* share row */
+  .end-share {
+    margin-top: var(--space-8);
+    width: 100%; max-width: 360px;
+  }
+  .end-share__label {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.25em; text-transform: uppercase;
+    margin-bottom: var(--space-3);
+  }
+  .end-share__row { display: flex; gap: var(--space-2); }
+  .end-share__btn {
+    flex: 1; padding: var(--space-3) var(--space-2);
+    background: transparent; border: 1px solid var(--hanji-300);
+    color: var(--cream-200); font-family: var(--font-body); font-size: var(--text-meta);
+    transition: all var(--dur-fast);
+    text-align: center; cursor: pointer;
+  }
+  .end-share__btn:hover { border-color: var(--amber-400); color: var(--amber-300); }
+  .end-share__btn:focus-visible { outline: 1px solid var(--amber-200); outline-offset: 2px; }
+
+  .end-foot {
+    margin-top: var(--space-12); width: 100%; max-width: 360px;
+    display: flex; gap: var(--space-4); justify-content: space-between;
+  }
+  .end-foot a {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-400); font-size: var(--text-body);
+    text-decoration: underline; text-decoration-color: var(--hanji-300);
+    text-underline-offset: 6px;
+  }
+  .end-foot a:hover { color: var(--amber-300); }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="meta">
+  <span>QUOTE · 한 줄</span>
+  <a href="../index.html">닫기 ×</a>
+</div>
+
+<main class="end-page">
+
+  <div class="state state--default">
+    <p class="end-title">오늘의 한 줄</p>
+
+    <div class="quote-card" data-cat="love">
+      <p class="quote-card__cat">LOVE</p>
+      <p class="quote-card__line">그 사람은<br>너랑 코드가<br>안 맞아.</p>
+      <div class="quote-card__foot">
+        <span class="quote-card__brand">VoiceSaju</span>
+        <span class="quote-card__date">2026.05.29</span>
+      </div>
+      <span class="seal seal--sm quote-card__seal" aria-hidden="true">戀</span>
+    </div>
+
+    <p class="save-status">히스토리에 저장됨</p>
+
+    <div class="end-share">
+      <p class="end-share__label">공유하기</p>
+      <div class="end-share__row">
+        <button class="end-share__btn">인스타 스토리</button>
+        <button class="end-share__btn">카톡</button>
+        <button class="end-share__btn">저장</button>
+      </div>
+    </div>
+
+    <div class="end-foot">
+      <a href="../index.html">처음으로</a>
+      <a href="category-v2.html">한 번 더 →</a>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <p class="end-title">한 줄 고르는 중…</p>
+    <div class="quote-card" data-cat="love" style="opacity: 0.5;">
+      <p class="quote-card__cat">LOVE</p>
+      <p class="quote-card__line skeleton" style="height: 4lh; background: var(--ink-700);"></p>
+      <div class="quote-card__foot">
+        <span class="quote-card__brand">VoiceSaju</span>
+      </div>
+    </div>
+    <div class="cluster gap-3" style="margin-top: var(--space-8);">
+      <span class="spinner"></span>
+      <span class="t-meta c-cream-300" style="letter-spacing: 0.15em;">가장 매운 한 줄 고르는 중</span>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <p class="end-title">가입하면 영구 저장</p>
+
+    <div class="quote-card" data-cat="love">
+      <p class="quote-card__cat">LOVE</p>
+      <p class="quote-card__line">그 사람은<br>너랑 코드가<br>안 맞아.</p>
+      <div class="quote-card__foot">
+        <span class="quote-card__brand">VoiceSaju</span>
+        <span class="quote-card__date">2026.05.29</span>
+      </div>
+      <span class="seal seal--sm quote-card__seal" aria-hidden="true">戀</span>
+    </div>
+
+    <p style="font-family: var(--font-body); color: var(--cream-200); margin-top: var(--space-8); text-align: center;">
+      로그아웃하면 결과 사라져.<br>
+      <span style="color: var(--baekrim-200); background: linear-gradient(180deg, transparent 60%, rgba(155,42,26,0.22) 60%);">가입하면 영구 저장.</span>
+    </p>
+    <a href="login-v2.html" style="margin-top: var(--space-6); font-family: var(--font-display-han); font-size: var(--text-h3); color: var(--baekrim-200); text-decoration: underline; text-decoration-color: var(--vermilion-300); text-decoration-thickness: 3px; text-underline-offset: 8px;">1초 가입 →</a>
+  </div>
+
+  <div class="state state--error">
+    <p class="end-title" style="color: var(--state-error);">미리보기 생성 실패</p>
+    <div class="quote-card" data-cat="love">
+      <p class="quote-card__cat">LOVE</p>
+      <p class="quote-card__line">그 사람은<br>너랑 코드가<br>안 맞아.</p>
+      <div class="quote-card__foot">
+        <span class="quote-card__brand">VoiceSaju</span>
+        <span class="quote-card__date">2026.05.29</span>
+      </div>
+      <span class="seal seal--sm quote-card__seal" aria-hidden="true">戀</span>
+    </div>
+    <p style="font-family: var(--font-body); color: var(--state-error); margin-top: var(--space-6);">저장은 됐어. 공유 미리보기만 안 보일 수 있어.</p>
+    <div class="end-share">
+      <div class="end-share__row">
+        <button class="end-share__btn">저장</button>
+        <button class="end-share__btn">URL 복사</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">NON-MEMBER</button>
+  <button class="state-switcher__btn" data-target="error">OG ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

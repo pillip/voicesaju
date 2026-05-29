@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>시각 · VoiceSaju</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="onboarding-birth.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__meta">STEP 2 / 4</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <h1 class="t-h3 display-han c-cream-50">태어난 시각</h1>
+      <p class="t-body c-cream-300 mt-4">몇 시쯤이었어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+
+      <label class="input-label">HH : MM (24h)</label>
+      <div class="cluster gap-3" style="align-items: baseline;">
+        <input class="input input--mono" type="text" value="14" maxlength="2" style="width: 70px; text-align: center;">
+        <span class="t-h3 c-cream-400 mono">:</span>
+        <input class="input input--mono" type="text" value="30" maxlength="2" style="width: 70px; text-align: center;">
+      </div>
+
+      <label class="check-item">
+        <input type="checkbox">
+        <span class="check-item__box"></span>
+        <span>시간 모름</span>
+      </label>
+
+      <div class="mt-24 split">
+        <div class="stepper"><span>2/4</span>
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+        </div>
+        <a href="onboarding-gender.html" class="btn btn-primary">다음</a>
+      </div>
+    </div>
+
+    <div class="state state--loading">
+      <h1 class="t-h3 display-han c-cream-50">태어난 시각</h1>
+      <p class="t-body c-cream-300 mt-4">몇 시쯤이었어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+      <label class="input-label">HH : MM (24h)</label>
+      <div class="cluster gap-3"><input class="input input--mono" type="text" value="14" readonly style="width: 70px; text-align: center;"><span class="t-h3 c-cream-400 mono">:</span><input class="input input--mono" type="text" value="30" readonly style="width: 70px; text-align: center;"></div>
+      <div class="mt-24"><div class="cluster gap-3"><span class="spinner"></span><span class="t-meta c-cream-300">사주 계산 중</span></div></div>
+    </div>
+
+    <div class="state state--empty">
+      <h1 class="t-h3 display-han c-cream-50">태어난 시각</h1>
+      <p class="t-body c-cream-300 mt-4">몇 시쯤이었어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+      <label class="input-label">HH : MM</label>
+      <div class="cluster gap-3" style="align-items: baseline;">
+        <input class="input input--mono" type="text" disabled value="--" style="width: 70px; text-align: center;">
+        <span class="t-h3 c-cream-500 mono">:</span>
+        <input class="input input--mono" type="text" disabled value="--" style="width: 70px; text-align: center;">
+      </div>
+
+      <label class="check-item">
+        <input type="checkbox" checked>
+        <span class="check-item__box"></span>
+        <span>시간 모름</span>
+      </label>
+
+      <div class="card card--amber mt-8">
+        <p class="t-body c-cream-200" style="line-height: 1.7;">시간을 모르면 큰 줄기는 봐도<br>디테일은 조금 흐릿해. 괜찮아.</p>
+      </div>
+
+      <div class="mt-12 split">
+        <div class="stepper"><span>2/4</span>
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+        </div>
+        <a href="onboarding-gender.html" class="btn btn-primary">다음</a>
+      </div>
+    </div>
+
+    <div class="state state--error">
+      <h1 class="t-h3 display-han c-cream-50">태어난 시각</h1>
+      <p class="t-body c-cream-300 mt-4">몇 시쯤이었어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+      <label class="input-label">HH : MM</label>
+      <div class="cluster gap-3" style="align-items: baseline;">
+        <input class="input input--mono" type="text" value="25" aria-invalid="true" style="width: 70px; text-align: center;">
+        <span class="t-h3 c-cream-400 mono">:</span>
+        <input class="input input--mono" type="text" value="30" style="width: 70px; text-align: center;">
+      </div>
+      <p class="input-error">그건 시간이 아니야.</p>
+      <div class="mt-24 split">
+        <div class="stepper"><span>2/4</span>
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+        </div>
+        <button class="btn btn-primary" disabled>다음</button>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">UNKNOWN</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

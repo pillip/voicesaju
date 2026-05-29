@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>결제 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="reading-intro.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__meta">PAYMENT SHEET</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <!-- background context (dimmed) -->
+    <div style="opacity: 0.3;">
+      <p class="t-meta c-cream-400">연애 · 1997-03-15</p>
+      <div class="voice-player__character mt-6" style="width: 120px; height: 120px;" aria-hidden="true"></div>
+    </div>
+
+    <!-- payment sheet as inline modal -->
+    <div class="modal mt-12" role="dialog" aria-modal="true" aria-labelledby="payment-title">
+
+      <div class="state state--default">
+        <h2 id="payment-title" class="t-h3 display-han c-cream-50">결제</h2>
+        <p class="t-meta c-cream-300 mt-2">연애 · 사주 풀이 + 꼬리질문 3개</p>
+
+        <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-6);">
+
+        <p class="t-h2 display-en c-cream-50" style="font-style: italic;">₩4,900</p>
+        <p class="t-meta c-cream-400 mt-2">VAT 포함 · 1회 결제</p>
+
+        <hr class="divider" style="margin: var(--space-8) 0 var(--space-6);">
+
+        <div class="stack gap-3">
+          <button class="btn btn-primary btn--full">토스페이로 결제</button>
+          <button class="btn btn-secondary btn--full">카카오페이로 결제</button>
+        </div>
+
+        <hr class="divider mt-8" style="margin-bottom: var(--space-4);">
+        <div class="text-center">
+          <a href="login.html" class="btn btn-ghost">먼저 가입하면 1회 무료 →</a>
+        </div>
+      </div>
+
+      <div class="state state--loading">
+        <h2 class="t-h3 display-han c-cream-50">결제 진행 중</h2>
+        <p class="t-meta c-cream-300 mt-2">잠시만.</p>
+        <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+        <div class="center" style="padding: var(--space-12) 0;">
+          <span class="spinner" style="width: 32px; height: 32px;"></span>
+        </div>
+        <p class="t-meta c-cream-400 text-center">결제창에서 진행해줘.</p>
+      </div>
+
+      <div class="state state--empty">
+        <h2 class="t-h3 display-han c-cream-50">결제</h2>
+        <p class="t-meta c-cream-300 mt-2">연애 · 사주 풀이 + 꼬리질문 3개</p>
+        <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-6);">
+        <p class="t-h2 display-en c-cream-50" style="font-style: italic;">₩4,900</p>
+        <hr class="divider" style="margin: var(--space-8) 0 var(--space-6);">
+        <p class="t-meta c-cream-300">구독자라 결제 안 해도 돼.</p>
+        <a href="reading-play.html" class="btn btn-primary btn--full mt-6">바로 풀이로 가기</a>
+      </div>
+
+      <div class="state state--error">
+        <h2 class="t-h3 display-han c-cream-50">결제가 안 됐네.</h2>
+        <p class="t-meta c-cream-300 mt-2">카드사에서 막혔어. 다른 카드로 해볼까?</p>
+        <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-6);">
+        <p class="t-h2 display-en c-cream-50" style="font-style: italic;">₩4,900</p>
+        <hr class="divider" style="margin: var(--space-8) 0 var(--space-6);">
+        <div class="stack gap-3">
+          <button class="btn btn-primary btn--full">다시 시도</button>
+          <a href="category.html" class="btn btn-ghost btn--full">취소하고 돌아가기</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">SUBSCRIBER</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

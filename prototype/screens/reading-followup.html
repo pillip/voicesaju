@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>꼬리질문 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="reading-play.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__meta">꼬리질문 · 3 남음</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <h1 class="t-h3 display-han c-cream-50">더 알고 싶은 거 골라.</h1>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-8);">
+
+      <div class="followup-group">
+        <a href="#answer" class="followup-btn">이 사람이랑 결혼해도 돼?</a>
+        <a href="#answer" class="followup-btn">올해 이직이 좋아?</a>
+        <a href="#answer" class="followup-btn">빚 갚을 수 있어?</a>
+      </div>
+
+      <hr class="divider mt-12" style="margin-bottom: var(--space-6);">
+      <div class="text-right">
+        <a href="reading-end.html" class="btn btn-ghost">이만 마칠게요 →</a>
+      </div>
+    </div>
+
+    <div class="state state--loading">
+      <h1 class="t-h3 display-han c-cream-50">답 듣고 있어.</h1>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-8);">
+      <p class="t-meta c-cream-300">Q. 이 사람이랑 결혼해도 돼?</p>
+      <div class="subtitle-band mt-6">
+        <span class="subtitle-line subtitle-line--past">...</span>
+      </div>
+      <div class="cluster gap-3 mt-8"><span class="spinner"></span><span class="t-meta c-cream-300">생각 중</span></div>
+    </div>
+
+    <div class="state state--empty">
+      <p class="t-meta c-cream-300">Q. 이 사람이랑 결혼해도 돼?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-6);">
+      <div class="subtitle-band" aria-live="polite">
+        <span class="subtitle-line subtitle-line--past">결혼? 음...</span>
+        <span class="subtitle-line subtitle-line--past">그 사람은 너랑 코드가 안 맞아.</span>
+        <span class="subtitle-line subtitle-line--current">1년 안에 끝나.</span>
+      </div>
+
+      <div class="voice-player__controls mt-8">
+        <button class="voice-player__play" aria-label="일시정지">❚❚</button>
+        <div class="voice-player__progress" style="--progress: 50%;" aria-hidden="true"></div>
+        <span class="voice-player__time">0:18 / 0:36</span>
+      </div>
+
+      <hr class="divider mt-12" style="margin-bottom: var(--space-4);">
+      <p class="t-caption c-cream-300">다른 질문 (2 남음)</p>
+      <div class="followup-group mt-4">
+        <a href="#" class="followup-btn">올해 이직이 좋아?</a>
+        <a href="#" class="followup-btn">빚 갚을 수 있어?</a>
+        <div class="followup-btn followup-btn--used">이 사람이랑 결혼해도 돼?</div>
+      </div>
+    </div>
+
+    <div class="state state--error">
+      <h1 class="t-h3 display-han c-cream-50">그 답은 못 들었어.</h1>
+      <p class="t-body c-cream-300 mt-4">다시 골라. 차감 안 됐어.</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-8);">
+      <div class="followup-group">
+        <a href="#" class="followup-btn">이 사람이랑 결혼해도 돼?</a>
+        <a href="#" class="followup-btn">올해 이직이 좋아?</a>
+        <a href="#" class="followup-btn">빚 갚을 수 있어?</a>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">QUESTIONS</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">ANSWER</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

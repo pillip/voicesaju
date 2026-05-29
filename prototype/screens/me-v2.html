@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Page v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .meta a { color: var(--cream-300); }
+
+  .me-page { padding: var(--space-20) var(--space-6) calc(var(--space-32) + 80px); max-width: var(--container-wide); margin: 0 auto; }
+
+  .me-section { margin-bottom: var(--space-16); }
+  .me-section__label {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase;
+    margin-bottom: var(--space-3);
+  }
+  .me-section__title {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--cream-50); margin-bottom: var(--space-6);
+  }
+  .me-section__sub {
+    font-family: var(--font-display); font-style: italic;
+    font-size: var(--text-body); color: var(--cream-400);
+  }
+
+  /* 명식 hero — 큰 한자 */
+  .me-chart-hero {
+    border-top: 1px solid var(--hanji-300);
+    border-bottom: 1px solid var(--hanji-300);
+    padding: var(--space-8) 0;
+    margin-bottom: var(--space-6);
+  }
+  .me-chart-hero .saju-tile { border: none; padding: 0; }
+  .me-edit-link {
+    font-family: var(--font-brush); font-size: var(--text-lead);
+    color: var(--vermilion-100); transform: rotate(-2deg); display: inline-block;
+    text-decoration: none;
+  }
+  .me-edit-link:hover { color: var(--amber-300); }
+
+  /* 히스토리 */
+  .me-history { border-top: 1px solid var(--hanji-300); }
+  .me-history__item {
+    display: block; padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--hanji-300);
+    text-decoration: none; color: inherit;
+    display: grid; grid-template-columns: 60px 1fr auto; gap: var(--space-4);
+    align-items: center;
+    transition: padding var(--dur-fast);
+  }
+  .me-history__item:hover { padding-left: var(--space-3); }
+  .me-history__hanja {
+    font-family: var(--font-mincho); font-weight: 900;
+    font-size: 40px; line-height: 1; color: var(--cream-300);
+  }
+  .me-history__hanja--love  { color: var(--cat-love); }
+  .me-history__hanja--work  { color: var(--cat-work); }
+  .me-history__hanja--money { color: var(--cat-money); }
+  .me-history__main { display: flex; flex-direction: column; gap: 4px; }
+  .me-history__meta {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .me-history__line {
+    font-family: var(--font-display-han); font-size: var(--text-body);
+    color: var(--amber-300); line-height: 1.4;
+  }
+  .me-history__arrow {
+    font-family: var(--font-mono); color: var(--cream-400);
+  }
+  .me-history__item:hover .me-history__arrow { color: var(--amber-300); }
+
+  /* 결제 */
+  .me-billing { padding: var(--space-6) 0; }
+  .me-billing__status {
+    font-family: var(--font-body); font-size: var(--text-body);
+    color: var(--cream-300); margin-bottom: var(--space-6);
+  }
+  .me-billing__status em {
+    font-style: normal; color: var(--amber-300);
+  }
+  .me-billing__cta {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--baekrim-200);
+    text-decoration: underline; text-decoration-color: var(--vermilion-300);
+    text-decoration-thickness: 3px; text-underline-offset: 8px;
+  }
+  .me-billing__cta:hover { color: var(--amber-300); }
+
+  /* 하단 nav */
+  .me-tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: color-mix(in srgb, var(--hanji-800) 95%, transparent);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--hanji-300);
+    padding: var(--space-4) 0 calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+    display: flex; justify-content: space-around;
+    z-index: 40;
+  }
+  .me-tab {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--cream-400); letter-spacing: 0.15em; text-transform: uppercase;
+    background: none; border: none; padding: var(--space-2) var(--space-4); cursor: pointer;
+    text-decoration: none;
+  }
+  .me-tab__hanja { font-family: var(--font-mincho); font-weight: 900; font-size: 18px; }
+  .me-tab[aria-current="page"] { color: var(--amber-300); }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="meta">
+  <span>MY · 我</span>
+  <a href="../index.html">메뉴 ☰</a>
+</div>
+
+<main class="me-page">
+
+  <div class="state state--default">
+    <section class="me-section">
+      <p class="me-section__label">MY · 命 식</p>
+      <h2 class="me-section__title">내 명식</h2>
+
+      <div class="me-chart-hero">
+        <div class="saju-tile">
+          <div class="saju-tile__col">
+            <div class="saju-tile__col__pillar">時</div>
+            <div class="saju-tile__col__char saju-tile__col__char--missing">?</div>
+            <div class="saju-tile__col__element">unknown</div>
+          </div>
+          <div class="saju-tile__col">
+            <div class="saju-tile__col__pillar">日</div>
+            <div class="saju-tile__col__char">甲</div>
+            <div class="saju-tile__col__element">木 wood</div>
+          </div>
+          <div class="saju-tile__col">
+            <div class="saju-tile__col__pillar">月</div>
+            <div class="saju-tile__col__char">辛</div>
+            <div class="saju-tile__col__element">金 metal</div>
+          </div>
+          <div class="saju-tile__col">
+            <div class="saju-tile__col__pillar">年</div>
+            <div class="saju-tile__col__char">丁</div>
+            <div class="saju-tile__col__element">火 fire</div>
+          </div>
+        </div>
+      </div>
+      <a href="onboarding-birth-v2.html" class="me-edit-link">생일 수정 →</a>
+    </section>
+
+    <section class="me-section">
+      <p class="me-section__label">HISTORY · 과거 풀이</p>
+      <h2 class="me-section__title">히스토리</h2>
+
+      <div class="me-history">
+        <a href="reading-end-v2.html" class="me-history__item">
+          <span class="me-history__hanja me-history__hanja--love">戀</span>
+          <span class="me-history__main">
+            <span class="me-history__meta">연애 · 2026.05.22</span>
+            <span class="me-history__line">"그 사람은 너랑 코드가 안 맞아."</span>
+          </span>
+          <span class="me-history__arrow">▷</span>
+        </a>
+        <a href="reading-end-v2.html" class="me-history__item">
+          <span class="me-history__hanja me-history__hanja--work">業</span>
+          <span class="me-history__main">
+            <span class="me-history__meta">직장 · 2026.05.15</span>
+            <span class="me-history__line">"이직? 가도 돼. 근데 거기도 만만치 않아."</span>
+          </span>
+          <span class="me-history__arrow">▷</span>
+        </a>
+        <a href="reading-end-v2.html" class="me-history__item">
+          <span class="me-history__hanja me-history__hanja--money">財</span>
+          <span class="me-history__main">
+            <span class="me-history__meta">금전 · 2026.05.08</span>
+            <span class="me-history__line">"빚은 갚을 수 있어. 6월 전엔 무리."</span>
+          </span>
+          <span class="me-history__arrow">▷</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="me-section">
+      <p class="me-section__label">BILLING · 결제</p>
+      <h2 class="me-section__title">결제 / 구독</h2>
+
+      <div class="me-billing">
+        <p class="me-billing__status">무료 회원 · 이번 주 타로 <em>0/1 남음</em></p>
+        <a href="payment-v2.html" class="me-billing__cta">구독하고 매일 받기 · ₩9,900/월 →</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="state state--loading">
+    <section class="me-section">
+      <p class="me-section__label">MY · 命 식</p>
+      <h2 class="me-section__title">내 명식</h2>
+      <div class="skeleton" style="height: 200px;"></div>
+    </section>
+    <section class="me-section">
+      <p class="me-section__label">HISTORY</p>
+      <div class="skeleton" style="height: 80px; margin-bottom: var(--space-3);"></div>
+      <div class="skeleton" style="height: 80px;"></div>
+    </section>
+  </div>
+
+  <div class="state state--empty">
+    <section class="me-section">
+      <p class="me-section__label">MY · 命 식</p>
+      <h2 class="me-section__title">내 명식</h2>
+      <div class="me-chart-hero">
+        <p style="font-family: var(--font-body); color: var(--cream-300); padding: var(--space-8) 0; text-align: center;">먼저 사주 정보 입력해줘.</p>
+      </div>
+      <a href="onboarding-birth-v2.html" class="me-billing__cta">사주 입력하러 가기 →</a>
+    </section>
+    <section class="me-section">
+      <p class="me-section__label">HISTORY</p>
+      <h2 class="me-section__title">히스토리</h2>
+      <p style="font-family: var(--font-body); color: var(--cream-300); padding: var(--space-6) 0;">아직 풀이가 없어. 첫 풀이 받으러 갈래?</p>
+      <a href="category-v2.html" class="me-billing__cta">첫 풀이 받으러 →</a>
+    </section>
+  </div>
+
+  <div class="state state--error">
+    <section class="me-section">
+      <p class="me-section__label" style="color: var(--state-error);">ERROR</p>
+      <h2 class="me-section__title">불러오기 실패.</h2>
+      <p style="font-family: var(--font-body); color: var(--cream-300);">잠시 후 다시.</p>
+      <button class="me-billing__cta" style="background: none; border: none; cursor: pointer; margin-top: var(--space-6);" onclick="location.reload()">다시 시도 →</button>
+    </section>
+  </div>
+
+</main>
+
+<nav class="me-tabbar" aria-label="주요 메뉴">
+  <a href="../index.html" class="me-tab"><span class="me-tab__hanja">家</span>홈</a>
+  <a href="category-v2.html" class="me-tab"><span class="me-tab__hanja">命</span>사주</a>
+  <a href="tarot-v2.html" class="me-tab"><span class="me-tab__hanja">月</span>타로</a>
+  <a href="me-v2.html" class="me-tab" aria-current="page"><span class="me-tab__hanja">我</span>마이</a>
+</nav>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">EMPTY</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

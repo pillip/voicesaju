@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Login v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .meta a { color: var(--cream-300); }
+
+  .login-grid {
+    display: grid; grid-template-columns: 1fr;
+    min-height: 100dvh;
+    padding: var(--space-20) var(--space-6) var(--space-16);
+    gap: var(--space-12);
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .login-grid { grid-template-columns: 1fr 1fr; gap: var(--space-16); padding: var(--space-20) var(--space-12); }
+  }
+
+  /* 좌측: 사진 + 한자 */
+  .login-image {
+    position: relative; aspect-ratio: 3/4; overflow: hidden;
+    background: var(--hanji-700); isolation: isolate;
+  }
+  .login-image__img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05) brightness(0.55);
+    z-index: 0;
+  }
+  .login-image__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,6,4,0.55) 0%, rgba(26,18,8,0.8) 100%);
+    z-index: 1;
+  }
+  .login-image::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--grain-strong); mix-blend-mode: overlay; pointer-events: none; z-index: 2;
+  }
+  .login-image__caption {
+    position: absolute; top: var(--space-5); left: var(--space-5);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--baekrim-200); letter-spacing: 0.25em; text-transform: uppercase;
+    z-index: 3;
+  }
+  .login-image__caption::before { content: '— '; color: var(--vermilion-100); }
+  .login-image__hanja {
+    position: absolute; bottom: -8px; right: -8px;
+    font-family: var(--font-mincho); font-weight: 900;
+    font-size: clamp(120px, 26vw, 220px); line-height: 0.85;
+    color: var(--amber-300); letter-spacing: -0.04em;
+    z-index: 3; mix-blend-mode: screen;
+    text-shadow: 0 0 40px rgba(0,0,0,0.6);
+  }
+
+  /* 우측 */
+  .login-right { display: flex; flex-direction: column; gap: var(--space-8); }
+  .login-title {
+    font-family: var(--font-display-han);
+    font-size: clamp(40px, 9vw, 64px); line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--cream-50);
+  }
+  .login-title em {
+    font-style: normal; color: var(--amber-300);
+    background: linear-gradient(180deg, transparent 60%, rgba(155,42,26,0.22) 60%);
+  }
+  .login-actions { display: flex; flex-direction: column; gap: var(--space-3); }
+  .login-btn {
+    padding: var(--space-4) var(--space-6);
+    font-family: var(--font-body); font-size: var(--text-body); font-weight: 500;
+    cursor: pointer; transition: all var(--dur-fast) var(--ease-out);
+    border: none; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: var(--space-3);
+  }
+  .login-btn--kakao { background: var(--amber-400); color: var(--ink-900); }
+  .login-btn--kakao:hover { background: var(--amber-300); }
+  .login-btn--apple { background: transparent; color: var(--cream-100); border: 1px solid var(--cream-500); }
+  .login-btn--apple:hover { border-color: var(--amber-400); color: var(--amber-300); }
+  .login-btn--toss { background: var(--vermilion-300); color: var(--baekrim-200); }
+  .login-btn--toss:hover { background: var(--vermilion-100); }
+  .login-btn:focus-visible { outline: 2px solid var(--amber-200); outline-offset: 3px; }
+
+  .login-already {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-400); font-size: var(--text-body);
+    text-decoration: underline; text-decoration-color: var(--hanji-300);
+    text-underline-offset: 6px; align-self: flex-start;
+    background: none; border: 0; cursor: pointer; padding: 0;
+  }
+  .login-already:hover { color: var(--amber-300); }
+
+  .login-legal {
+    margin-top: var(--space-12);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--cream-500); letter-spacing: 0.15em; line-height: 1.8;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="meta">
+  <a href="../index.html">← 뒤로</a>
+  <span>SIGN IN</span>
+  <span>VoiceSaju</span>
+</div>
+
+<main>
+  <div class="state state--default">
+    <div class="login-grid">
+      <figure class="login-image">
+        <img class="login-image__img" src="https://picsum.photos/seed/voicesaju-login-key/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="login-image__overlay" aria-hidden="true"></div>
+        <span class="login-image__caption">save · 02:51 a.m.</span>
+        <span class="login-image__hanja" aria-hidden="true">門</span>
+      </figure>
+
+      <div class="login-right">
+        <h1 class="login-title">결과 저장하려면<br><em>1초 가입.</em></h1>
+
+        <div class="login-actions">
+          <button class="login-btn login-btn--kakao">카카오로 시작</button>
+          <button class="login-btn login-btn--apple">Apple로 시작</button>
+        </div>
+
+        <button class="login-already" type="button">이미 가입한 적 있어 →</button>
+
+        <p class="login-legal">
+          가입하면 약관과<br>개인정보 처리방침에 동의한 것으로 봐.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <div class="login-grid">
+      <figure class="login-image" style="opacity: 0.5;">
+        <img class="login-image__img" src="https://picsum.photos/seed/voicesaju-login-key/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="login-image__overlay" aria-hidden="true"></div>
+        <span class="login-image__hanja" aria-hidden="true">門</span>
+      </figure>
+      <div class="login-right">
+        <h1 class="login-title">잠시만,<br><em>가입 중.</em></h1>
+        <div class="cluster gap-3" style="margin-top: var(--space-6);"><span class="spinner"></span><span class="t-meta c-cream-300" style="letter-spacing: 0.15em;">카카오 응답 기다리는 중</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <div class="login-grid">
+      <figure class="login-image">
+        <img class="login-image__img" src="https://picsum.photos/seed/voicesaju-toss-bridge/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="login-image__overlay" aria-hidden="true"></div>
+        <span class="login-image__caption">toss · webview</span>
+        <span class="login-image__hanja" aria-hidden="true" style="color: var(--vermilion-100);">橋</span>
+      </figure>
+      <div class="login-right">
+        <h1 class="login-title">토스에서<br><em>들어왔네.</em></h1>
+        <div class="login-actions">
+          <button class="login-btn login-btn--toss">토스 아이디로 시작</button>
+        </div>
+        <p style="font-family: var(--font-body); font-size: var(--text-meta); color: var(--cream-400);">웹에서는 카카오·애플 로그인도 가능해.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <div class="login-grid">
+      <figure class="login-image" style="filter: brightness(0.7);">
+        <img class="login-image__img" src="https://picsum.photos/seed/voicesaju-login-fail/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="login-image__overlay" aria-hidden="true" style="background: rgba(10,6,4,0.85);"></div>
+        <span class="login-image__caption" style="color: var(--state-error);">denied</span>
+        <span class="login-image__hanja" aria-hidden="true" style="color: var(--hanji-300);">閉</span>
+      </figure>
+      <div class="login-right">
+        <h1 class="login-title">카카오 로그인이<br><em style="color: var(--state-error); background: none;">안 됐네.</em></h1>
+        <p style="font-family: var(--font-body); color: var(--cream-300);">잠시 후 다시 시도해줘.</p>
+        <div class="login-actions">
+          <button class="login-btn login-btn--kakao">다시 카카오로 시작</button>
+          <button class="login-btn login-btn--apple">Apple로 대신</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">WEB</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">TOSS WV</button>
+  <button class="state-switcher__btn" data-target="error">FAILED</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

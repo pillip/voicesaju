@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Page · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <span class="nav-top__menu">☰</span>
+  <span class="nav-top__brand">My Page</span>
+  <span class="nav-top__menu">ⓘ</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <p class="t-caption c-cream-300">MY CHART</p>
+      <h2 class="t-h3 display-han c-cream-50 mt-2">내 명식</h2>
+      <hr class="divider" style="margin: var(--space-4) 0;">
+
+      <div class="saju-chart">
+        <div class="saju-column saju-column--missing">
+          <div class="saju-column__label">시</div>
+          <div class="saju-column__hanja">?</div>
+        </div>
+        <div class="saju-column">
+          <div class="saju-column__label">일</div>
+          <div class="saju-column__hanja">甲</div>
+          <div class="saju-column__element">갑목</div>
+        </div>
+        <div class="saju-column">
+          <div class="saju-column__label">월</div>
+          <div class="saju-column__hanja">辛</div>
+          <div class="saju-column__element">신금</div>
+        </div>
+        <div class="saju-column">
+          <div class="saju-column__label">년</div>
+          <div class="saju-column__hanja">丁</div>
+          <div class="saju-column__element">정화</div>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <a href="onboarding-birth.html" class="btn btn-ghost">생일 수정 (2회 남음) →</a>
+      </div>
+
+      <hr class="divider mt-16" style="margin-bottom: var(--space-6);">
+
+      <p class="t-caption c-cream-300">HISTORY</p>
+      <h2 class="t-h3 display-han c-cream-50 mt-2">히스토리</h2>
+
+      <div class="mt-6">
+        <a href="reading-end.html" class="history-item">
+          <div class="history-item__meta">연애 · 2026-05-22</div>
+          <div class="history-item__preview">"그 사람은 너랑 코드가 안 맞아."</div>
+        </a>
+        <a href="reading-end.html" class="history-item">
+          <div class="history-item__meta">직장 · 2026-05-15</div>
+          <div class="history-item__preview">"이직? 가도 돼. 근데 거기도 만만치 않아."</div>
+        </a>
+        <a href="reading-end.html" class="history-item">
+          <div class="history-item__meta">금전 · 2026-05-08</div>
+          <div class="history-item__preview">"빚은 갚을 수 있어. 6월 전엔 무리."</div>
+        </a>
+      </div>
+
+      <div class="text-right mt-4">
+        <a href="#" class="btn btn-ghost">더보기 →</a>
+      </div>
+
+      <hr class="divider mt-16" style="margin-bottom: var(--space-6);">
+
+      <p class="t-caption c-cream-300">BILLING</p>
+      <h2 class="t-h3 display-han c-cream-50 mt-2">결제 / 구독</h2>
+      <p class="t-meta c-cream-300 mt-4">무료 회원 · 이번 주 타로 0/1 남음</p>
+      <a href="payment.html" class="btn btn-primary btn--full mt-6">구독하고 매일 받기</a>
+    </div>
+
+    <div class="state state--loading">
+      <p class="t-caption c-cream-300">MY CHART</p>
+      <h2 class="t-h3 display-han c-cream-50 mt-2">내 명식</h2>
+      <hr class="divider" style="margin: var(--space-4) 0;">
+      <div class="skeleton" style="height: 140px;"></div>
+      <hr class="divider mt-12">
+      <div class="skeleton mt-6" style="height: 72px;"></div>
+      <div class="skeleton mt-3" style="height: 72px;"></div>
+      <div class="skeleton mt-3" style="height: 72px;"></div>
+    </div>
+
+    <div class="state state--empty">
+      <p class="t-caption c-cream-300">MY CHART</p>
+      <h2 class="t-h3 display-han c-cream-50 mt-2">내 명식</h2>
+      <hr class="divider" style="margin: var(--space-4) 0;">
+      <div class="card">
+        <p class="t-body c-cream-200">먼저 사주 정보 입력해줘.</p>
+        <a href="onboarding-birth.html" class="btn btn-primary mt-6">사주 입력하러 가기</a>
+      </div>
+
+      <hr class="divider mt-16" style="margin-bottom: var(--space-6);">
+      <p class="t-caption c-cream-300">HISTORY</p>
+      <h2 class="t-h3 display-han c-cream-50 mt-2">히스토리</h2>
+      <p class="t-body c-cream-300 mt-6">아직 풀이가 없어.</p>
+      <a href="category.html" class="btn btn-secondary mt-4">첫 풀이 받으러</a>
+    </div>
+
+    <div class="state state--error">
+      <p class="t-caption c-cream-300">MY CHART</p>
+      <h2 class="t-h3 display-han c-cream-50 mt-2">내 명식</h2>
+      <hr class="divider" style="margin: var(--space-4) 0;">
+      <div class="card" style="border-left: 2px solid var(--state-error);">
+        <p class="t-body c-cream-50">불러오기 실패.</p>
+        <p class="t-meta c-cream-300 mt-2">잠시 후 다시.</p>
+        <button class="btn btn-secondary mt-6" onclick="location.reload()">다시 시도</button>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<nav class="tab-bar" aria-label="주요 메뉴">
+  <button class="tab-bar__item"><span class="tab-bar__icon"></span>홈</button>
+  <button class="tab-bar__item"><span class="tab-bar__icon"></span>사주</button>
+  <button class="tab-bar__item"><span class="tab-bar__icon"></span>타로</button>
+  <button class="tab-bar__item" aria-current="page"><span class="tab-bar__icon"></span>마이</button>
+</nav>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">EMPTY</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

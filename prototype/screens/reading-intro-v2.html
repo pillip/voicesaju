@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>인트로 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .meta a { color: var(--cream-300); }
+  .grid {
+    display: grid; grid-template-columns: 1fr;
+    gap: var(--space-12); min-height: 100dvh;
+    padding: var(--space-20) var(--space-6) var(--space-16);
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .grid { grid-template-columns: 1fr 1.2fr; gap: var(--space-16); padding: var(--space-20) var(--space-12); }
+  }
+
+  /* 좌측: 사진 + 한자 */
+  .image-stage {
+    position: relative; aspect-ratio: 3/4; overflow: hidden;
+    background: var(--hanji-700); isolation: isolate;
+  }
+  .image-stage__img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05) brightness(0.5);
+    z-index: 0;
+  }
+  .image-stage__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,6,4,0.5) 0%, rgba(26,18,8,0.85) 100%);
+    z-index: 1;
+  }
+  .image-stage::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--grain-strong); mix-blend-mode: overlay; pointer-events: none; z-index: 2;
+  }
+  .image-stage__caption {
+    position: absolute; top: var(--space-5); left: var(--space-5);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--baekrim-200); letter-spacing: 0.25em; text-transform: uppercase;
+    z-index: 3;
+  }
+  .image-stage__caption::before { content: '— '; color: var(--vermilion-100); }
+  .image-stage__hanja {
+    position: absolute; bottom: -10px; right: -10px;
+    font-family: var(--font-mincho); font-weight: 900;
+    font-size: clamp(140px, 28vw, 240px); line-height: 0.85;
+    color: var(--cat-love); letter-spacing: -0.04em;
+    z-index: 3; mix-blend-mode: screen;
+    text-shadow: 0 0 60px rgba(0,0,0,0.6);
+  }
+
+  /* 우측: 자막 + CTA */
+  .right { display: flex; flex-direction: column; gap: var(--space-8); }
+  .right__intro {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase;
+  }
+  .right__subtitle {
+    border-top: 1px solid var(--hanji-300);
+    border-bottom: 1px solid var(--hanji-300);
+    padding: var(--space-6) 0;
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    line-height: 1.5; color: var(--cream-100);
+  }
+  .right__subtitle .past    { color: var(--cream-300); display: block; margin-bottom: var(--space-2); }
+  .right__subtitle .current { color: var(--amber-300); display: block; }
+
+  .right__cta-block { margin-top: var(--space-6); }
+  .right__cta {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-3);
+  }
+  .right__cta-main {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--baekrim-200);
+    text-decoration: underline; text-decoration-color: var(--vermilion-300);
+    text-decoration-thickness: 3px; text-underline-offset: 8px;
+  }
+  .right__cta-main:hover { color: var(--amber-300); }
+  .right__cta-price {
+    font-family: var(--font-brush); font-size: var(--text-h3);
+    color: var(--vermilion-100); transform: rotate(-3deg); display: inline-block;
+    transform-origin: left center;
+  }
+  .right__secondary {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-400); font-size: var(--text-body);
+    text-decoration: underline; text-decoration-color: var(--hanji-300);
+    text-underline-offset: 6px;
+  }
+  .right__secondary:hover { color: var(--amber-300); }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="meta">
+  <a href="category-v2.html">← BACK</a>
+  <span>READING · LOVE · INTRO</span>
+  <span>02:47 a.m.</span>
+</div>
+
+<main>
+  <div class="state state--default">
+    <div class="grid">
+      <figure class="image-stage">
+        <img class="image-stage__img" src="https://picsum.photos/seed/voicesaju-intro-love/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="image-stage__overlay" aria-hidden="true"></div>
+        <span class="image-stage__caption">intro · love</span>
+        <span class="image-stage__hanja" aria-hidden="true">戀</span>
+      </figure>
+
+      <div class="right">
+        <p class="right__intro">/ 누님이 한 모금 마시는 중 /</p>
+
+        <div class="right__subtitle" aria-live="polite">
+          <span class="past">"어디 보자… 1997년생…"</span>
+          <span class="past">"무자년이네."</span>
+          <span class="current">"음, 재미있어. 이건."</span>
+        </div>
+
+        <div class="right__cta-block">
+          <div class="right__cta">
+            <a href="payment-v2.html" class="right__cta-main">▷ 본격 풀이 받기</a>
+            <span class="right__cta-price">₩4,900</span>
+          </div>
+          <a href="payment-v2.html" class="right__secondary">구독하면 다 포함 · 월 9,900원</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <div class="grid">
+      <figure class="image-stage" style="opacity: 0.5;">
+        <img class="image-stage__img" src="https://picsum.photos/seed/voicesaju-intro-love/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="image-stage__overlay" aria-hidden="true"></div>
+        <span class="image-stage__hanja" aria-hidden="true">戀</span>
+      </figure>
+      <div class="right">
+        <p class="right__intro">/ … /</p>
+        <div class="right__subtitle">
+          <span class="past">"잠시만."</span>
+        </div>
+        <div class="cluster gap-3"><span class="spinner"></span><span class="t-meta c-cream-300" style="letter-spacing: 0.15em;">목소리 깨우는 중</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <div class="grid">
+      <figure class="image-stage" style="opacity: 0.7;">
+        <img class="image-stage__img" src="https://picsum.photos/seed/voicesaju-intro-love/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="image-stage__overlay" aria-hidden="true"></div>
+        <span class="image-stage__caption">already heard</span>
+        <span class="image-stage__hanja" aria-hidden="true">戀</span>
+      </figure>
+      <div class="right">
+        <p class="right__intro">/ 이미 들었어 /</p>
+        <div class="right__subtitle">
+          <span class="past">"인트로는 끝났네."</span>
+          <span class="current">"바로 풀어줄까?"</span>
+        </div>
+        <div class="right__cta-block">
+          <div class="right__cta">
+            <a href="payment-v2.html" class="right__cta-main">▷ 본격 풀이 받기</a>
+            <span class="right__cta-price">₩4,900</span>
+          </div>
+          <a href="reading-play-v2.html" class="right__secondary">바로 풀이로 가자 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <div class="grid">
+      <figure class="image-stage" style="filter: grayscale(1) brightness(0.4);">
+        <img class="image-stage__img" src="https://picsum.photos/seed/voicesaju-intro-error/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="image-stage__overlay" aria-hidden="true" style="background: rgba(10,6,4,0.85);"></div>
+        <span class="image-stage__caption" style="color: var(--state-error);">tts · silenced</span>
+        <span class="image-stage__hanja" aria-hidden="true" style="color: var(--hanji-300);">闇</span>
+      </figure>
+      <div class="right">
+        <p class="right__intro" style="color: var(--state-error);">/ 목소리가 잠겼어 /</p>
+        <div class="right__subtitle" style="border-color: var(--state-error);">
+          <span class="past">"오늘 목이 안 좋네."</span>
+          <span class="current">"글로만 봐줄게."</span>
+        </div>
+        <div class="right__cta-block">
+          <div class="right__cta">
+            <a href="payment-v2.html" class="right__cta-main">▷ 글로 풀이 받기</a>
+            <span class="right__cta-price">₩4,900</span>
+          </div>
+          <button class="right__secondary" style="background:none;border:0;cursor:pointer;" onclick="location.reload()">다시 시도</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">REVISIT</button>
+  <button class="state-switcher__btn" data-target="error">TTS ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

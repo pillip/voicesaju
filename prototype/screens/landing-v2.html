@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Landing v2 · VoiceSaju</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400;1,500;1,700&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  /* 우측 상단 작은 brand 마크 */
+  .landing-mark {
+    position: absolute;
+    top: var(--space-6); right: var(--space-6);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-meta);
+    color: var(--cream-400);
+    letter-spacing: 0.02em;
+    z-index: 10;
+  }
+  .landing-mark::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 4px;
+    background: var(--vermilion-300);
+    margin-right: var(--space-2);
+    transform: translateY(-2px);
+  }
+  .landing-back {
+    position: absolute;
+    top: var(--space-6); left: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    letter-spacing: 0.2em;
+    color: var(--cream-400);
+    z-index: 10;
+    text-transform: uppercase;
+  }
+
+  .landing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100dvh;
+    padding: var(--space-20) var(--space-6) var(--space-16);
+    gap: var(--space-12);
+    align-items: end;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .landing-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-12);
+      padding: var(--space-20) var(--space-12) var(--space-16);
+      align-items: stretch;
+    }
+  }
+
+  /* 좌측: 사진 + 한자 overlay */
+  .landing-image-stage {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: var(--hanji-700);
+    isolation: isolate;
+  }
+  .landing-image-stage__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05) brightness(0.55);
+    z-index: 0;
+  }
+  .landing-image-stage__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(10, 6, 4, 0.55) 0%,
+      rgba(26, 18, 8, 0.4) 50%,
+      rgba(26, 18, 8, 0.8) 100%);
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+  .landing-image-stage::after {
+    /* grain over image */
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--grain-strong);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* 한자 命 — 사진 위에 amber overlay (인주 X) */
+  .landing-image-stage__hanja {
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    font-family: var(--font-mincho);
+    font-weight: 900;
+    font-size: clamp(160px, 32vw, 320px);
+    line-height: 0.85;
+    color: var(--amber-300);
+    letter-spacing: -0.04em;
+    opacity: 0.92;
+    text-shadow: 0 0 60px rgba(0,0,0,0.6);
+    z-index: 3;
+    mix-blend-mode: screen;
+  }
+
+  .landing-image-stage__caption { z-index: 3; }
+
+  /* 좌측 하단 메타 */
+  .landing-image-stage__caption {
+    position: absolute;
+    top: var(--space-6);
+    left: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--baekrim-200);
+    text-transform: uppercase;
+    opacity: 0.75;
+    z-index: 3;
+  }
+  .landing-image-stage__caption::before {
+    content: '— ';
+    color: var(--vermilion-100);
+  }
+
+  /* 우측: 카피 */
+  .landing-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-8) 0;
+  }
+  .landing-copy {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--cream-200);
+    line-height: 1.75;
+    max-width: 38ch;
+  }
+  .landing-copy p { margin-bottom: var(--space-3); }
+  .landing-copy em {
+    font-style: normal;
+    color: var(--baekrim-200);
+    background: linear-gradient(180deg, transparent 60%, rgba(155, 42, 26, 0.22) 60%);
+    padding: 0 2px;
+  }
+  .landing-copy .pause {
+    display: block;
+    height: 0;
+    border-bottom: 1px solid var(--hanji-300);
+    width: 40px;
+    margin: var(--space-4) 0;
+  }
+
+  .landing-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-top: var(--space-10);
+    max-width: 38ch;
+  }
+  .landing-actions__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .landing-cta {
+    font-family: var(--font-display-han);
+    font-size: var(--text-h3);
+    color: var(--baekrim-200);
+    text-decoration: underline;
+    text-decoration-color: var(--vermilion-300);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+    padding-bottom: 2px;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .landing-cta:hover { color: var(--amber-300); }
+  .landing-cta__price {
+    font-family: var(--font-brush);
+    font-size: var(--text-h3);
+    color: var(--vermilion-100);
+    transform: rotate(-3deg);
+    display: inline-block;
+    transform-origin: left center;
+  }
+  .landing-secondary {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--cream-400);
+    font-size: var(--text-body);
+    text-decoration: underline;
+    text-decoration-color: var(--hanji-300);
+    text-underline-offset: 6px;
+  }
+  .landing-secondary:hover { color: var(--amber-300); }
+
+  /* 푸터 */
+  .landing-footer-row {
+    position: absolute;
+    bottom: var(--space-6);
+    left: var(--space-6);
+    right: var(--space-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--hanji-300);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .landing-footer-row .hanja-trace {
+    font-family: var(--font-mincho);
+    font-size: 18px;
+    line-height: 1;
+    color: var(--hanji-300);
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+  }
+  @media (max-width: 767px) {
+    .landing-footer-row { display: none; }
+    .landing-image-stage { aspect-ratio: 4/5; }
+    .landing-image-stage__hanja { font-size: 160px; }
+  }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<a href="../index.html" class="landing-back">← BACK</a>
+<span class="landing-mark">VoiceSaju · MMXXVI</span>
+
+<main>
+
+  <div class="state state--default">
+    <div class="landing-grid">
+
+      <figure class="landing-image-stage">
+        <img class="landing-image-stage__img" src="https://picsum.photos/seed/voicesaju-whisky-amber/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="landing-image-stage__overlay" aria-hidden="true"></div>
+        <span class="landing-image-stage__caption">whisky · 02:47 a.m.</span>
+        <span class="landing-image-stage__hanja" aria-hidden="true">命</span>
+      </figure>
+
+      <div class="landing-right">
+        <div class="landing-copy">
+          <p>...아니 진짜 이 시간에.</p>
+          <p>너 잠 안 와? 술도 안 마셨네.</p>
+          <p>사주 보러 왔구나. <em>어디 봐봐.</em></p>
+          <span class="pause" aria-hidden="true"></span>
+          <p>새벽 세 시 누님이 직접 풀어줄게.<br>목소리로.</p>
+        </div>
+
+        <div class="landing-actions">
+          <div class="landing-actions__row">
+            <a href="onboarding-birth.html" class="landing-cta">사주 풀러 가기</a>
+            <span class="landing-cta__price">₩4,900</span>
+          </div>
+          <a href="tarot-v2.html" class="landing-secondary">오늘의 타로 한 장만</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="landing-footer-row" aria-hidden="true">
+      <span>EST. 2026</span>
+      <span class="hanja-trace">甲 乙 丙 丁 戊 己 庚 辛 壬 癸</span>
+      <span>SEOUL · KR</span>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <div class="landing-grid">
+      <figure class="landing-image-stage" style="opacity: 0.5;">
+        <img class="landing-image-stage__img" src="https://picsum.photos/seed/voicesaju-whisky-amber/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="landing-image-stage__overlay" aria-hidden="true"></div>
+        <span class="landing-image-stage__hanja" aria-hidden="true">命</span>
+      </figure>
+      <div class="landing-right">
+        <div class="landing-copy">
+          <p style="opacity: 0.6;">잠시만…</p>
+        </div>
+        <div class="landing-actions">
+          <div class="cluster gap-3">
+            <span class="spinner"></span>
+            <span class="t-meta c-cream-300" style="letter-spacing: 0.1em;">불러오는 중</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <div class="landing-grid">
+      <figure class="landing-image-stage">
+        <img class="landing-image-stage__img" src="https://picsum.photos/seed/voicesaju-return-mood/720/960" alt="" loading="lazy" referrerpolicy="no-referrer">
+        <div class="landing-image-stage__overlay" aria-hidden="true"></div>
+        <span class="landing-image-stage__caption">again · 03:12 a.m.</span>
+        <span class="landing-image-stage__hanja" aria-hidden="true">緣</span>
+      </figure>
+      <div class="landing-right">
+        <div class="landing-copy">
+          <p>또 왔네.</p>
+          <p>저번에 풀어준 거 어땠어?</p>
+          <p><em>맞았어? 안 맞았어?</em></p>
+          <span class="pause" aria-hidden="true"></span>
+          <p>다시 듣고 싶으면 들려줄게.</p>
+        </div>
+        <div class="landing-actions">
+          <div class="landing-actions__row">
+            <a href="me.html" class="landing-cta">저번 풀이 다시</a>
+            <span class="handwritten" style="color: var(--cream-400);">무료</span>
+          </div>
+          <a href="category.html" class="landing-secondary">새 풀이로 가자</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <div class="landing-grid">
+      <figure class="landing-image-stage" style="filter: contrast(0.9);">
+        <img class="landing-image-stage__img" src="https://picsum.photos/seed/voicesaju-empty-mood/720/960" alt="" loading="lazy" referrerpolicy="no-referrer" style="filter: grayscale(1) contrast(1.05) brightness(0.35) blur(3px);">
+        <div class="landing-image-stage__overlay" aria-hidden="true" style="background: linear-gradient(180deg, rgba(10,6,4,0.85) 0%, rgba(26,18,8,0.95) 100%);"></div>
+        <span class="landing-image-stage__caption" style="color: var(--state-error);">signal · lost</span>
+        <span class="landing-image-stage__hanja" aria-hidden="true" style="color: var(--hanji-300);">虛</span>
+      </figure>
+      <div class="landing-right">
+        <div class="landing-copy">
+          <p><em>인터넷이 끊겼어.</em></p>
+          <p>밤이 깊어서 그런가.</p>
+          <p>재연결되면 알려줄게.</p>
+        </div>
+        <div class="landing-actions">
+          <button class="landing-cta" onclick="location.reload()" style="border:0;background:none;cursor:pointer;text-align:left;">다시 시도</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">RETURN</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>생년월일 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .ob-meta {
+    position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em;
+    color: var(--hanji-300); text-transform: uppercase; z-index: 10;
+  }
+  .ob-meta a { color: var(--cream-300); }
+  .ob-grid {
+    display: grid; grid-template-columns: 1fr; gap: var(--space-12);
+    min-height: 100dvh; padding: var(--space-20) var(--space-6) var(--space-16);
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .ob-grid { grid-template-columns: 1fr 1.2fr; gap: var(--space-16); padding: var(--space-20) var(--space-12); }
+  }
+  .ob-mark {
+    position: relative;
+    font-family: var(--font-mincho); font-weight: 900;
+    font-size: clamp(140px, 32vw, 280px);
+    line-height: 0.85; letter-spacing: -0.04em;
+    color: var(--baekrim-200);
+    text-shadow: 0 0 30px rgba(155, 42, 26, 0.06);
+  }
+  .ob-mark__sub {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase;
+    margin-top: var(--space-4);
+  }
+  .ob-mark__handnote {
+    margin-top: var(--space-4);
+    font-family: var(--font-brush); font-size: var(--text-lead);
+    color: var(--cream-400); transform: rotate(-2deg); display: inline-block;
+  }
+  .ob-form { max-width: 32ch; }
+  .ob-form__q {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--cream-50); line-height: 1.3;
+    margin-bottom: var(--space-3);
+  }
+  .ob-form__hint {
+    font-family: var(--font-body); font-size: var(--text-body);
+    color: var(--cream-300); line-height: 1.7; margin-bottom: var(--space-10);
+  }
+  .ob-form__hint em {
+    font-style: normal; color: var(--baekrim-200);
+    background: linear-gradient(180deg, transparent 60%, rgba(155, 42, 26, 0.22) 60%);
+  }
+  .ob-input-block { margin-bottom: var(--space-8); }
+  .ob-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-4); margin-top: var(--space-12);
+  }
+  .ob-cta {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--baekrim-200);
+    text-decoration: underline; text-decoration-color: var(--vermilion-300);
+    text-decoration-thickness: 3px; text-underline-offset: 8px;
+  }
+  .ob-cta:hover { color: var(--amber-300); }
+  .ob-cta:disabled, .ob-cta[aria-disabled="true"] {
+    color: var(--cream-500); text-decoration-color: var(--hanji-300); cursor: not-allowed;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="ob-meta">
+  <a href="landing-v2.html">← BACK</a>
+  <span>STEP 1 / 4 · 生</span>
+  <span>VoiceSaju</span>
+</div>
+
+<main>
+  <div class="state state--default">
+    <div class="ob-grid">
+      <aside>
+        <h2 class="ob-mark">生</h2>
+        <p class="ob-mark__sub">BORN · DATE</p>
+        <p class="ob-mark__handnote">언제 태어났냐.</p>
+      </aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">먼저, 너 언제 태어났어?</h1>
+        <p class="ob-form__hint">아 그리고 <em>양력/음력</em> 잘 골라줘. 음력이면 윤달인지도.</p>
+
+        <div class="ob-input-block">
+          <label class="input-label" for="birth">YYYY-MM-DD</label>
+          <input class="input input--mono" id="birth" type="text" value="1997-03-15" inputmode="numeric" autocomplete="bday">
+          <div class="radio-group" role="radiogroup" aria-label="달력 종류">
+            <label class="radio-item"><input type="radio" name="cal" value="solar"><span class="radio-item__dot"></span><span>양력</span></label>
+            <label class="radio-item"><input type="radio" name="cal" value="lunar" checked><span class="radio-item__dot"></span><span>음력</span></label>
+            <label class="radio-item"><input type="radio" name="cal" value="leap"><span class="radio-item__dot"></span><span>윤달</span></label>
+          </div>
+        </div>
+
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+          <a href="onboarding-time-v2.html" class="ob-cta">다음 →</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <div class="ob-grid">
+      <aside><h2 class="ob-mark" style="opacity: 0.4;">生</h2></aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">잠시만…</h1>
+        <div class="cluster gap-3" style="margin-top: var(--space-8);">
+          <span class="spinner"></span><span class="t-meta c-cream-300" style="letter-spacing: 0.1em;">저장 중</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <div class="ob-grid">
+      <aside>
+        <h2 class="ob-mark" style="color: var(--hanji-300);">生</h2>
+        <p class="ob-mark__sub">EMPTY</p>
+      </aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">하나는 채워줘.</h1>
+        <p class="ob-form__hint"><em>날짜는 알아야</em> 풀어주지.</p>
+        <div class="ob-input-block">
+          <label class="input-label">YYYY-MM-DD</label>
+          <input class="input input--mono" type="text" placeholder="언제?">
+        </div>
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span><span class="stepper-dot"></span><span class="stepper-dot"></span>
+          </div>
+          <button class="ob-cta" disabled>다음 →</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <div class="ob-grid">
+      <aside><h2 class="ob-mark" style="color: var(--state-error); opacity: 0.6;">虛</h2></aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">그 날짜는 없어.</h1>
+        <p class="ob-form__hint"><em>2027년 2월 30일?</em> 안 돼.</p>
+        <div class="ob-input-block">
+          <label class="input-label">YYYY-MM-DD</label>
+          <input class="input input--mono" type="text" value="2027-02-30" aria-invalid="true">
+          <p class="input-error">존재하지 않는 날짜.</p>
+        </div>
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span><span class="stepper-dot"></span><span class="stepper-dot"></span>
+          </div>
+          <button class="ob-cta" disabled>다음 →</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">EMPTY</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

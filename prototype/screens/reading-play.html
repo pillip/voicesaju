@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>풀이 재생 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="category.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__meta">연애 · 진행 중</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <div class="voice-player__character" aria-hidden="true"></div>
+
+      <div class="subtitle-band mt-8" aria-live="polite">
+        <span class="subtitle-line subtitle-line--past">직장 상사가 너 좀 미워하지?</span>
+        <span class="subtitle-line subtitle-line--past">그건 네 잘못 아니야.</span>
+        <span class="subtitle-line subtitle-line--current">근데 너도 좀 받아쳐야겠다.</span>
+      </div>
+
+      <details class="card mt-8" open>
+        <summary class="t-meta c-cream-300" style="cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase;">명식 ▾</summary>
+        <div class="saju-chart mt-4">
+          <div class="saju-column">
+            <div class="saju-column__label">년</div>
+            <div class="saju-column__hanja">丁</div>
+            <div class="saju-column__element">정화</div>
+          </div>
+          <div class="saju-column">
+            <div class="saju-column__label">월</div>
+            <div class="saju-column__hanja">辛</div>
+            <div class="saju-column__element">신금</div>
+          </div>
+          <div class="saju-column">
+            <div class="saju-column__label">일</div>
+            <div class="saju-column__hanja">甲</div>
+            <div class="saju-column__element">갑목</div>
+          </div>
+          <div class="saju-column saju-column--missing">
+            <div class="saju-column__label">시</div>
+            <div class="saju-column__hanja">?</div>
+          </div>
+        </div>
+      </details>
+
+      <div class="voice-player__controls mt-8">
+        <button class="voice-player__play" aria-label="일시정지">❚❚</button>
+        <div class="voice-player__progress" style="--progress: 38%;" aria-hidden="true"></div>
+        <span class="voice-player__time">0:42 / 1:38</span>
+      </div>
+    </div>
+
+    <div class="state state--loading">
+      <div class="voice-player__character" aria-hidden="true" style="opacity: 0.3;"></div>
+      <div class="subtitle-band mt-8">
+        <span class="subtitle-line subtitle-line--past">...</span>
+      </div>
+      <div class="cluster gap-3 mt-8"><span class="spinner"></span><span class="t-meta c-cream-300">첫 문장 기다리는 중</span></div>
+    </div>
+
+    <div class="state state--empty">
+      <div class="voice-player__character" aria-hidden="true" style="opacity: 0.2;"></div>
+      <div class="subtitle-band mt-8">
+        <span class="subtitle-line subtitle-line--past">풀이가 다 끝났네.</span>
+      </div>
+      <a href="reading-followup.html" class="btn btn-primary btn--full mt-8">꼬리질문으로 →</a>
+    </div>
+
+    <div class="state state--error">
+      <div class="voice-player__character" aria-hidden="true" style="opacity: 0.2; filter: grayscale(1);"></div>
+      <div class="card card--amber mt-8" style="border-left-color: var(--state-error);">
+        <p class="t-h3 display-han c-cream-50">별기운이 잠시 약하네.</p>
+        <p class="t-body c-cream-300 mt-3">환불 처리됐어. 잠시 후 다시.</p>
+      </div>
+      <div class="stack gap-3 mt-8">
+        <a href="category.html" class="btn btn-secondary btn--full">다시 시도</a>
+        <a href="../index.html" class="btn btn-ghost btn--full">처음으로</a>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">DONE</button>
+  <button class="state-switcher__btn" data-target="error">LLM ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

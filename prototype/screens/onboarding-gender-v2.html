@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>성별 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .ob-meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .ob-meta a { color: var(--cream-300); }
+  .ob-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-12); min-height: 100dvh; padding: var(--space-20) var(--space-6) var(--space-16); align-items: center; }
+  @media (min-width: 768px) { .ob-grid { grid-template-columns: 1fr 1.2fr; gap: var(--space-16); padding: var(--space-20) var(--space-12); } }
+  .ob-mark { position: relative; font-family: var(--font-mincho); font-weight: 900; font-size: clamp(140px, 32vw, 280px); line-height: 0.85; letter-spacing: -0.04em; color: var(--baekrim-200); text-shadow: 0 0 30px rgba(155, 42, 26, 0.06); }
+  .ob-mark__sub { font-family: var(--font-mono); font-size: var(--text-caption); color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase; margin-top: var(--space-4); }
+  .ob-mark__handnote { margin-top: var(--space-4); font-family: var(--font-brush); font-size: var(--text-lead); color: var(--cream-400); transform: rotate(-2deg); display: inline-block; }
+  .ob-form { max-width: 36ch; }
+  .ob-form__q { font-family: var(--font-display-han); font-size: var(--text-h3); color: var(--cream-50); line-height: 1.3; margin-bottom: var(--space-10); }
+  .ob-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-12); }
+  .ob-cta { font-family: var(--font-display-han); font-size: var(--text-h3); color: var(--baekrim-200); text-decoration: underline; text-decoration-color: var(--vermilion-300); text-decoration-thickness: 3px; text-underline-offset: 8px; }
+  .ob-cta:hover { color: var(--amber-300); }
+  .ob-cta:disabled { color: var(--cream-500); text-decoration-color: var(--hanji-300); pointer-events: none; }
+
+  .gender-list { display: flex; flex-direction: column; gap: var(--space-4); }
+  .gender-item {
+    padding: var(--space-5) var(--space-6);
+    border-left: 2px solid var(--cream-500);
+    background: transparent;
+    cursor: pointer; text-align: left;
+    display: flex; align-items: baseline; gap: var(--space-4);
+    transition: border-left-color var(--dur-fast), border-left-width var(--dur-fast), transform var(--dur-fast);
+  }
+  .gender-item:hover { border-left-width: 3px; transform: translateX(2px); }
+  .gender-item:focus-visible { outline: 1px solid var(--amber-200); outline-offset: 3px; }
+  .gender-item__hanja { font-family: var(--font-mincho); font-weight: 900; font-size: 48px; line-height: 1; color: var(--cream-50); }
+  .gender-item__label { font-family: var(--font-display-han); font-size: var(--text-h3); color: var(--cream-100); }
+  .gender-item[aria-pressed="true"] { border-left-color: var(--amber-400); border-left-width: 3px; }
+  .gender-item[aria-pressed="true"] .gender-item__hanja, .gender-item[aria-pressed="true"] .gender-item__label { color: var(--amber-300); }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="ob-meta">
+  <a href="onboarding-time-v2.html">← BACK</a>
+  <span>STEP 3 / 4 · 性</span>
+  <span>VoiceSaju</span>
+</div>
+
+<main>
+  <div class="state state--default">
+    <div class="ob-grid">
+      <aside>
+        <h2 class="ob-mark">性</h2>
+        <p class="ob-mark__sub">YOU · GENDER</p>
+        <p class="ob-mark__handnote">여자야 남자야?</p>
+      </aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">여자야 남자야?</h1>
+        <div class="gender-list" role="radiogroup" aria-label="성별">
+          <button class="gender-item" type="button" aria-pressed="true">
+            <span class="gender-item__hanja">女</span>
+            <span class="gender-item__label">여자</span>
+          </button>
+          <button class="gender-item" type="button" aria-pressed="false">
+            <span class="gender-item__hanja">男</span>
+            <span class="gender-item__label">남자</span>
+          </button>
+        </div>
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+          </div>
+          <a href="category-v2.html" class="ob-cta">다음 →</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <div class="ob-grid">
+      <aside><h2 class="ob-mark" style="opacity: 0.4;">性</h2></aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">잠시만…</h1>
+        <div class="cluster gap-3" style="margin-top: var(--space-8);">
+          <span class="spinner"></span><span class="t-meta c-cream-300" style="letter-spacing: 0.1em;">저장 중</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <div class="ob-grid">
+      <aside><h2 class="ob-mark" style="color: var(--cream-400);">?</h2></aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">하나는 골라줘.</h1>
+        <div class="gender-list" role="radiogroup" aria-label="성별">
+          <button class="gender-item" type="button" aria-pressed="false"><span class="gender-item__hanja">女</span><span class="gender-item__label">여자</span></button>
+          <button class="gender-item" type="button" aria-pressed="false"><span class="gender-item__hanja">男</span><span class="gender-item__label">남자</span></button>
+        </div>
+        <div class="ob-footer">
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--done"></span>
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+          </div>
+          <button class="ob-cta" disabled>다음 →</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <div class="ob-grid">
+      <aside><h2 class="ob-mark" style="color: var(--state-error); opacity: 0.6;">虛</h2></aside>
+      <section class="ob-form">
+        <h1 class="ob-form__q">저장이 안 됐어.</h1>
+        <p style="font-family: var(--font-body); color: var(--cream-300); margin-top: var(--space-4);">잠시 후 다시.</p>
+        <button class="ob-cta" style="margin-top: var(--space-8);" onclick="location.reload()">다시 시도 →</button>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">EMPTY</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+
+// Gender select toggle
+document.querySelectorAll('.gender-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.gender-item').forEach(i => i.setAttribute('aria-pressed', 'false'));
+    item.setAttribute('aria-pressed', 'true');
+  });
+});
+</script>
+</body>
+</html>

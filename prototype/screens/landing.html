@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Landing · VoiceSaju</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400;1,500;1,700&family=Gowun+Batang:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="../index.html" class="nav-top__menu" aria-label="메뉴">☰</a>
+  <span class="nav-top__brand">VoiceSaju</span>
+  <a href="../index.html" class="nav-top__back" aria-label="정보">ⓘ</a>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <p class="t-display display-en c-amber-300" style="font-style: italic;">흠.</p>
+      <p class="t-h3 display-han c-cream-50 mt-4">이 시간에<br>사주를 본다고?</p>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-8);">
+      <p class="t-body c-cream-200">새벽 3시의 누님이 직접 풀어줍니다.<br>목소리로.</p>
+
+      <div class="stack gap-3 mt-16">
+        <a href="onboarding-birth.html" class="btn btn-primary btn--lg btn--full">사주 풀러 가기</a>
+        <a href="tarot.html" class="btn btn-ghost btn--full">오늘의 타로 한 장만 →</a>
+      </div>
+
+      <hr class="divider mt-24" style="margin-bottom: var(--space-4);">
+      <p class="hanja-row">甲乙丙丁&nbsp;&nbsp;戊己庚辛&nbsp;&nbsp;壬癸</p>
+      <p class="t-caption c-cream-500 mt-2">연애 · 직장 · 금전</p>
+    </div>
+
+    <div class="state state--loading">
+      <p class="t-display display-en c-cream-500" style="font-style: italic;">흠.</p>
+      <p class="t-h3 display-han c-cream-300 mt-4">이 시간에<br>사주를 본다고?</p>
+      <hr class="divider divider--short mt-12" style="margin-bottom: var(--space-8);">
+      <div class="cluster gap-3"><span class="spinner"></span><span class="t-meta c-cream-300">불러오는 중</span></div>
+    </div>
+
+    <div class="state state--empty">
+      <p class="t-display display-en c-amber-300" style="font-style: italic;">흠.</p>
+      <p class="t-h3 display-han c-cream-50 mt-4">또 왔네.</p>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-8);">
+      <p class="t-body c-cream-200">저번 풀이 다시 들어볼래?</p>
+      <div class="stack gap-3 mt-16">
+        <a href="me.html" class="btn btn-secondary btn--full">저번 풀이 다시 듣기</a>
+        <a href="category.html" class="btn btn-ghost btn--full">새 풀이 받기 →</a>
+      </div>
+    </div>
+
+    <div class="state state--error">
+      <p class="t-h2 display-han c-cream-50">인터넷이 끊겼어.</p>
+      <p class="t-body c-cream-300 mt-4">재연결되면 알려줄게.</p>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-8);">
+      <button class="btn btn-secondary btn--full" onclick="location.reload()">다시 시도</button>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">RETURN</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+  document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      document.querySelectorAll('.state-switcher__btn').forEach(b => {
+        b.setAttribute('aria-pressed', String(b.dataset.target === target));
+      });
+      document.body.setAttribute('data-current', target);
+    });
+  });
+</script>
+</body>
+</html>

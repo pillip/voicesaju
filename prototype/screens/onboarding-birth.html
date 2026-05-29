@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>생년월일 · VoiceSaju</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="landing.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__meta">STEP 1 / 4</span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <h1 class="t-h3 display-han c-cream-50">생년월일</h1>
+      <p class="t-body c-cream-300 mt-4">먼저, 너 언제 태어났어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+
+      <label class="input-label" for="birth">YYYY-MM-DD</label>
+      <input class="input input--mono" id="birth" type="text" value="1997-03-15" placeholder="YYYY-MM-DD" inputmode="numeric" autocomplete="bday">
+
+      <div class="radio-group" role="radiogroup" aria-label="달력 종류">
+        <label class="radio-item"><input type="radio" name="cal" value="solar"><span class="radio-item__dot"></span><span>양력</span></label>
+        <label class="radio-item"><input type="radio" name="cal" value="lunar" checked><span class="radio-item__dot"></span><span>음력</span></label>
+        <label class="radio-item"><input type="radio" name="cal" value="leap"><span class="radio-item__dot"></span><span>윤달</span></label>
+      </div>
+
+      <div class="mt-24 split">
+        <div class="stepper">
+          <span>1/4</span>
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+        </div>
+        <a href="onboarding-time.html" class="btn btn-primary">다음</a>
+      </div>
+    </div>
+
+    <div class="state state--loading">
+      <h1 class="t-h3 display-han c-cream-50">생년월일</h1>
+      <p class="t-body c-cream-300 mt-4">먼저, 너 언제 태어났어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+      <label class="input-label">YYYY-MM-DD</label>
+      <input class="input input--mono" type="text" value="1997-03-15" readonly>
+      <div class="mt-24 split">
+        <div class="stepper"><span>1/4</span>
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+        </div>
+        <button class="btn btn-primary" aria-busy="true">다음</button>
+      </div>
+    </div>
+
+    <div class="state state--empty">
+      <h1 class="t-h3 display-han c-cream-50">생년월일</h1>
+      <p class="t-body c-cream-300 mt-4">먼저, 너 언제 태어났어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+      <label class="input-label">YYYY-MM-DD</label>
+      <input class="input input--mono" type="text" placeholder="YYYY-MM-DD">
+      <div class="mt-24 split">
+        <div class="stepper"><span>1/4</span>
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+        </div>
+        <button class="btn btn-primary" disabled>다음</button>
+      </div>
+    </div>
+
+    <div class="state state--error">
+      <h1 class="t-h3 display-han c-cream-50">생년월일</h1>
+      <p class="t-body c-cream-300 mt-4">먼저, 너 언제 태어났어?</p>
+      <hr class="divider divider--short mt-8" style="margin-bottom: var(--space-12);">
+      <label class="input-label">YYYY-MM-DD</label>
+      <input class="input input--mono" type="text" value="2027-02-30" aria-invalid="true">
+      <p class="input-error">그 날짜는 존재하지 않아.</p>
+      <div class="mt-24 split">
+        <div class="stepper"><span>1/4</span>
+          <div class="stepper-dots">
+            <span class="stepper-dot stepper-dot--active"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+            <span class="stepper-dot"></span>
+          </div>
+        </div>
+        <button class="btn btn-primary" disabled>다음</button>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">DEFAULT</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">EMPTY</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

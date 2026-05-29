@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>꼬리질문 v2 · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;700;900&family=Nanum+Brush+Script&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  .meta { position: absolute; top: var(--space-6); left: var(--space-6); right: var(--space-6); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.25em; color: var(--hanji-300); text-transform: uppercase; z-index: 10; }
+  .meta a { color: var(--cream-300); }
+  .meta__remain { color: var(--vermilion-100); font-family: var(--font-brush); font-size: var(--text-lead); letter-spacing: 0; text-transform: none; transform: rotate(-2deg); }
+
+  .page-wrap {
+    max-width: 640px; margin: 0 auto;
+    padding: var(--space-20) var(--space-6) var(--space-32);
+  }
+  .q-title {
+    font-family: var(--font-display-han); font-size: clamp(36px, 8vw, 52px);
+    line-height: 1.1; color: var(--cream-50);
+    margin-bottom: var(--space-8);
+  }
+  .q-hint {
+    font-family: var(--font-body); font-size: var(--text-body);
+    color: var(--cream-300); margin-bottom: var(--space-12);
+  }
+
+  .followup-list {
+    border-top: 1px solid var(--hanji-300);
+  }
+  .followup-row {
+    display: block;
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--hanji-300);
+    font-family: var(--font-display-han); font-size: var(--text-lead);
+    color: var(--cream-100);
+    cursor: pointer;
+    transition: padding var(--dur-fast), color var(--dur-fast);
+    background: none; border-left: none; border-right: none; border-top: none;
+    text-align: left; width: 100%;
+  }
+  .followup-row::before {
+    content: '— '; color: var(--vermilion-300);
+  }
+  .followup-row:hover { padding-left: var(--space-3); color: var(--amber-300); }
+  .followup-row:focus-visible { outline: 1px solid var(--amber-200); outline-offset: 4px; }
+  .followup-row--used {
+    color: var(--cream-500);
+    text-decoration: line-through; text-decoration-color: var(--cream-600);
+    pointer-events: none;
+  }
+
+  /* 답변 (empty state — answer 화면) */
+  .answer-q {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.3em; text-transform: uppercase;
+    margin-bottom: var(--space-2);
+  }
+  .answer-q__text {
+    font-family: var(--font-display-han); font-size: var(--text-h3);
+    color: var(--cream-100); line-height: 1.3;
+    margin-bottom: var(--space-8);
+  }
+  .answer-subtitle {
+    border-top: 1px solid var(--hanji-300); border-bottom: 1px solid var(--hanji-300);
+    padding: var(--space-8) 0;
+    font-family: var(--font-display-han); font-size: var(--text-lead);
+    line-height: 1.5; color: var(--cream-100);
+  }
+  .answer-subtitle .past    { color: var(--cream-300); display: block; margin-bottom: var(--space-2); }
+  .answer-subtitle .current { color: var(--amber-300); display: block; }
+
+  .answer-controls {
+    margin-top: var(--space-6); padding-top: var(--space-6);
+    border-top: 1px solid var(--hanji-300);
+    display: flex; align-items: center; gap: var(--space-4);
+  }
+  .answer-controls__play {
+    width: 44px; height: 44px;
+    background: var(--vermilion-300); color: var(--baekrim-200);
+    display: grid; place-items: center; font-size: 14px;
+    transform: rotate(-2deg);
+    border: none; cursor: pointer;
+  }
+  .answer-controls__progress {
+    flex: 1; height: 1px; background: var(--hanji-300); position: relative;
+  }
+  .answer-controls__progress::after { content: ''; position: absolute; inset: 0; width: 50%; background: var(--amber-400); }
+  .answer-controls__time {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-300); letter-spacing: 0.1em;
+  }
+
+  .answer-sign {
+    margin-top: var(--space-12); padding-top: var(--space-6);
+    border-top: 1px solid var(--hanji-300);
+    display: flex; align-items: center; gap: var(--space-5);
+  }
+  .answer-sign__by {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-300); font-size: var(--text-meta);
+  }
+
+  .remaining-block {
+    margin-top: var(--space-12); padding-top: var(--space-8);
+    border-top: 1px dashed var(--hanji-300);
+  }
+  .remaining-block__label {
+    font-family: var(--font-mono); font-size: var(--text-caption);
+    color: var(--cream-400); letter-spacing: 0.25em; text-transform: uppercase;
+    margin-bottom: var(--space-2);
+  }
+
+  .footer-action {
+    margin-top: var(--space-12); text-align: right;
+  }
+  .footer-action a {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--cream-400); font-size: var(--text-body);
+    text-decoration: underline; text-decoration-color: var(--hanji-300);
+    text-underline-offset: 6px;
+  }
+  .footer-action a:hover { color: var(--amber-300); }
+</style>
+</head>
+<body data-current="default" class="vignette-edge v2-page">
+
+<div class="meta">
+  <a href="reading-play-v2.html">← 풀이로</a>
+  <span>FOLLOW · UP</span>
+  <span class="meta__remain">3 남음</span>
+</div>
+
+<main class="page-wrap">
+
+  <div class="state state--default">
+    <h1 class="q-title">더 알고 싶은 거<br>골라.</h1>
+    <p class="q-hint">세 개까지 줄게. 한 번 고르면 못 무름.</p>
+
+    <div class="followup-list">
+      <button class="followup-row" type="button">이 사람이랑 결혼해도 돼?</button>
+      <button class="followup-row" type="button">올해 이직이 좋아?</button>
+      <button class="followup-row" type="button">빚 갚을 수 있어?</button>
+    </div>
+
+    <div class="footer-action">
+      <a href="reading-end-v2.html">이만 마칠게 →</a>
+    </div>
+  </div>
+
+  <div class="state state--loading">
+    <p class="answer-q">Q · 이 사람이랑 결혼해도 돼?</p>
+    <h2 class="answer-q__text">…한 모금 마시는 중.</h2>
+    <div class="cluster gap-3" style="margin-top: var(--space-6);">
+      <span class="spinner"></span>
+      <span class="t-meta c-cream-300" style="letter-spacing: 0.1em;">누님이 답 고르는 중</span>
+    </div>
+  </div>
+
+  <div class="state state--empty">
+    <p class="answer-q">Q · 이 사람이랑 결혼해도 돼?</p>
+
+    <div class="answer-subtitle" aria-live="polite">
+      <span class="past">"결혼? 음…"</span>
+      <span class="past">"그 사람은 너랑 코드가 안 맞아."</span>
+      <span class="current">"1년 안에 끝나."</span>
+    </div>
+
+    <div class="answer-controls">
+      <button class="answer-controls__play" aria-label="일시정지">❚❚</button>
+      <span class="answer-controls__time">0:18</span>
+      <div class="answer-controls__progress" aria-hidden="true"></div>
+      <span class="answer-controls__time">0:36</span>
+    </div>
+
+    <div class="answer-sign">
+      <span class="seal seal--sm" aria-hidden="true">明</span>
+      <span class="answer-sign__by">— signed, 누님</span>
+    </div>
+
+    <div class="remaining-block">
+      <p class="remaining-block__label">남은 질문 · 2개</p>
+      <div class="followup-list">
+        <button class="followup-row" type="button">올해 이직이 좋아?</button>
+        <button class="followup-row" type="button">빚 갚을 수 있어?</button>
+        <div class="followup-row followup-row--used">이 사람이랑 결혼해도 돼?</div>
+      </div>
+    </div>
+
+    <div class="footer-action">
+      <a href="reading-end-v2.html">이만 마칠게 →</a>
+    </div>
+  </div>
+
+  <div class="state state--error">
+    <h1 class="q-title" style="color: var(--state-error);">그 답은 못 들었어.</h1>
+    <p class="q-hint">다시 골라. 차감 안 됐어.</p>
+    <div class="followup-list">
+      <button class="followup-row" type="button">이 사람이랑 결혼해도 돼?</button>
+      <button class="followup-row" type="button">올해 이직이 좋아?</button>
+      <button class="followup-row" type="button">빚 갚을 수 있어?</button>
+    </div>
+  </div>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">QUESTIONS</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">ANSWER</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Login · VoiceSaju</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Gowun+Batang:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body data-current="default">
+
+<nav class="nav-top">
+  <a href="../index.html" class="nav-top__back">← 뒤로</a>
+  <span class="nav-top__brand">VoiceSaju</span>
+  <span></span>
+</nav>
+
+<main class="page__main">
+  <section class="container-narrow">
+
+    <div class="state state--default">
+      <p class="text-center" style="color: var(--amber-400); font-size: 12px;">✦</p>
+      <h1 class="t-h2 display-han c-cream-50 mt-12">결과 저장하려면<br>1초 가입.</h1>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-12);">
+
+      <div class="stack gap-3">
+        <button class="btn btn-primary btn--lg btn--full">카카오로 시작</button>
+        <button class="btn btn-secondary btn--lg btn--full">Apple로 시작</button>
+      </div>
+
+      <hr class="divider mt-12" style="margin-bottom: var(--space-4);">
+      <div class="text-center">
+        <a href="#" class="btn btn-ghost">이미 가입한 적 있어 →</a>
+      </div>
+
+      <hr class="divider mt-16" style="margin-bottom: var(--space-4);">
+      <p class="t-caption c-cream-500 text-center" style="line-height: 1.7;">가입하면 약관과 개인정보<br>처리방침에 동의한 것으로 봐.</p>
+    </div>
+
+    <div class="state state--loading">
+      <p class="text-center" style="color: var(--amber-400); font-size: 12px;">✦</p>
+      <h1 class="t-h2 display-han c-cream-50 mt-12">잠시만,<br>가입 중.</h1>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-12);">
+      <div class="center" style="padding: var(--space-12) 0;">
+        <span class="spinner" style="width: 32px; height: 32px;"></span>
+      </div>
+    </div>
+
+    <div class="state state--empty">
+      <p class="text-center" style="color: var(--amber-400); font-size: 12px;">✦</p>
+      <h1 class="t-h2 display-han c-cream-50 mt-12">토스에서 들어왔네.</h1>
+      <hr class="divider divider--short divider--amber mt-12" style="margin-bottom: var(--space-12);">
+      <button class="btn btn-primary btn--lg btn--full">토스 아이디로 시작</button>
+      <p class="t-meta c-cream-400 text-center mt-6">웹에서는 카카오·애플 로그인도 가능해.</p>
+    </div>
+
+    <div class="state state--error">
+      <p class="text-center" style="color: var(--state-error); font-size: 12px;">✦</p>
+      <h1 class="t-h2 display-han c-cream-50 mt-12">카카오 로그인이<br>안 됐네.</h1>
+      <hr class="divider divider--short mt-12" style="margin-bottom: var(--space-12);">
+      <p class="t-body c-cream-300">잠시 후 다시 시도해줘.</p>
+      <div class="stack gap-3 mt-8">
+        <button class="btn btn-primary btn--full">다시 카카오로 시작</button>
+        <button class="btn btn-secondary btn--full">Apple로 대신</button>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<div class="state-switcher" role="group" aria-label="State toggle">
+  <button class="state-switcher__btn" data-target="default" aria-pressed="true">WEB</button>
+  <button class="state-switcher__btn" data-target="loading">LOADING</button>
+  <button class="state-switcher__btn" data-target="empty">TOSS WV</button>
+  <button class="state-switcher__btn" data-target="error">ERROR</button>
+</div>
+
+<script>
+document.querySelectorAll('.state-switcher__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.target;
+    document.querySelectorAll('.state-switcher__btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.target === t)));
+    document.body.setAttribute('data-current', t);
+  });
+});
+</script>
+</body>
+</html>
