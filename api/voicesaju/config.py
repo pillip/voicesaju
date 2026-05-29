@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     db_pool_size: int = 5
     db_max_overflow: int = 10
 
+    # Adapter selection (Phase 1 PoC defaults to mock). The factory in
+    # `voicesaju.adapters` reads this at request time so test suites can
+    # override via env without restarting the process.
+    payment_provider: Literal["mock", "toss"] = "mock"
+
 
 def get_settings() -> Settings:
     """Return a Settings instance (factory for dependency injection / tests)."""
