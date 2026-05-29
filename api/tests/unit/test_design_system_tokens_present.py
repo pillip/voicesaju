@@ -37,9 +37,9 @@ def tailwind_text() -> str:
 def test_category_hex_matches_design_system(
     tailwind_text: str, name: str, hex_value: str
 ) -> None:
-    assert hex_value in tailwind_text, (
-        f"category.{name} hex {hex_value} missing from tailwind.config.ts"
-    )
+    assert (
+        hex_value in tailwind_text
+    ), f"category.{name} hex {hex_value} missing from tailwind.config.ts"
     assert name in tailwind_text, f"category key {name!r} missing"
 
 
