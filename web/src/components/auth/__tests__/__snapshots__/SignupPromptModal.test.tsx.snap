@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SignupPromptModal — Screen 25 > snapshot — default state (web) 1`] = `""`;
+
+exports[`SignupPromptModal — Screen 25 > snapshot — error state (web) 1`] = `""`;
+
+exports[`SignupPromptModal — Screen 25 > snapshot — loading state (web) 1`] = `""`;
