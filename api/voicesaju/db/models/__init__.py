@@ -7,10 +7,13 @@ and at startup before any session is opened.
 
 from __future__ import annotations
 
+from voicesaju.db.models.character_voices import CharacterVoice
 from voicesaju.db.models.devices import Device
 from voicesaju.db.models.free_tokens import FreeToken
+from voicesaju.db.models.intro_audio_clips import IntroAudioClip
 from voicesaju.db.models.payments import Payment
 from voicesaju.db.models.profiles import Profile
+from voicesaju.db.models.quote_cards import QuoteCard
 from voicesaju.db.models.reading_audio import ReadingAudio
 from voicesaju.db.models.reading_followups import ReadingFollowup
 from voicesaju.db.models.reading_transcripts import ReadingTranscript
@@ -23,10 +26,13 @@ from voicesaju.db.models.tarot_draws import TarotDraw
 from voicesaju.db.models.users import User
 
 __all__ = [
+    "CharacterVoice",
     "Device",
     "FreeToken",
+    "IntroAudioClip",
     "Payment",
     "Profile",
+    "QuoteCard",
     "Reading",
     "ReadingAudio",
     "ReadingFollowup",
