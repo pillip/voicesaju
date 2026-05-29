@@ -3,15 +3,41 @@
 from __future__ import annotations
 
 import logging
+from typing import Literal
 
-from fastapi import Depends, FastAPI, Response, status
+from fastapi import BackgroundTasks, Depends, FastAPI, Response, status
+from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from voicesaju.adapters import get_payment_adapter
+from voicesaju.adapters.payment import (
+    CheckoutSession,
+    MockPaymentAdapter,
+    PaymentKind,
+)
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 
 logger = logging.getLogger(__name__)
+
+
+class CheckoutRequest(BaseModel):
+    """Body for `POST /api/payments/checkout`."""
+
+    user_id: str
+    kind: PaymentKind
+    amount_krw: int
+    idempotency_key: str | None = None
+
+
+class WebhookPayload(BaseModel):
+    """Body for `POST /api/payments/webhook` (internal, fired by mock adapter)."""
+
+    session_id: str
+    status: Literal["succeeded", "failed", "cancelled"]
+    paid_at: str | None = None
+    amount_krw: int = 0
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -52,6 +78,42 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
             return {"status": "error", "db": "disconnected"}
         return {"status": "ok", "db": "connected"}
+
+    # ---- Payments (mock-backed Phase 1 endpoints) ---------------------
+    # TODO(ISSUE-014): persist payments + entitlements rows here once the
+    # payments table lands. For Phase 1 the mock adapter keeps state in
+    # process and the webhook flips it to `succeeded` after ~3s.
+
+    @app.post("/api/payments/checkout", tags=["payments"])
+    async def payments_checkout(
+        body: CheckoutRequest, background_tasks: BackgroundTasks
+    ) -> CheckoutSession:
+        adapter = get_payment_adapter()
+        session_obj = await adapter.create_checkout_session(
+            user_id=body.user_id,
+            kind=body.kind,
+            amount_krw=body.amount_krw,
+            idempotency_key=body.idempotency_key,
+        )
+        if isinstance(adapter, MockPaymentAdapter):
+            # Schedule the simulated webhook; real Toss client will
+            # receive the equivalent callback from Toss itself.
+            background_tasks.add_task(
+                adapter.fire_webhook, session_obj.session_id, body.amount_krw
+            )
+        return session_obj
+
+    @app.post("/api/payments/webhook", tags=["payments"])
+    async def payments_webhook(payload: WebhookPayload) -> dict[str, str]:
+        # Phase 1: no DB persistence yet — log and acknowledge.
+        # The mock adapter already updated in-process state via fire_webhook;
+        # this endpoint exists so the real Toss callback shape is wired.
+        logger.info(
+            "payments.webhook session_id=%s status=%s",
+            payload.session_id,
+            payload.status,
+        )
+        return {"status": "ok"}
 
     return app
 
