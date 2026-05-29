@@ -11,6 +11,10 @@ from voicesaju.db.models.devices import Device
 from voicesaju.db.models.free_tokens import FreeToken
 from voicesaju.db.models.payments import Payment
 from voicesaju.db.models.profiles import Profile
+from voicesaju.db.models.reading_audio import ReadingAudio
+from voicesaju.db.models.reading_followups import ReadingFollowup
+from voicesaju.db.models.reading_transcripts import ReadingTranscript
+from voicesaju.db.models.readings import Reading
 from voicesaju.db.models.refunds import Refund
 from voicesaju.db.models.saju_charts import SajuChart
 from voicesaju.db.models.subscriptions import Subscription
@@ -21,6 +25,10 @@ __all__ = [
     "FreeToken",
     "Payment",
     "Profile",
+    "Reading",
+    "ReadingAudio",
+    "ReadingFollowup",
+    "ReadingTranscript",
     "Refund",
     "SajuChart",
     "Subscription",
