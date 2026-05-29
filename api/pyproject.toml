@@ -18,6 +18,7 @@ dependencies = [
     "uuid-utils>=0.9,<1.0",
     "pyjwt>=2.8,<3.0",
     "korean-lunar-calendar>=0.3.1",
+    "pyahocorasick>=2.3.1",
 ]
 
 [project.optional-dependencies]
