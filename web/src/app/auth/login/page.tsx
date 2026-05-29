@@ -37,8 +37,17 @@ import { Banner } from '@/components/ui/Banner';
 import { useRuntimeContext } from '@/lib/context/runtime-context';
 import { cn } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginShell />}>
+      <LoginPageInner />
+    </Suspense>
+  );
+}
+
+function LoginPageInner() {
   const { channel } = useRuntimeContext();
   const searchParams = useSearchParams();
   const cancelled = searchParams?.get('error') === 'cancelled';
@@ -86,6 +95,23 @@ export default function LoginPage() {
       <p className="text-center font-body text-xs text-cream-300">
         로그인 시 이용약관 및 개인정보 처리방침에 동의합니다.
       </p>
+    </main>
+  );
+}
+
+/**
+ * Static SSR shell rendered while the client tree (which depends on
+ * `useSearchParams`) hydrates. Next.js 15 requires a Suspense boundary
+ * around `useSearchParams()` callers so the rest of the page can prerender.
+ */
+function LoginShell() {
+  return (
+    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center gap-s6 px-s4 py-s8 text-cream-100">
+      <div className="flex w-full flex-col items-center gap-s4 text-center">
+        <h1 className="font-display text-2xl tracking-tight text-cream-50">
+          VoiceSaju에 오신 걸 환영해요
+        </h1>
+      </div>
     </main>
   );
 }
