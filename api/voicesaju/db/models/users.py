@@ -12,7 +12,6 @@ SQLite-backed unit tests can still reflect a sane schema for model wiring.
 from __future__ import annotations
 
 import uuid
-from collections.abc import Callable
 from datetime import datetime
 
 from sqlalchemy import CheckConstraint, DateTime, String, func
@@ -20,29 +19,29 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from voicesaju.db.base import Base
 
-# uuidv7 with a graceful fallback to uuid4 so the model stays importable
-# even when `uuid-utils` (a C extension) is not yet installed in a fresh
-# environment.
 try:  # pragma: no cover - import path guarded by fallback below
     from uuid_utils import uuid7 as _uuid7
 
     def uuid7() -> uuid.UUID:  # type: ignore[no-redef]
-        """Return a uuidv7 as a stdlib `uuid.UUID` (uuid-utils returns its own type)."""
+        """Return a uuidv7 as a stdlib `uuid.UUID`."""
         return uuid.UUID(str(_uuid7()))
 
-except ImportError:  # pragma: no cover - exercised in environments without uuid-utils
+except ImportError:  # pragma: no cover - exercised without uuid-utils
 
     def uuid7() -> uuid.UUID:
-        """Fallback uuid4 used when `uuid-utils` is unavailable.
-
-        The fallback keeps semantics consistent (UUID PK with high entropy)
-        even though it loses the timestamp-ordered property of uuidv7.
-        Production environments are expected to install `uuid-utils`.
-        """
+        """Fallback uuid4 when `uuid-utils` is unavailable."""
         return uuid.uuid4()
 
 
-_uuid7_default: Callable[[], uuid.UUID] = uuid7
+def _uuid7_str() -> str:
+    """Return a uuidv7 as `str` so aiosqlite can bind it without conversion.
+
+    Matches the convention used across newer models (payments, readings,
+    tarot_cards, etc.) — `String(36)` PK columns receive a stringified UUID
+    rather than a `uuid.UUID` instance, which the pure-Python aiosqlite
+    driver cannot bind.
+    """
+    return str(uuid7())
 
 
 class User(Base):
@@ -69,7 +68,7 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         String(36),
         primary_key=True,
-        default=_uuid7_default,
+        default=_uuid7_str,
     )
     kakao_sub: Mapped[str | None] = mapped_column(String, nullable=True)
     apple_sub: Mapped[str | None] = mapped_column(String, nullable=True)
