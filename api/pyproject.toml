@@ -45,6 +45,7 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [
     "integration: requires external services (Postgres/Redis); excluded by default.",
+    "regression: saju engine regression suite against fixture cases (ISSUE-012).",
 ]
 
 [tool.ruff]

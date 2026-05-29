@@ -1,0 +1,1885 @@
+{
+  "_meta": {
+    "case_count": 55,
+    "engine_version": "saju.v1.2026-05",
+    "generated_at": "2026-05-29",
+    "note": "PoC fixtures generated from the engine to verify determinism (NFR-017). Phase 2 will replace `expected` with textbook-validated cases per ISSUE-012 spec."
+  },
+  "fixtures": [
+    {
+      "birth_dt": "1970-01-15T08:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 1) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "5439f22610c08713dc3d4f681a5ae647244515cd8a942d7a9a0a0e827d0f692d",
+        "day": {
+          "branch": "미",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "진",
+          "element": "土",
+          "stem": "경",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "인",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "술",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1972-04-22T12:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 2) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "0028b05b6707adeb3b8284b4c7af6422d7c51067dad0496f00976d95f80a7223",
+        "day": {
+          "branch": "미",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "오",
+          "element": "火",
+          "stem": "무",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "사",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "자",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1974-07-07T17:45:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 3) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "b2030aa0f57031da27f14bddb536949d1f6b4e18666bc99fb4bcce503fef19f3",
+        "day": {
+          "branch": "유",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "유",
+          "element": "金",
+          "stem": "계",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "신",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "인",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1976-10-10T06:15:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 4) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "bf2d8b61302f625e61d38ccdeddccfd9f755d3849a0dbe795f490edb0d4b215b",
+        "day": {
+          "branch": "미",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "묘",
+          "element": "木",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "해",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "진",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1978-11-07T21:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 5) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "dca6135809160b67cf744d88857583eec872d96fd2545e965564985bb5a925c9",
+        "day": {
+          "branch": "유",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "자",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "오",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1980-02-29T04:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 6) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "160be1ca237a7578fc8a2970fc5da1853960c3d0a4eb2ac640fda5db71b65d6f",
+        "day": {
+          "branch": "신",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "인",
+          "element": "木",
+          "stem": "임",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "묘",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "신",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1982-05-05T13:13:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 7) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "9f3022ab01b7066626a662536869b435029b3a8e555b2bb191d6a59af2eb045d",
+        "day": {
+          "branch": "자",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "미",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "오",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "술",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1984-08-08T08:08:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 8) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "e3e7caf352820414ae6031491c701d08b9ce34be836361c944a6ad6a4c498dd3",
+        "day": {
+          "branch": "술",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "진",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "유",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "자",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1986-12-31T23:59:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 9) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "a8eea2bcd6eebf7a4fe958d341686d24c12d0b3888cd416c622e410eca859240",
+        "day": {
+          "branch": "유",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "자",
+          "element": "水",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "축",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "인",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1988-03-17T09:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 10) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "beddf5b9d38cca96e37528af9ce28a585e15224dcbb65c6693248ceb47044a04",
+        "day": {
+          "branch": "미",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "사",
+          "element": "火",
+          "stem": "계",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "진",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "진",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1990-06-21T11:11:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 11) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "49a2265f89ed20f40d2640b8fa6b92c892e2de05ea6ce78294db5f739db3ff4a",
+        "day": {
+          "branch": "사",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "오",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "미",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "오",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1992-09-09T09:09:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 12) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "17fb8259709000dc4e7e878d7d2d2f0172cb4f7e57ba06c68ded6501f5acd88d",
+        "day": {
+          "branch": "자",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "사",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "술",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "신",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1994-01-01T00:01:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 13) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "d110b0307f80b4b969b7b29d42f5951cc79c7a56a4463f29c01c48b90942e46d",
+        "day": {
+          "branch": "해",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "자",
+          "element": "水",
+          "stem": "경",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "인",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "술",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1996-11-11T11:11:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 14) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "7c9238476ffb5bda5c9a6f5ba99ba64e9730615558193d7635f446ff8c1d40f6",
+        "day": {
+          "branch": "자",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "오",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "자",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "자",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1998-04-01T16:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 15) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "aee1c859fa36ae40d9f0132050b4eace3f0b441c64b2786f15faefc2f97bdf80",
+        "day": {
+          "branch": "인",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "신",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "사",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "인",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2000-12-25T07:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 16) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "17eb68cbb9c929d973086ec4c23034f3fbfecf3facc6f51f42ba561e7e3eae0b",
+        "day": {
+          "branch": "사",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "진",
+          "element": "土",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "축",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "진",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2002-07-04T14:14:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 17) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "fe791c44f70f75e3fece46ed8e4681704054b299e1941084d9279ba59eb4f8ab",
+        "day": {
+          "branch": "유",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "미",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "신",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "오",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2004-02-14T18:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 18) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "20f0d1041d4093d9138e71a7d1ad4de98d320f78e9f3e21a471009128134d0f5",
+        "day": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "유",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "묘",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "신",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2006-10-31T22:22:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 19) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "1de6ed9301bd66eb9690930fe79ab4de120df7f2fee9aa035e43fa1fc7a10bf3",
+        "day": {
+          "branch": "사",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "해",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "술",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2008-05-20T05:05:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 20) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "2b50fec6cd1ff8e17cfc2adc0d8844a67f0b11552b8084476edabfc26c3b1de6",
+        "day": {
+          "branch": "신",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "묘",
+          "element": "木",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "오",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "자",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2009-08-15T15:15:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 21) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "75b6c02e53345a2b9cdbce99c87b2d0ab006230ec0ac1f6540db15d907bc5a80",
+        "day": {
+          "branch": "진",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "신",
+          "element": "金",
+          "stem": "무",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "유",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "축",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2010-03-03T03:03:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 22) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "edf89b389c4ed9c7324e4b83facba20a1116046a645c30fa27e6bd85e06dd492",
+        "day": {
+          "branch": "자",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "인",
+          "element": "木",
+          "stem": "임",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "진",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "인",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2010-12-12T12:12:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 23) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "a3566ed3bb287797bcd04affccdb722d958fccd64689e19b55adc14ffb070e56",
+        "day": {
+          "branch": "신",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "오",
+          "element": "火",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "축",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "인",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1985-06-21T19:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 24) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "e9feaf1146deb520dba5109bd9296e27335b7ce0875a1050fd48b0d0e06b35ba",
+        "day": {
+          "branch": "묘",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "술",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "미",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "축",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1995-03-01T02:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 25) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "c30416f350cc020f766a96f8c620b86e1f8e8d0fa10235c65f19741c3222b791",
+        "day": {
+          "branch": "묘",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "축",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "진",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "해",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1971-05-05T10:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 26) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "d1e639317552adc2abf92d5c2f0572ac63bfbbf7e9273fe273f98510c32fff56",
+        "day": {
+          "branch": "축",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "사",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "오",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "해",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1973-08-15T14:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 27) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "381889c21a4cde3c33a777b8393100578be5697ab1508b6d9f63f290a7025ecd",
+        "day": {
+          "branch": "술",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "미",
+          "element": "土",
+          "stem": "계",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "술",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "축",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1975-03-03T06:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 28) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "5f701363305f9ed873ab39764a45d421200255557b887d8eb1a165250f78bc04",
+        "day": {
+          "branch": "인",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "묘",
+          "element": "木",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "사",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "묘",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1977-09-09T18:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 29) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "3d6793bf9f517cbd8f2364083d878aab6331b22c05e379a97f85c58a4c3787ce",
+        "day": {
+          "branch": "해",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "유",
+          "element": "金",
+          "stem": "정",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "해",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "사",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1979-12-15T23:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 30) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "da0da271e6cbac405500f053b3775c19c6bb4a0957e1b893c1b261e87e0f1e3e",
+        "day": {
+          "branch": "진",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "자",
+          "element": "水",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "묘",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "신",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1981-01-01T00:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 31) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "af23b2e7166f40ad93501b5249bf5bbd70478e8cef4635dba332787e348227ab",
+        "day": {
+          "branch": "인",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "자",
+          "element": "水",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "묘",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "유",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1983-04-08T11:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 32) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "0a3fca88cb971e30630412d7ccb2978c2154614e9c3e8fd2076f2a2d9b59862f",
+        "day": {
+          "branch": "신",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "오",
+          "element": "火",
+          "stem": "무",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "오",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1987-07-07T07:07:00+10:00",
+      "comment": "PoC generated 2026-05-29 (case 33) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "6ce1edb6d233d67b830fd4872a7878e5524c574177b289b4b3c634c63fa689d9",
+        "day": {
+          "branch": "해",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "진",
+          "element": "土",
+          "stem": "임",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "유",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "묘",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1989-10-01T12:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 34) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "1019657de8fe760af1ff8c7c0a7cfb1ce2ad815d489355eeb1d39d5a9f8b96e8",
+        "day": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "오",
+          "element": "火",
+          "stem": "무",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "해",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "사",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1991-06-06T16:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 35) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "873669938f9f831ea7483626135d2ad0badd2b6b934a93e73085007268acc15f",
+        "day": {
+          "branch": "자",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "신",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "신",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "미",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1993-11-23T20:45:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 36) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "04ace34e71cec5a76bf4f929af3971754202af3ad6908648b5d6effa3d18c95e",
+        "day": {
+          "branch": "인",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "술",
+          "element": "土",
+          "stem": "병",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "인",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "술",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1997-02-14T04:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 37) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "4d54f1798a0cec3eb3d8fbb0fad20eaf582a096dbdef1d45d00d794285452b8b",
+        "day": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "인",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "진",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "축",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1999-08-08T13:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 38) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "4197c4d6cf2fed1dd4c15942605855a20a71c20fa237fa907ab80b874a61565f",
+        "day": {
+          "branch": "신",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "미",
+          "element": "土",
+          "stem": "정",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "술",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "묘",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2001-05-05T09:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 39) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "110256867713abf1e2bf33aa474d421b96491b6f247c72c6cd3e452c4848278c",
+        "day": {
+          "branch": "미",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "사",
+          "element": "火",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "미",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "사",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2003-09-19T17:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 40) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "6c22ce2287b4d05bb3ac85f272e81ea8bea5c882f28f324e80612f0cbc778605",
+        "day": {
+          "branch": "신",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "유",
+          "element": "金",
+          "stem": "을",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "미",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2005-06-15T10:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 41) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "95aee07eb173c9fd68d0e839459d2decfb2133b9f3815e891030197c51b50fa8",
+        "day": {
+          "branch": "사",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "사",
+          "element": "火",
+          "stem": "신",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "신",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "유",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2007-04-04T14:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 42) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "392f91e227e4820f72f6f756e1d677071d4ef2c4e9c5000b156ba513caf92d9b",
+        "day": {
+          "branch": "인",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "미",
+          "element": "土",
+          "stem": "신",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "오",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "해",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1986-01-15T21:30:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 43) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "5cd62b07b996ffe86db7ef8266683786cfa1699c86e40627f5c40f49427cc5b1",
+        "day": {
+          "branch": "술",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "묘",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "인",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1996-09-09T06:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 44) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "38a6bfcf02d2ceab4e96abaf29c6cf37c44d2ada20c52c2028b380c737dce6ed",
+        "day": {
+          "branch": "인",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "묘",
+          "element": "木",
+          "stem": "기",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "해",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "자",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "2008-12-01T08:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 45) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "8b9488764d64f6406e865b8a798daeca62562a50e293298ba2dfc55192961136",
+        "day": {
+          "branch": "축",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": {
+          "branch": "진",
+          "element": "土",
+          "stem": "임",
+          "ten_god": null
+        },
+        "month": {
+          "branch": "축",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "자",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": false
+    },
+    {
+      "birth_dt": "1971-02-02T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 46) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "a2df71faa1f646c6a16f0cdb1bdb64808dd49a72ba8d80a82c802ff474bb6e88",
+        "day": {
+          "branch": "오",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "묘",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "해",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "1980-08-20T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 47) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "5bd87bd0bb6d9517e07484683874de39210da33b6a08579ae0b0d474470a5d4f",
+        "day": {
+          "branch": "축",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "유",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "신",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "1990-11-03T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 48) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "203ce407b36467c6c5d06a7996ef8175d5d8bed066cd91ece9030d1f2164103b",
+        "day": {
+          "branch": "신",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "자",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "오",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "2001-04-17T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 49) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "5ffba9f6dfd20a52cb9cb32f54d8b73362cd90dc4be8c492b1efb6407460c7f2",
+        "day": {
+          "branch": "술",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "사",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "사",
+          "element": "金",
+          "stem": "신",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": false,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "2009-01-09T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 50) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "c04daabf22287c109b43d1e1a02f4031712a56fea7ff8a597f93512664fec2c1",
+        "day": {
+          "branch": "인",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "인",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "축",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": false,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "1975-06-18T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 51) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "8d4f3fee77195040c374b2893b86beaefebb81d43785e5419f898bb30497eb36",
+        "day": {
+          "branch": "유",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "신",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "묘",
+          "element": "木",
+          "stem": "을",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "1988-03-28T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 52) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "c2f9bce8da443f9c3c639e885b9120c87ac46acbfaa5a29d13d0cbb6da9ec0f3",
+        "day": {
+          "branch": "진",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "오",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "진",
+          "element": "土",
+          "stem": "무",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "1994-10-10T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 53) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "608cd90a847190fbf3e84d8d6b9c861a3400fe24c623b7ccda2e53aa87ac638b",
+        "day": {
+          "branch": "인",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "자",
+          "element": "火",
+          "stem": "병",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "술",
+          "element": "木",
+          "stem": "갑",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "2002-07-15T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 54) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "b4cc89daa85708770484316eef6cabd5328eab97e01a2d251c04783be813dd04",
+        "day": {
+          "branch": "해",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "유",
+          "element": "土",
+          "stem": "기",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "오",
+          "element": "水",
+          "stem": "임",
+          "ten_god": null
+        }
+      },
+      "gender": "female",
+      "is_lunar": true,
+      "time_unknown": true
+    },
+    {
+      "birth_dt": "2010-05-05T00:00:00+09:00",
+      "comment": "PoC generated 2026-05-29 (case 55) — engine=saju.v1.2026-05; replace `expected` with textbook value in Phase 2.",
+      "expected": {
+        "chart_hash": "fd3d0cfcffd8f83fce950ecfe97cb6ce865b7ff2dbb42a3909628d76bcc6b72b",
+        "day": {
+          "branch": "유",
+          "element": "火",
+          "stem": "정",
+          "ten_god": null
+        },
+        "engine_version": "saju.v1.2026-05",
+        "hour": null,
+        "month": {
+          "branch": "미",
+          "element": "水",
+          "stem": "계",
+          "ten_god": null
+        },
+        "year": {
+          "branch": "인",
+          "element": "金",
+          "stem": "경",
+          "ten_god": null
+        }
+      },
+      "gender": "male",
+      "is_lunar": true,
+      "time_unknown": true
+    }
+  ]
+}
