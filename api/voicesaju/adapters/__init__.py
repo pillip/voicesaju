@@ -15,6 +15,11 @@ from voicesaju.adapters.auth import (
     MockAuthAdapter,
     TossIdAdapter,
 )
+from voicesaju.adapters.llm import (
+    ClaudeAdapter,
+    LLMAdapter,
+    MockLLMAdapter,
+)
 from voicesaju.adapters.payment import (
     MockPaymentAdapter,
     PaymentAdapter,
@@ -50,6 +55,25 @@ def get_auth_adapter(settings: Settings | None = None) -> AuthAdapter:
     )
 
 
+def get_llm_adapter(settings: Settings | None = None) -> LLMAdapter:
+    """Return the active LLM adapter selected by `settings.llm_provider`.
+
+    Phase 1 default is `mock`. `claude` returns the Phase 2 stub whose
+    `stream()` raises ``NotImplementedError`` so the app still boots
+    under `LLM_PROVIDER=claude` before ISSUE-035 lands.
+    """
+    settings = settings or get_settings()
+    provider = settings.llm_provider.lower()
+    if provider == "mock":
+        return MockLLMAdapter()
+    if provider == "claude":
+        return ClaudeAdapter()
+    raise UnknownProviderError(
+        f"unknown LLM_PROVIDER={settings.llm_provider!r}; "
+        "expected one of: 'mock', 'claude'"
+    )
+
+
 def get_payment_adapter(settings: Settings | None = None) -> PaymentAdapter:
     """Return the active payment adapter selected by `settings.payment_provider`.
 
@@ -72,13 +96,17 @@ def get_payment_adapter(settings: Settings | None = None) -> PaymentAdapter:
 __all__ = [
     "AppleAuthAdapter",
     "AuthAdapter",
+    "ClaudeAdapter",
     "KakaoAuthAdapter",
+    "LLMAdapter",
     "MockAuthAdapter",
+    "MockLLMAdapter",
     "MockPaymentAdapter",
     "PaymentAdapter",
     "TossIdAdapter",
     "TossPaymentAdapter",
     "UnknownProviderError",
     "get_auth_adapter",
+    "get_llm_adapter",
     "get_payment_adapter",
 ]

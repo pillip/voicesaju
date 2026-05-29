@@ -35,15 +35,24 @@ class Settings(BaseSettings):
     # override via env without restarting the process.
     auth_provider: Literal["mock", "kakao", "apple", "toss_id"] = "mock"
     payment_provider: Literal["mock", "toss"] = "mock"
+    # LLM adapter selection. ISSUE-101 ships the mock implementation
+    # which streams fixture text from `tests/fixtures/llm/{category}/`.
+    # `claude` reserves the env slot for ISSUE-035 (real Anthropic SSE).
+    llm_provider: Literal["mock", "claude"] = "mock"
 
     # Mock-auth JWT signing secret. Dev default — fails in prod via validator.
     mock_auth_jwt_secret: str = "dev-mock-secret-do-not-use-in-prod"
 
     def model_post_init(self, __context: object) -> None:
-        """Guardrail: mock auth must not run in production."""
+        """Guardrail: mock-* adapters must not run in production."""
         if self.environment == "prod" and self.auth_provider == "mock":
             raise ValueError(
                 "AUTH_PROVIDER=mock is not allowed when ENVIRONMENT=prod. "
+                "Configure a real provider before production deploy."
+            )
+        if self.environment == "prod" and self.llm_provider == "mock":
+            raise ValueError(
+                "LLM_PROVIDER=mock is not allowed when ENVIRONMENT=prod. "
                 "Configure a real provider before production deploy."
             )
 
