@@ -23,6 +23,9 @@ from voicesaju.db.models.saju_charts import SajuChart
 from voicesaju.db.models.subscriptions import Subscription
 from voicesaju.db.models.tarot_cards import TarotCard
 from voicesaju.db.models.tarot_draws import TarotDraw
+from voicesaju.db.models.tone_eval_cases import ToneEvalCase
+from voicesaju.db.models.tone_prompt_versions import TonePromptVersion
+from voicesaju.db.models.tone_violation_events import ToneViolationEvent
 from voicesaju.db.models.users import User
 
 __all__ = [
@@ -42,5 +45,8 @@ __all__ = [
     "Subscription",
     "TarotCard",
     "TarotDraw",
+    "ToneEvalCase",
+    "TonePromptVersion",
+    "ToneViolationEvent",
     "User",
 ]
