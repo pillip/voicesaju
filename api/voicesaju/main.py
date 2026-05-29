@@ -20,6 +20,7 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.users.routers.auth import router as oauth_router
 from voicesaju.users.routers.device import router as device_router
 
 logger = logging.getLogger(__name__)
@@ -135,6 +136,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # ---- Device (anonymous tracking) ---------------------------------
     # ISSUE-024 (FR-003, FR-013). Mounts `POST /api/v1/auth/device`.
     app.include_router(device_router)
+
+    # ---- OAuth callbacks ---------------------------------------------
+    # ISSUE-026 (FR-016, FR-017). Mounts Kakao + Apple start/callback
+    # endpoints under `/api/v1/auth/{kakao,apple}/*`.
+    app.include_router(oauth_router)
 
     return app
 
