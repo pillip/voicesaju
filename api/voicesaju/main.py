@@ -10,7 +10,8 @@ from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from voicesaju.adapters import get_payment_adapter
+from voicesaju.adapters import get_auth_adapter, get_payment_adapter
+from voicesaju.adapters.auth import AuthSession
 from voicesaju.adapters.payment import (
     CheckoutSession,
     MockPaymentAdapter,
@@ -18,6 +19,7 @@ from voicesaju.adapters.payment import (
 )
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
+from voicesaju.middleware.auth import AuthMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +58,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         docs_url="/docs",
         redoc_url=None,
     )
+
+    # Resolve user from Bearer token on every request → request.state.user.
+    app.add_middleware(AuthMiddleware)
 
     @app.get("/healthz", tags=["meta"])
     async def healthz() -> dict[str, str]:
@@ -114,6 +119,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             payload.status,
         )
         return {"status": "ok"}
+
+    # ---- Auth (mock-backed Phase 1 endpoints) -------------------------
+    @app.get("/api/auth/login", tags=["auth"])
+    async def auth_login() -> AuthSession:
+        """Issue an auth session.
+
+        Mock provider returns a signed dev JWT immediately (no redirect).
+        Real OAuth providers (Phase 2) will return a redirect URL instead.
+        """
+        adapter = get_auth_adapter()
+        return AuthSession(access_token=adapter.start_login())
 
     return app
 
