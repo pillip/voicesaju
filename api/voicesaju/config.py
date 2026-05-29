@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     port: int = 8000
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 
+    # Database (SQLAlchemy 2.0 async). Defaults match docker-compose.yml.
+    # The asyncpg driver prefix is added automatically by `db.engine.build_async_url`.
+    database_url: str = "postgresql://voicesaju:voicesaju@localhost:5432/voicesaju"
+    db_echo: bool = False
+    db_pool_size: int = 5
+    db_max_overflow: int = 10
+
 
 def get_settings() -> Settings:
     """Return a Settings instance (factory for dependency injection / tests)."""
