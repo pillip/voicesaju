@@ -15,9 +15,10 @@ import {
   StepIndicator,
   TertiaryLink,
   Toast,
-} from '@/components/ui';
+} from "@/components/ui";
+import { NavChromePreview } from "./NavChromePreview";
 
-type State = 'default' | 'disabled' | 'loading';
+type State = "default" | "disabled" | "loading";
 
 function Row({
   title,
@@ -34,7 +35,10 @@ function Row({
       className="flex flex-col gap-s4 border-b border-ink-600 py-s6"
     >
       <header className="flex flex-col gap-s2">
-        <h2 id={`section-${title}`} className="font-display text-2xl text-cream-50">
+        <h2
+          id={`section-${title}`}
+          className="font-display text-2xl text-cream-50"
+        >
           {title}
         </h2>
         {description && <p className="text-sm text-cream-300">{description}</p>}
@@ -44,10 +48,18 @@ function Row({
   );
 }
 
-function StateCell({ state, children }: { state: State; children: React.ReactNode }) {
+function StateCell({
+  state,
+  children,
+}: {
+  state: State;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex flex-col items-start gap-s2">
-      <span className="font-mono text-xs uppercase tracking-wider text-cream-400">{state}</span>
+      <span className="font-mono text-xs uppercase tracking-wider text-cream-400">
+        {state}
+      </span>
       {children}
     </div>
   );
@@ -60,15 +72,20 @@ export default function PreviewPage() {
       className="mx-auto flex max-w-5xl flex-col gap-s8 bg-ink-900 px-s6 py-s10 text-cream-100"
     >
       <header className="flex flex-col gap-s2">
-        <h1 className="font-display text-4xl text-cream-50">VoiceSaju 디자인 시스템 v1</h1>
+        <h1 className="font-display text-4xl text-cream-50">
+          VoiceSaju 디자인 시스템 v1
+        </h1>
         <p className="text-sm text-cream-300">
-          ISSUE-021 미리보기 — 기본 컴포넌트 8종 × 3개 상태 (default / disabled / loading).
+          ISSUE-021 미리보기 — 기본 컴포넌트 8종 × 3개 상태 (default / disabled
+          / loading).
         </p>
       </header>
 
       <Row title="PrimaryButton">
         <StateCell state="default">
-          <PrimaryButton data-testid="preview-PrimaryButton-default">저장하기</PrimaryButton>
+          <PrimaryButton data-testid="preview-PrimaryButton-default">
+            저장하기
+          </PrimaryButton>
         </StateCell>
         <StateCell state="disabled">
           <PrimaryButton disabled data-testid="preview-PrimaryButton-disabled">
@@ -84,15 +101,23 @@ export default function PreviewPage() {
 
       <Row title="SecondaryButton">
         <StateCell state="default">
-          <SecondaryButton data-testid="preview-SecondaryButton-default">취소</SecondaryButton>
+          <SecondaryButton data-testid="preview-SecondaryButton-default">
+            취소
+          </SecondaryButton>
         </StateCell>
         <StateCell state="disabled">
-          <SecondaryButton disabled data-testid="preview-SecondaryButton-disabled">
+          <SecondaryButton
+            disabled
+            data-testid="preview-SecondaryButton-disabled"
+          >
             취소
           </SecondaryButton>
         </StateCell>
         <StateCell state="loading">
-          <SecondaryButton loading data-testid="preview-SecondaryButton-loading">
+          <SecondaryButton
+            loading
+            data-testid="preview-SecondaryButton-loading"
+          >
             취소
           </SecondaryButton>
         </StateCell>
@@ -100,18 +125,29 @@ export default function PreviewPage() {
 
       <Row title="TertiaryLink">
         <StateCell state="default">
-          <TertiaryLink href="#terms" data-testid="preview-TertiaryLink-default">
+          <TertiaryLink
+            href="#terms"
+            data-testid="preview-TertiaryLink-default"
+          >
             이용 약관 보기
           </TertiaryLink>
         </StateCell>
         <StateCell state="disabled">
-          <TertiaryLink href="#terms" disabled data-testid="preview-TertiaryLink-disabled">
+          <TertiaryLink
+            href="#terms"
+            disabled
+            data-testid="preview-TertiaryLink-disabled"
+          >
             이용 약관 보기
           </TertiaryLink>
         </StateCell>
         <StateCell state="loading">
           {/* TertiaryLink has no native loading; we expose a disabled+busy hint */}
-          <TertiaryLink href="#terms" aria-busy="true" data-testid="preview-TertiaryLink-loading">
+          <TertiaryLink
+            href="#terms"
+            aria-busy="true"
+            data-testid="preview-TertiaryLink-loading"
+          >
             이용 약관 보기
           </TertiaryLink>
         </StateCell>
@@ -119,17 +155,28 @@ export default function PreviewPage() {
 
       <Row title="CategoryCard" description="연애 / 직장 / 금전 / 타로">
         <StateCell state="default">
-          <CategoryCard category="love" data-testid="preview-CategoryCard-default">
+          <CategoryCard
+            category="love"
+            data-testid="preview-CategoryCard-default"
+          >
             연애운 상세
           </CategoryCard>
         </StateCell>
         <StateCell state="disabled">
-          <CategoryCard category="work" disabled data-testid="preview-CategoryCard-disabled">
+          <CategoryCard
+            category="work"
+            disabled
+            data-testid="preview-CategoryCard-disabled"
+          >
             직장운 잠금
           </CategoryCard>
         </StateCell>
         <StateCell state="loading">
-          <CategoryCard category="money" loading data-testid="preview-CategoryCard-loading">
+          <CategoryCard
+            category="money"
+            loading
+            data-testid="preview-CategoryCard-loading"
+          >
             금전운 불러오는 중
           </CategoryCard>
         </StateCell>
@@ -190,6 +237,8 @@ export default function PreviewPage() {
           </div>
         </StateCell>
       </Row>
+
+      <NavChromePreview />
 
       <Row title="Banner">
         <StateCell state="default">
