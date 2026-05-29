@@ -8,6 +8,8 @@ and at startup before any session is opened.
 from __future__ import annotations
 
 from voicesaju.db.models.devices import Device
+from voicesaju.db.models.profiles import Profile
+from voicesaju.db.models.saju_charts import SajuChart
 from voicesaju.db.models.users import User
 
-__all__ = ["Device", "User"]
+__all__ = ["Device", "Profile", "SajuChart", "User"]
