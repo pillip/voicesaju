@@ -8,6 +8,13 @@ slice exercises without external API credentials (see ISSUE-099..102).
 
 from __future__ import annotations
 
+from voicesaju.adapters.auth import (
+    AppleAuthAdapter,
+    AuthAdapter,
+    KakaoAuthAdapter,
+    MockAuthAdapter,
+    TossIdAdapter,
+)
 from voicesaju.adapters.payment import (
     MockPaymentAdapter,
     PaymentAdapter,
@@ -18,6 +25,29 @@ from voicesaju.config import Settings, get_settings
 
 class UnknownProviderError(RuntimeError):
     """Raised when the configured provider name is not recognised."""
+
+
+def get_auth_adapter(settings: Settings | None = None) -> AuthAdapter:
+    """Return the active auth adapter selected by `settings.auth_provider`.
+
+    Phase 1 default is `mock`. The real-provider stubs instantiate cleanly
+    so the app can boot when env points at them but raise
+    `NotImplementedError` on the first business-logic call.
+    """
+    settings = settings or get_settings()
+    provider = settings.auth_provider.lower()
+    if provider == "mock":
+        return MockAuthAdapter(settings=settings)
+    if provider == "kakao":
+        return KakaoAuthAdapter()
+    if provider == "apple":
+        return AppleAuthAdapter()
+    if provider == "toss_id":
+        return TossIdAdapter()
+    raise UnknownProviderError(
+        f"unknown AUTH_PROVIDER={settings.auth_provider!r}; "
+        "expected one of: 'mock', 'kakao', 'apple', 'toss_id'"
+    )
 
 
 def get_payment_adapter(settings: Settings | None = None) -> PaymentAdapter:
@@ -40,9 +70,15 @@ def get_payment_adapter(settings: Settings | None = None) -> PaymentAdapter:
 
 
 __all__ = [
+    "AppleAuthAdapter",
+    "AuthAdapter",
+    "KakaoAuthAdapter",
+    "MockAuthAdapter",
     "MockPaymentAdapter",
     "PaymentAdapter",
+    "TossIdAdapter",
     "TossPaymentAdapter",
     "UnknownProviderError",
+    "get_auth_adapter",
     "get_payment_adapter",
 ]

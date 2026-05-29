@@ -30,10 +30,22 @@ class Settings(BaseSettings):
     db_pool_size: int = 5
     db_max_overflow: int = 10
 
-    # Adapter selection (Phase 1 PoC defaults to mock). The factory in
-    # `voicesaju.adapters` reads this at request time so test suites can
+    # Adapter selection (Phase 1 PoC defaults to mock). Factories in
+    # `voicesaju.adapters` read these at request time so test suites can
     # override via env without restarting the process.
+    auth_provider: Literal["mock", "kakao", "apple", "toss_id"] = "mock"
     payment_provider: Literal["mock", "toss"] = "mock"
+
+    # Mock-auth JWT signing secret. Dev default — fails in prod via validator.
+    mock_auth_jwt_secret: str = "dev-mock-secret-do-not-use-in-prod"
+
+    def model_post_init(self, __context: object) -> None:
+        """Guardrail: mock auth must not run in production."""
+        if self.environment == "prod" and self.auth_provider == "mock":
+            raise ValueError(
+                "AUTH_PROVIDER=mock is not allowed when ENVIRONMENT=prod. "
+                "Configure a real provider before production deploy."
+            )
 
 
 def get_settings() -> Settings:
