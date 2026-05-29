@@ -18,6 +18,8 @@ from voicesaju.db.models.readings import Reading
 from voicesaju.db.models.refunds import Refund
 from voicesaju.db.models.saju_charts import SajuChart
 from voicesaju.db.models.subscriptions import Subscription
+from voicesaju.db.models.tarot_cards import TarotCard
+from voicesaju.db.models.tarot_draws import TarotDraw
 from voicesaju.db.models.users import User
 
 __all__ = [
@@ -32,5 +34,7 @@ __all__ = [
     "Refund",
     "SajuChart",
     "Subscription",
+    "TarotCard",
+    "TarotDraw",
     "User",
 ]
