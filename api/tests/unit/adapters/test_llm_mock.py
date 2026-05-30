@@ -12,6 +12,7 @@ import asyncio
 import time
 
 import pytest
+
 from voicesaju.adapters.llm import (
     SENTENCE_DELAY_SECONDS,
     LLMAdapter,
@@ -79,9 +80,9 @@ async def test_deterministic_selection_by_seed() -> None:
             out.append(c)
         seeds_results.append(out)
 
-    assert seeds_results[0] == seeds_results[1] == seeds_results[2], (
-        "deterministic selection broken: same seed produced different streams"
-    )
+    assert (
+        seeds_results[0] == seeds_results[1] == seeds_results[2]
+    ), "deterministic selection broken: same seed produced different streams"
 
 
 @pytest.mark.asyncio
