@@ -21,8 +21,12 @@ export interface TarotTodayResponse {
   card_index: number;
   card_name: string;
   card_art_url: string;
-  /** Weekly free draws left for non-subscribers. Subscribers get >= 1. */
-  free_remaining: number;
+  /**
+   * Weekly free draws left for non-subscribers. For active subscribers
+   * the backend (ISSUE-052) returns `null` — the page reads
+   * `is_subscriber` instead and renders the "구독 중" copy variant.
+   */
+  free_remaining: number | null;
   /** True iff the user has 0 quota AND no subscription bypass. */
   requires_payment: boolean;
   /**
@@ -30,6 +34,16 @@ export interface TarotTodayResponse {
    * KST date). The page surfaces the 다시 듣기 CTA when set.
    */
   already_flipped?: boolean;
+  /**
+   * ISSUE-052 / FR-022 — true when an active subscription grants the
+   * unlimited tarot bypass. The page passes this to
+   * `<TarotQuotaBanner>` so the banner can swap from "N회 남음" to the
+   * subscriber caption.
+   *
+   * Optional for backward compat: older backends may not yet emit the
+   * field. Callers should treat `undefined` as `false`.
+   */
+  is_subscriber?: boolean;
 }
 
 export class TarotApiError extends Error {

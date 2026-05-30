@@ -35,4 +35,21 @@ describe("<TarotQuotaBanner>", () => {
     render(<TarotQuotaBanner freeRemaining={1} unlimited />);
     expect(screen.getByText("매일 한 장, 무제한.")).toBeInTheDocument();
   });
+
+  // ISSUE-052 — the new prop name. Backend now emits `is_subscriber`
+  // so the page passes `isSubscriber` instead of inferring it from a
+  // ``unlimited`` boolean.
+  it("renders the subscriber caption when isSubscriber is true", () => {
+    render(<TarotQuotaBanner freeRemaining={null} isSubscriber />);
+    expect(screen.getByText("매일 한 장, 무제한.")).toBeInTheDocument();
+  });
+
+  it("isSubscriber wins over freeRemaining number (ISSUE-052)", () => {
+    // Even when an integer counter is passed, the subscriber flag
+    // forces the subscriber variant. This guards against accidental
+    // leakage of the integer from a stale cache during the bypass.
+    render(<TarotQuotaBanner freeRemaining={0} isSubscriber />);
+    expect(screen.getByText("매일 한 장, 무제한.")).toBeInTheDocument();
+    expect(screen.queryByText("이번 주 무료 다 봤음")).not.toBeInTheDocument();
+  });
 });

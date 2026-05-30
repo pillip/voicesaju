@@ -44,9 +44,12 @@ interface TodayState {
   card_index: number;
   card_name: string;
   card_art_url: string;
-  free_remaining: number;
+  /** `null` for subscribers (ISSUE-052). Otherwise the weekly counter. */
+  free_remaining: number | null;
   requires_payment: boolean;
   already_flipped: boolean;
+  /** ISSUE-052 — surfaced by the backend so the banner can render 구독 중. */
+  is_subscriber: boolean;
 }
 
 const FALLBACK_TODAY: TodayState = {
@@ -60,6 +63,7 @@ const FALLBACK_TODAY: TodayState = {
   free_remaining: 1,
   requires_payment: false,
   already_flipped: false,
+  is_subscriber: false,
 };
 
 function usePrefersReducedMotion(): boolean {
@@ -110,6 +114,7 @@ export default function TarotPage() {
           free_remaining: data.free_remaining,
           requires_payment: data.requires_payment,
           already_flipped: data.already_flipped === true,
+          is_subscriber: data.is_subscriber === true,
         };
         setToday(hydrated);
         if (hydrated.already_flipped) {
@@ -168,7 +173,7 @@ export default function TarotPage() {
       <div className="w-full">
         <TarotQuotaBanner
           freeRemaining={today.free_remaining}
-          unlimited={false}
+          isSubscriber={today.is_subscriber}
         />
       </div>
 

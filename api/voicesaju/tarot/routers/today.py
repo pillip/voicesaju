@@ -87,18 +87,30 @@ class _TodayResponse(BaseModel):
     """Response envelope for ``GET /api/v1/tarot/today``.
 
     Mirrors the architecture §6.4 contract:
-    ``{card_index, card_name, card_art_url, free_remaining, requires_payment}``.
+    ``{card_index, card_name, card_art_url, free_remaining,
+    requires_payment, is_subscriber}``.
 
     Phase-1 ``card_art_url`` is a relative placeholder
     (``/api/v1/tarot/cards/{card_index}/art``); the real R2-signed CDN
     URL lands in ISSUE-055.
+
+    ``is_subscriber`` is the ISSUE-052 / FR-022 signal — when an active
+    Subscription grants the tarot bypass, the field is ``True`` and
+    ``free_remaining`` is serialised as ``null`` so the frontend banner
+    can render "구독 중" instead of "N회 남음". For non-subscribers the
+    field is ``False`` and ``free_remaining`` remains an integer.
     """
 
     card_index: int
     card_name: str
     card_art_url: str
-    free_remaining: int
+    # ``None`` only for subscribers — the JSON payload encodes this as
+    # ``null`` so the frontend can distinguish subscriber bypass from a
+    # vanilla "first draw of the week" non-subscriber (both used to look
+    # identical with the previous int-only payload).
+    free_remaining: int | None
     requires_payment: bool
+    is_subscriber: bool
 
 
 class _ErrorBlock(BaseModel):
@@ -177,10 +189,17 @@ async def get_today(
     # Quota lookup — DB-fallback path (no Redis wired into the router
     # yet; ISSUE-049 leaves the Redis injection to a follow-up).
     quota = await check_weekly_free(session=session, user_id=user_id)
-    free_remaining = max(0, quota.remaining) if not quota.is_unlimited else 1
+
+    # ISSUE-052: surface the subscriber flag so the frontend banner can
+    # render "구독 중" (FR-022) instead of "N회 남음". When the caller is
+    # a subscriber the quota counter is meaningless — we serialise
+    # ``free_remaining`` as ``None`` (JSON ``null``) and let the page
+    # pick the appropriate copy variant.
+    is_subscriber = quota.is_unlimited
+    free_remaining: int | None = None if is_subscriber else max(0, quota.remaining)
     # Subscribers never see a paywall regardless of quota. Non-subs
     # need payment only after quota hits zero.
-    requires_payment = (not quota.is_unlimited) and quota.remaining <= 0
+    requires_payment = (not is_subscriber) and quota.remaining <= 0
 
     return _TodayResponse(
         card_index=card_index,
@@ -188,6 +207,7 @@ async def get_today(
         card_art_url=_card_art_url(card_index),
         free_remaining=free_remaining,
         requires_payment=requires_payment,
+        is_subscriber=is_subscriber,
     )
 
 
