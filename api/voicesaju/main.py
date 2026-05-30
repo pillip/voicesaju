@@ -194,6 +194,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(toss_bridge_router)
     app.include_router(toss_paywall_router)
 
+    # ---- Daily tarot (GET today + POST flip with SSE) ----------------
+    # ISSUE-049 (FR-012, FR-013, FR-014, FR-015, NFR-003). Mounts
+    # `GET /api/v1/tarot/today` (card metadata + quota) and
+    # `POST /api/v1/tarot/today/flip` (idempotent draw + SSE reading).
+    # Import happens at function scope so autoflake doesn't strip it
+    # when the router is added in a single PR before any other tarot
+    # router consumer references it at module scope.
+    from voicesaju.tarot.routers.today import (
+        router as tarot_today_router,
+    )
+
+    app.include_router(tarot_today_router)
+
     return app
 
 
