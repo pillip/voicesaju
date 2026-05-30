@@ -29,6 +29,8 @@ from voicesaju.users.routers.auth import router as oauth_router
 from voicesaju.users.routers.device import router as device_router
 from voicesaju.users.routers.me import router as me_router
 from voicesaju.users.routers.profile import router as profile_router
+from voicesaju.users.routers.toss_bridge import bridge_router as toss_bridge_router
+from voicesaju.users.routers.toss_bridge import paywall_router as toss_paywall_router
 
 logger = logging.getLogger(__name__)
 
@@ -183,6 +185,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # and dispatches by `eventType` (PAYMENT_DONE / PAYMENT_FAILED /
     # SUBSCRIPTION_RENEWED / SUBSCRIPTION_CANCELED / BILLING_FAILED).
     app.include_router(payment_webhook_router)
+
+    # ---- Toss WebView bridge + paywall -------------------------------
+    # ISSUE-046 (FR-016, FR-024, US-14). Mounts
+    # `POST /api/v1/auth/toss-bridge` (HS256 JWT verify + vs_sess
+    # SameSite=None cookie) and `GET /api/v1/reading/paywall`
+    # (channel-gated payment-method list).
+    app.include_router(toss_bridge_router)
+    app.include_router(toss_paywall_router)
 
     return app
 

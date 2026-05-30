@@ -75,6 +75,13 @@ class Settings(BaseSettings):
     # outright so a half-configured deploy cannot accept arbitrary
     # webhooks. Env: ``TOSS_WEBHOOK_SECRET``.
     toss_webhook_secret: str | None = None
+    # Toss WebView bridge (ISSUE-046). Symmetric secret used to verify
+    # HS256 JWTs issued by the Toss bridge; ``TOSS_BRIDGE_AUDIENCE``
+    # is the ``aud`` claim Toss embeds. The origin allowlist gates
+    # SameSite=None cookie issuance to documented WebView origins.
+    toss_bridge_secret: str | None = None
+    toss_bridge_audience: str = "voicesaju"
+    toss_webview_origin_allowlist: list[str] = ["https://m.tosspayments.com"]
 
     # --- Anthropic LLM client (ISSUE-034) ---
     # API key for the real ``ClaudeAdapter`` path. Optional in non-prod
