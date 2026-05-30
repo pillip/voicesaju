@@ -1912,9 +1912,12 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-012, FR-014, US-06, US-07
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
 - Depends-On: ISSUE-022, ISSUE-049
+- Branch: issue-050-tarot-screens
+- GH-Issue: https://github.com/pillip/voicesaju/issues/81
+- PR: https://github.com/pillip/voicesaju/pull/82
 
 ### Goal
 `/tarot` (Screen 12) shows face-down card + quota banner + flip interaction. `/tarot/paywall` (Screen 24) routes quota-exhausted users to single/subscription options.
