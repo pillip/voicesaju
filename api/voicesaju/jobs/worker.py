@@ -43,8 +43,10 @@ def register(func: Callable[..., Awaitable[Any]]) -> Callable[..., Awaitable[Any
 # intentional — this is how arq discovers callables, and the in-memory
 # stub piggybacks on the same module-level state.
 from voicesaju.jobs.audio_finalize import finalize_audio  # noqa: E402
+from voicesaju.jobs.og_bake import og_bake  # noqa: E402
 
 register(finalize_audio)
+register(og_bake)
 
 
 class WorkerSettings:
