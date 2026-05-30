@@ -1872,9 +1872,12 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-012, FR-015, NFR-003
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
 - Depends-On: ISSUE-034, ISSUE-037, ISSUE-038, ISSUE-047, ISSUE-048
+- Branch: issue/049-tarot-pipeline
+- GH-Issue: https://github.com/pillip/voicesaju/issues/79
+- PR: https://github.com/pillip/voicesaju/pull/80
 
 ### Goal
 `GET /api/v1/tarot/today` returns today's card metadata + quota; `POST /api/v1/tarot/today/flip` creates `tarot_draws` row + streams Haiku 4.5 reading via SSE.
