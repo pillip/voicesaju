@@ -231,10 +231,16 @@ async def test_create_for_reading_inserts_row_and_enqueues_job(
     assert row.share_slug == result.share_slug
 
     # Queue -------------------------------------------------------------
+    # ISSUE-058 swapped the stub for the real Pillow compositor, which
+    # now requires ``session=`` / ``r2=`` kwargs at call time. The
+    # row-create path only enqueues the dispatch name + ``quote_card_id``
+    # so the worker can resolve its DB session from arq's context;
+    # asserting the queued shape is the right level of detail here.
     assert len(queue) == 1
-    # Drain and assert dispatch name + kwargs.
-    results = await queue.drain()
-    assert results == [None]  # stub no-op returns None
+    queued_name, queued_args, queued_kwargs = queue._pending[0]
+    assert queued_name == "og_bake"
+    assert queued_args == ()
+    assert queued_kwargs == {"quote_card_id": result.quote_card_id}
 
 
 @pytest.mark.asyncio
