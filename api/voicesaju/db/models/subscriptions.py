@@ -74,6 +74,13 @@ class Subscription(Base):
     canceled_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    # ISSUE-068: stamped immediately when the user clicks "구독 해지" so
+    # ``cancel_at_period_end`` semantics can be enforced without waiting
+    # for the Toss webhook. Distinct from ``canceled_at`` (terminal,
+    # written by the SUBSCRIPTION_CANCELED webhook after period_end).
+    cancel_requested_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     def __repr__(self) -> str:  # pragma: no cover - debug aid
         return (
