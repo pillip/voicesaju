@@ -21,6 +21,7 @@ from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
 from voicesaju.readings.routers.intro import router as reading_intro_router
+from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
 from voicesaju.users.routers.auth import router as oauth_router
 from voicesaju.users.routers.device import router as device_router
 from voicesaju.users.routers.me import router as me_router
@@ -153,6 +154,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # ---- Reading intro clip (persona audio lookup) -------------------
     # ISSUE-031 (FR-005). Mounts `GET /api/v1/reading/intro/{category}`.
     app.include_router(reading_intro_router)
+    app.include_router(reading_pipeline_router)
 
     # ---- Me + entitlement summary ------------------------------------
     # ISSUE-040 (FR-006, FR-014, FR-022). Mounts `GET /api/v1/me`,
