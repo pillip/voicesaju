@@ -25,6 +25,11 @@ from voicesaju.adapters.payment import (
     PaymentAdapter,
     TossPaymentAdapter,
 )
+from voicesaju.adapters.storage import (
+    MockStorageAdapter,
+    R2StorageAdapter,
+    StorageAdapter,
+)
 from voicesaju.adapters.tts import (
     MockTTSAdapter,
     SupertoneAdapter,
@@ -117,6 +122,26 @@ def get_tts_adapter(settings: Settings | None = None) -> TTSAdapter:
     )
 
 
+def get_storage_adapter(settings: Settings | None = None) -> StorageAdapter:
+    """Return the active storage adapter selected by `settings.storage_provider`.
+
+    Phase 1 default is `mock` (local-fs at ``./.local_storage/``). `r2`
+    returns the Phase 2 stub whose methods raise ``NotImplementedError``
+    on first call so the app still boots under ``STORAGE_PROVIDER=r2``
+    before ISSUE-005 lands.
+    """
+    settings = settings or get_settings()
+    provider = settings.storage_provider.lower()
+    if provider == "mock":
+        return MockStorageAdapter()
+    if provider == "r2":
+        return R2StorageAdapter()
+    raise UnknownProviderError(
+        f"unknown STORAGE_PROVIDER={settings.storage_provider!r}; "
+        "expected one of: 'mock', 'r2'"
+    )
+
+
 __all__ = [
     "AppleAuthAdapter",
     "AuthAdapter",
@@ -126,8 +151,11 @@ __all__ = [
     "MockAuthAdapter",
     "MockLLMAdapter",
     "MockPaymentAdapter",
+    "MockStorageAdapter",
     "MockTTSAdapter",
     "PaymentAdapter",
+    "R2StorageAdapter",
+    "StorageAdapter",
     "SupertoneAdapter",
     "TTSAdapter",
     "TossIdAdapter",
@@ -136,5 +164,6 @@ __all__ = [
     "get_auth_adapter",
     "get_llm_adapter",
     "get_payment_adapter",
+    "get_storage_adapter",
     "get_tts_adapter",
 ]

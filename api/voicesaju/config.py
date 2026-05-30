@@ -43,6 +43,12 @@ class Settings(BaseSettings):
     # which streams 10 pre-baked silent MP3 chunks at 200ms pacing.
     # `supertone` reserves the env slot for ISSUE-036 (real Supertone SSE).
     tts_provider: Literal["mock", "supertone"] = "mock"
+    # Storage adapter selection (ISSUE-038). ``mock`` writes audio +
+    # OG assets to ``./.local_storage/`` (gitignored, local-fs); ``r2``
+    # reserves the env slot for ISSUE-005 (real Cloudflare R2). Real
+    # provisioning is Phase-2 deferred — the Phase-2 stub still
+    # instantiates so the app boots under ``STORAGE_PROVIDER=r2``.
+    storage_provider: Literal["mock", "r2"] = "mock"
 
     # Mock-auth JWT signing secret. Dev default — fails in prod via validator.
     mock_auth_jwt_secret: str = "dev-mock-secret-do-not-use-in-prod"
