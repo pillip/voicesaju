@@ -82,6 +82,11 @@ class Payment(Base):
         server_default="pending",
     )
     toss_order_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    # ``toss_payment_key`` is the Toss-side receipt id, stamped onto the
+    # row when the confirm/webhook flow finalises the payment. Used as the
+    # idempotency anchor for the ISSUE-045 webhook handler so a duplicate
+    # ``PAYMENT_DONE`` delivery is a no-op.
+    toss_payment_key: Mapped[str | None] = mapped_column(String, nullable=True)
     paid_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )

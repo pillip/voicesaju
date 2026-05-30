@@ -68,6 +68,13 @@ class Settings(BaseSettings):
     # populating them surfaces a clear NotImplementedError on first call.
     toss_secret_key: str | None = None
     toss_api_base: str = "https://api.tosspayments.com"
+    # Webhook signing secret (ISSUE-045). Toss signs each webhook body
+    # with ``HMAC-SHA256(body, TOSS_WEBHOOK_SECRET)`` and ships the hex
+    # digest in ``X-Toss-Signature``. ``verify_signature`` in
+    # ``voicesaju.payment.webhook_signature`` rejects an empty secret
+    # outright so a half-configured deploy cannot accept arbitrary
+    # webhooks. Env: ``TOSS_WEBHOOK_SECRET``.
+    toss_webhook_secret: str | None = None
 
     # --- Anthropic LLM client (ISSUE-034) ---
     # API key for the real ``ClaudeAdapter`` path. Optional in non-prod
