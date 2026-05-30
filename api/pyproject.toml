@@ -65,4 +65,5 @@ target-version = ["py311"]
 [dependency-groups]
 dev = [
     "aiosqlite>=0.19,<1.0",
+    "mutagen>=1.47.0",
 ]

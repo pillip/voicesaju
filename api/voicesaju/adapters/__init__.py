@@ -25,6 +25,11 @@ from voicesaju.adapters.payment import (
     PaymentAdapter,
     TossPaymentAdapter,
 )
+from voicesaju.adapters.tts import (
+    MockTTSAdapter,
+    SupertoneAdapter,
+    TTSAdapter,
+)
 from voicesaju.config import Settings, get_settings
 
 
@@ -93,6 +98,25 @@ def get_payment_adapter(settings: Settings | None = None) -> PaymentAdapter:
     )
 
 
+def get_tts_adapter(settings: Settings | None = None) -> TTSAdapter:
+    """Return the active TTS adapter selected by `settings.tts_provider`.
+
+    Phase 1 default is `mock`. `supertone` returns the Phase 2 stub whose
+    `stream()` raises ``NotImplementedError`` so the app still boots
+    under `TTS_PROVIDER=supertone` before ISSUE-036 lands.
+    """
+    settings = settings or get_settings()
+    provider = settings.tts_provider.lower()
+    if provider == "mock":
+        return MockTTSAdapter()
+    if provider == "supertone":
+        return SupertoneAdapter()
+    raise UnknownProviderError(
+        f"unknown TTS_PROVIDER={settings.tts_provider!r}; "
+        "expected one of: 'mock', 'supertone'"
+    )
+
+
 __all__ = [
     "AppleAuthAdapter",
     "AuthAdapter",
@@ -102,11 +126,15 @@ __all__ = [
     "MockAuthAdapter",
     "MockLLMAdapter",
     "MockPaymentAdapter",
+    "MockTTSAdapter",
     "PaymentAdapter",
+    "SupertoneAdapter",
+    "TTSAdapter",
     "TossIdAdapter",
     "TossPaymentAdapter",
     "UnknownProviderError",
     "get_auth_adapter",
     "get_llm_adapter",
     "get_payment_adapter",
+    "get_tts_adapter",
 ]

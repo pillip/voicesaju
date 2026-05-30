@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     # which streams fixture text from `tests/fixtures/llm/{category}/`.
     # `claude` reserves the env slot for ISSUE-035 (real Anthropic SSE).
     llm_provider: Literal["mock", "claude"] = "mock"
+    # TTS adapter selection. ISSUE-102 ships the mock implementation
+    # which streams 10 pre-baked silent MP3 chunks at 200ms pacing.
+    # `supertone` reserves the env slot for ISSUE-036 (real Supertone SSE).
+    tts_provider: Literal["mock", "supertone"] = "mock"
 
     # Mock-auth JWT signing secret. Dev default — fails in prod via validator.
     mock_auth_jwt_secret: str = "dev-mock-secret-do-not-use-in-prod"
