@@ -20,7 +20,14 @@ import hashlib
 import re
 from collections.abc import AsyncIterator
 from pathlib import Path
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    # ISSUE-034: forward-only refs so the module import stays cheap and
+    # `LLM_PROVIDER=mock` paths never touch the anthropic SDK.
+    from voicesaju.config import Settings
+    from voicesaju.llm.anthropic_client import AnthropicLLMClient
+    from voicesaju.llm.cost_tracker import CostTracker
 
 # Inter-sentence pacing. Picked to mirror the steady-state token-burst
 # cadence we see from Anthropic SSE so downstream timing tests don't
@@ -145,22 +152,127 @@ class MockLLMAdapter:
 
 
 # ---------------------------------------------------------------------------
-# ClaudeAdapter — Phase 2 stub
+# ClaudeAdapter — real Anthropic SSE wrapper (ISSUE-034)
 # ---------------------------------------------------------------------------
 
 
 class ClaudeAdapter:
-    """Phase 2 real-Anthropic adapter — instantiation succeeds, calls fail.
+    """LLMAdapter implementation that delegates to ``AnthropicLLMClient``.
 
-    Importing/instantiating does NOT raise so `LLM_PROVIDER=claude` can
-    be wired before the real client lands; `stream()` raises
-    ``NotImplementedError`` pointing at ISSUE-035.
+    ISSUE-034 replaces the original Phase 2 stub with a working class.
+    Instantiation succeeds even when ``ANTHROPIC_API_KEY`` is missing —
+    only ``stream()`` enforces the key, so ``LLM_PROVIDER=claude`` can
+    be wired in non-prod before the Phase 2 ISSUE-035 key provisioning
+    is complete.
+
+    The adapter applies the **router** here: a `category` like
+    ``"saju_love"`` / ``"saju_work"`` / ``"saju_money"`` routes to the
+    main-saju Sonnet path, while ``"tarot"`` / ``"followup"`` route to
+    the Haiku path. The protocol's `prompt` argument is forwarded
+    verbatim — composition of system + user blocks is the pipeline's
+    responsibility (Architecture §7.2).
     """
 
+    def __init__(
+        self,
+        *,
+        settings: Settings | None = None,
+        cost_tracker: CostTracker | None = None,
+    ) -> None:
+        # Lazy import — keeps the stub-equivalent constructor cheap and
+        # avoids cyclic imports if Settings ever needs the LLM module.
+        from voicesaju.config import get_settings as _get_settings
+        from voicesaju.llm.cost_tracker import CostTracker as _CostTracker
+
+        self._settings = settings or _get_settings()
+        self._tracker = cost_tracker or _CostTracker()
+        self._client: AnthropicLLMClient | None = None  # built lazily.
+
+    @property
+    def cost_tracker(self) -> CostTracker:
+        return self._tracker
+
+    def _ensure_client(self) -> AnthropicLLMClient:
+        """Build the underlying ``AnthropicLLMClient`` on first use.
+
+        Lazy construction so that ``LLM_PROVIDER=claude`` boots even
+        without an API key (only ``stream()`` errors). The factory
+        injects KRW pricing from Settings so production runs reflect
+        the latest OQ-01 figures without a code change.
+        """
+        if self._client is not None:
+            return self._client
+
+        from voicesaju.llm.anthropic_client import AnthropicLLMClient
+        from voicesaju.llm.router import HAIKU_4_5, SONNET_4_6
+
+        api_key = self._settings.anthropic_api_key
+        if not api_key:
+            raise RuntimeError(
+                "ANTHROPIC_API_KEY is not configured. Set it via env or "
+                ".env.local before using LLM_PROVIDER=claude (see ISSUE-035)."
+            )
+
+        self._client = AnthropicLLMClient(
+            api_key=api_key,
+            cost_tracker=self._tracker,
+            input_krw_per_mtok={
+                SONNET_4_6: self._settings.anthropic_sonnet_input_krw_per_mtok,
+                HAIKU_4_5: self._settings.anthropic_haiku_input_krw_per_mtok,
+            },
+            output_krw_per_mtok={
+                SONNET_4_6: self._settings.anthropic_sonnet_output_krw_per_mtok,
+                HAIKU_4_5: self._settings.anthropic_haiku_output_krw_per_mtok,
+            },
+        )
+        return self._client
+
+    def _route_category(self, category: str) -> str:
+        """Map the legacy `category` string onto a router ``TaskKind``.
+
+        Categories prefixed with ``saju_`` go to the main reading path
+        (Sonnet). Anything else (``tarot``, ``followup_*``) routes to
+        Haiku per Architecture §7.1. Unknown categories default to
+        Haiku — safer (cheaper) than defaulting to Sonnet.
+        """
+        from voicesaju.llm.router import TaskKind, select_model
+
+        if category.startswith("saju"):
+            return select_model(TaskKind.SAJU_MAIN)
+        if category.startswith("followup"):
+            return select_model(TaskKind.FOLLOWUP_ANSWER)
+        if category == "tarot":
+            return select_model(TaskKind.TAROT)
+        # Conservative default: cheaper model on an unknown category.
+        return select_model(TaskKind.FOLLOWUP_ANSWER)
+
     async def stream(self, prompt: str, category: str, seed: str) -> AsyncIterator[str]:
-        raise NotImplementedError("ClaudeAdapter is a Phase 2 stub. See ISSUE-035.")
-        # Unreachable but keeps mypy happy about the AsyncIterator return.
-        yield ""  # pragma: no cover
+        """Stream tokens from Anthropic.
+
+        Forwards the protocol's `prompt` as the user message. `seed` is
+        passed through as metadata (currently unused by the SDK call
+        but reserved for traceability — `Reading.engine_version` writes
+        rely on the caller knowing the seed).
+        """
+        # NB: imports inside `stream()` to keep top-level import cheap;
+        # see ISSUE-101 ClaudeAdapter docstring for the original
+        # rationale (the file is the entry point for `from voicesaju.
+        # adapters.llm import …` even when only the mock is used).
+        client = self._ensure_client()
+        model = self._route_category(category)
+
+        # `system` block is empty — callers compose the full system
+        # prompt into `prompt` to match the legacy LLMAdapter protocol.
+        # The pipeline orchestrator (ISSUE-039) will adopt the richer
+        # `(system, user, max_tokens)` shape directly via
+        # AnthropicLLMClient when the prompt-template machinery lands.
+        async for token in client.stream(
+            model=model,
+            system="",
+            user=prompt,
+            max_tokens=2048,
+        ):
+            yield token
 
 
 __all__ = [

@@ -47,6 +47,21 @@ class Settings(BaseSettings):
     # Mock-auth JWT signing secret. Dev default — fails in prod via validator.
     mock_auth_jwt_secret: str = "dev-mock-secret-do-not-use-in-prod"
 
+    # --- Anthropic LLM client (ISSUE-034) ---
+    # API key for the real ``ClaudeAdapter`` path. Optional in non-prod
+    # since the default ``LLM_PROVIDER=mock`` never touches Anthropic.
+    # Real provisioning lives behind ISSUE-035 (Phase 2 manual setup).
+    anthropic_api_key: str | None = None
+    # KRW per million tokens — conservative estimates per PRD §11 OQ-01.
+    # Override via env (`ANTHROPIC_SONNET_INPUT_KRW_PER_MTOK=…`) once the
+    # exact billed price is known. The cost-tracker dashboard alerts on
+    # >18% / >20% of single price so we want these numbers stable per
+    # deploy, not hardcoded in the SDK wrapper.
+    anthropic_sonnet_input_krw_per_mtok: float = 4_000.0
+    anthropic_sonnet_output_krw_per_mtok: float = 20_000.0
+    anthropic_haiku_input_krw_per_mtok: float = 1_000.0
+    anthropic_haiku_output_krw_per_mtok: float = 5_000.0
+
     def model_post_init(self, __context: object) -> None:
         """Guardrail: mock-* adapters must not run in production."""
         if self.environment == "prod" and self.auth_provider == "mock":
