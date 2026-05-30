@@ -53,6 +53,22 @@ class Settings(BaseSettings):
     # Mock-auth JWT signing secret. Dev default — fails in prod via validator.
     mock_auth_jwt_secret: str = "dev-mock-secret-do-not-use-in-prod"
 
+    # --- Toss Payments (ISSUE-044) ---
+    # Price catalogue per A-01. Override via env (PRICE_SINGLE_KRW=…)
+    # once the OQ-04 single/subscription pricing decision is finalised.
+    price_single_krw: int = 4_900
+    price_subscription_krw: int = 9_900
+    # Toss redirect targets. The routes fall back to
+    # ``Request.base_url + /payment/{success,fail}`` if these are unset
+    # so local-dev works without env vars.
+    toss_success_url: str | None = None
+    toss_fail_url: str | None = None
+    # Real-Toss client config (Phase-2 — ISSUE-043). The Phase-1 wiring
+    # leaves these unset; switching to ``PAYMENT_PROVIDER=toss`` without
+    # populating them surfaces a clear NotImplementedError on first call.
+    toss_secret_key: str | None = None
+    toss_api_base: str = "https://api.tosspayments.com"
+
     # --- Anthropic LLM client (ISSUE-034) ---
     # API key for the real ``ClaudeAdapter`` path. Optional in non-prod
     # since the default ``LLM_PROVIDER=mock`` never touches Anthropic.

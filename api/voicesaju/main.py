@@ -20,6 +20,7 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.payment.routes import router as payment_router  # noqa: F401
 from voicesaju.readings.routers.followups import router as reading_followups_router
 from voicesaju.readings.routers.intro import router as reading_intro_router
 from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
@@ -168,6 +169,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # which returns the caller's entitlement summary (replaces the
     # M1 web stub `web/src/lib/api/me-stub.ts`).
     app.include_router(me_router)
+
+    # ---- Payments (Toss) ---------------------------------------------
+    # ISSUE-044 (FR-021). Mounts `POST /api/v1/payments/checkout` and
+    # `POST /api/v1/payments/confirm`. Phase-1 delegates to
+    # MockTossClient under PAYMENT_PROVIDER=mock.
+    app.include_router(payment_router)
 
     return app
 
