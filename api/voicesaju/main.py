@@ -20,6 +20,7 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.payment.history import router as payment_history_router
 from voicesaju.payment.routes import router as payment_router  # noqa: F401
 from voicesaju.payment.webhook import router as payment_webhook_router
 from voicesaju.readings.routers.followups import router as reading_followups_router
@@ -178,6 +179,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # `POST /api/v1/payments/confirm`. Phase-1 delegates to
     # MockTossClient under PAYMENT_PROVIDER=mock.
     app.include_router(payment_router)
+
+    # ---- Payments history (single-purchase list, paginated) ----------
+    # ISSUE-073 (FR-026, US-12). Mounts `GET /api/v1/payments/history`.
+    # 20/page, desc by `created_at`, scoped to the caller. Backed by the
+    # `payments_user_created_idx` index (alembic 0006 / ISSUE-014).
+    app.include_router(payment_history_router)
 
     # ---- Payments webhook (Toss → us, HMAC-signed) -------------------
     # ISSUE-045 (FR-021, FR-022). Mounts `POST /api/v1/payments/webhook`.
