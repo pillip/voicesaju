@@ -1989,9 +1989,12 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-022 (subscriber benefit)
 - Priority: P1
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
 - Depends-On: ISSUE-014, ISSUE-048, ISSUE-049
+- Branch: issue-052-tarot-subscriber-bypass
+- GH-Issue: #83
+- PR: #85 (merged: b92c2f4)
 
 ### Goal
 Active subscribers have unlimited tarot draws per day (only one card per day per FR-013, but no weekly cap).
@@ -2023,9 +2026,12 @@ Active subscribers have unlimited tarot draws per day (only one card per day per
 - PRD-Ref: FR-013
 - Priority: P2
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
 - Depends-On: ISSUE-050
+- Branch: issue-053-tarot-kst-refresh
+- GH-Issue: #84
+- PR: #86 (merged: d2588ab)
 
 ### Goal
 At KST midnight, the `/tarot` page either auto-refreshes or shows a "새로운 카드가 준비됐어요" banner.
