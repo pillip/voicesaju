@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * `<EndClient>` — `/reading/end` (Screen 11, ISSUE-059).
@@ -26,40 +26,40 @@
  * Architecture-Ref: docs/ux_spec.md Screen 11, docs/copy_guide.md §9.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-import { QuoteCardPreview } from "@/components/share/QuoteCardPreview";
-import { ShareButtonRow } from "@/components/share/ShareButtonRow";
-import { SignupPromptModal } from "@/components/auth/SignupPromptModal";
-import type { QuoteCardBySlugResponse } from "@/app/api/og/[slug]/og-helpers";
+import { QuoteCardPreview } from '@/components/share/QuoteCardPreview';
+import { ShareButtonRow } from '@/components/share/ShareButtonRow';
+import { SignupPromptModal } from '@/components/auth/SignupPromptModal';
+import type { QuoteCardBySlugResponse } from '@/app/api/og/[slug]/og-helpers';
 
 /** copy_guide §9 + supporting strings. */
-const ERROR_COPY = "명대사 카드를 찾을 수 없어. 새로 풀이를 받아볼래?";
-const CTA_RETRY = "또 풀이 받기";
-const CTA_MY = "마이페이지로";
+const ERROR_COPY = '명대사 카드를 찾을 수 없어. 새로 풀이를 받아볼래?';
+const CTA_RETRY = '또 풀이 받기';
+const CTA_MY = '마이페이지로';
 
-const HREF_CATEGORY = "/reading/category";
-const HREF_ME = "/me";
+const HREF_CATEGORY = '/reading/category';
+const HREF_ME = '/me';
 
 const SIGNUP_DELAY_MS = 1000;
 
 type FetchState =
-  | { kind: "idle" }
-  | { kind: "loading" }
-  | { kind: "ok"; card: QuoteCardBySlugResponse }
-  | { kind: "missing" }
-  | { kind: "error"; status: number };
+  | { kind: 'idle' }
+  | { kind: 'loading' }
+  | { kind: 'ok'; card: QuoteCardBySlugResponse }
+  | { kind: 'missing' }
+  | { kind: 'error'; status: number };
 
 export default function EndClient() {
   const searchParams = useSearchParams();
-  const slug = searchParams?.get("slug") ?? null;
-  const memberParam = searchParams?.get("member");
-  const isMember = memberParam === "true" || memberParam === "1";
+  const slug = searchParams?.get('slug') ?? null;
+  const memberParam = searchParams?.get('member');
+  const isMember = memberParam === 'true' || memberParam === '1';
 
   const [fetchState, setFetchState] = useState<FetchState>(
-    slug ? { kind: "loading" } : { kind: "missing" },
+    slug ? { kind: 'loading' } : { kind: 'missing' },
   );
   const [signupOpen, setSignupOpen] = useState(false);
   const signupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -74,28 +74,25 @@ export default function EndClient() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(
-          `/api/v1/quote-cards/by-slug/${encodeURIComponent(slug)}`,
-          {
-            method: "GET",
-            headers: { Accept: "application/json" },
-          },
-        );
+        const res = await fetch(`/api/v1/quote-cards/by-slug/${encodeURIComponent(slug)}`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        });
         if (cancelled) return;
         if (res.status === 404) {
-          setFetchState({ kind: "missing" });
+          setFetchState({ kind: 'missing' });
           return;
         }
         if (!res.ok) {
-          setFetchState({ kind: "error", status: res.status });
+          setFetchState({ kind: 'error', status: res.status });
           return;
         }
         const card = (await res.json()) as QuoteCardBySlugResponse;
         if (cancelled) return;
-        setFetchState({ kind: "ok", card });
+        setFetchState({ kind: 'ok', card });
       } catch {
         if (cancelled) return;
-        setFetchState({ kind: "error", status: 0 });
+        setFetchState({ kind: 'error', status: 0 });
       }
     })();
     return () => {
@@ -124,13 +121,16 @@ export default function EndClient() {
   // -----------------------------------------------------------------
   // Derived props for children.
   // -----------------------------------------------------------------
-  const cardForPreview = fetchState.kind === "ok" ? fetchState.card : undefined;
-  const shareUrl = slug ? `/share/${slug}` : "/";
-  const ogImageUrl = slug ? `/api/og/${slug}` : "";
-  const quoteText = fetchState.kind === "ok" ? fetchState.card.quote_text : "";
+  const cardForPreview = fetchState.kind === 'ok' ? fetchState.card : undefined;
+  // The slug is generated server-side as base62 (data_model §4.16, ≤12
+  // chars), so it's URL-safe by construction. We still encode here as
+  // defense-in-depth in case a future migration ever widens the alphabet.
+  const encodedSlug = slug ? encodeURIComponent(slug) : '';
+  const shareUrl = slug ? `/share/${encodedSlug}` : '/';
+  const ogImageUrl = slug ? `/api/og/${encodedSlug}` : '';
+  const quoteText = fetchState.kind === 'ok' ? fetchState.card.quote_text : '';
 
-  const showError =
-    fetchState.kind === "missing" || fetchState.kind === "error";
+  const showError = fetchState.kind === 'missing' || fetchState.kind === 'error';
   const showShareRow = !showError && slug !== null;
 
   return (
