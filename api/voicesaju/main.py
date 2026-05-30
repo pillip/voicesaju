@@ -21,6 +21,7 @@ from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
 from voicesaju.payment.routes import router as payment_router  # noqa: F401
+from voicesaju.payment.webhook import router as payment_webhook_router
 from voicesaju.readings.routers.followups import router as reading_followups_router
 from voicesaju.readings.routers.intro import router as reading_intro_router
 from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
@@ -175,6 +176,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # `POST /api/v1/payments/confirm`. Phase-1 delegates to
     # MockTossClient under PAYMENT_PROVIDER=mock.
     app.include_router(payment_router)
+
+    # ---- Payments webhook (Toss → us, HMAC-signed) -------------------
+    # ISSUE-045 (FR-021, FR-022). Mounts `POST /api/v1/payments/webhook`.
+    # Verifies HMAC-SHA256(body, TOSS_WEBHOOK_SECRET) before any DB write
+    # and dispatches by `eventType` (PAYMENT_DONE / PAYMENT_FAILED /
+    # SUBSCRIPTION_RENEWED / SUBSCRIPTION_CANCELED / BILLING_FAILED).
+    app.include_router(payment_webhook_router)
 
     return app
 
