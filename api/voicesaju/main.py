@@ -20,6 +20,7 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.readings.routers.followups import router as reading_followups_router
 from voicesaju.readings.routers.intro import router as reading_intro_router
 from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
 from voicesaju.users.routers.auth import router as oauth_router
@@ -155,6 +156,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # ISSUE-031 (FR-005). Mounts `GET /api/v1/reading/intro/{category}`.
     app.include_router(reading_intro_router)
     app.include_router(reading_pipeline_router)
+
+    # ---- Reading follow-up suggestions + per-slot answer SSE ----------
+    # ISSUE-041 (FR-009, FR-010, NFR-004). Mounts
+    # `GET /api/v1/reading/{id}/followups` and
+    # `POST /api/v1/reading/{id}/followups/{index}`.
+    app.include_router(reading_followups_router)
 
     # ---- Me + entitlement summary ------------------------------------
     # ISSUE-040 (FR-006, FR-014, FR-022). Mounts `GET /api/v1/me`,

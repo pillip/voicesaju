@@ -56,6 +56,10 @@ class ReadingFollowup(Base):
     slot_index: Mapped[int] = mapped_column(Integer, nullable=False)
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     answer_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # ISSUE-041: object key for the per-slot answer audio. Written after
+    # the SSE stream's first audio chunk lands; nullable so the row is
+    # legal in the "suggested, not yet answered" state.
+    audio_r2_key: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
