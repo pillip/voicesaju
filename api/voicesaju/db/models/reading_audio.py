@@ -55,6 +55,18 @@ class ReadingAudio(Base):
     )
     r2_url: Mapped[str] = mapped_column(String, nullable=False)
     duration_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    # ISSUE-038: object-store key (e.g. ``audio/readings/<id>/main.mp3``).
+    # Stored alongside ``r2_url`` so we can re-issue presigned URLs from
+    # the key without re-parsing the URL host.
+    r2_key: Mapped[str | None] = mapped_column(String, nullable=True)
+    # ISSUE-038: SHA-256 of the stitched main.mp3 byte content. Lets
+    # the replay endpoint serve a stable ``ETag`` and detect bit-rot
+    # against the storage layer.
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    # ISSUE-038: byte size of the stitched main.mp3. Used by the
+    # replay ``Range`` handler to compute the final byte boundary
+    # without an extra ``stat`` call against R2.
+    file_size_bytes: Mapped[int | None] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
