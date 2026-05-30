@@ -35,7 +35,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import JSON
 
 from voicesaju.db.base import Base
-from voicesaju.db.models.users import uuid7
+from voicesaju.db.models.users import _uuid7_str
 
 _JSONColumn = JSON().with_variant(JSONB(), "postgresql")
 
@@ -48,7 +48,7 @@ class SajuChart(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         String(36),
         primary_key=True,
-        default=uuid7,
+        default=_uuid7_str,
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
         String(36),

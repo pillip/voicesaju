@@ -22,6 +22,7 @@ from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
 from voicesaju.users.routers.auth import router as oauth_router
 from voicesaju.users.routers.device import router as device_router
+from voicesaju.users.routers.profile import router as profile_router
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +142,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # ISSUE-026 (FR-016, FR-017). Mounts Kakao + Apple start/callback
     # endpoints under `/api/v1/auth/{kakao,apple}/*`.
     app.include_router(oauth_router)
+
+    # ---- Profile (onboarding + saju chart) ---------------------------
+    # ISSUE-029 (FR-001, FR-002, FR-027, FR-030). Mounts
+    # `POST /api/v1/profile`.
+    app.include_router(profile_router)
 
     return app
 
