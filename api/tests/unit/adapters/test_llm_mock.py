@@ -147,17 +147,26 @@ async def test_factory_dispatch_returns_mock_when_provider_is_mock() -> None:
     assert isinstance(adapter, MockLLMAdapter)
 
 
-def test_claude_adapter_stub_raises_not_implemented() -> None:
-    """`ClaudeAdapter` stub MUST raise NotImplementedError on use (Phase 2)."""
+def test_claude_adapter_requires_api_key_at_stream_time() -> None:
+    """ISSUE-034: `ClaudeAdapter` now wraps the real Anthropic client.
+
+    Instantiation MUST succeed without ``ANTHROPIC_API_KEY`` (so
+    ``LLM_PROVIDER=claude`` can be wired in non-prod before ISSUE-035
+    provisions a real key), but the first ``stream()`` call MUST fail
+    fast with a configuration error — not silently proceed with no key.
+    """
     from voicesaju.adapters.llm import ClaudeAdapter
+    from voicesaju.config import Settings
 
-    stub = ClaudeAdapter()
+    # Force ANTHROPIC_API_KEY=None even if the dev shell has one exported.
+    settings = Settings(anthropic_api_key=None)
+    adapter = ClaudeAdapter(settings=settings)
 
-    # The method must raise; we can't easily test on the async iterator
-    # directly without running it. Use `asyncio.run` over a tiny helper.
     async def _runner() -> None:
-        async for _ in stub.stream(prompt="x", category="love", seed="s"):
-            pass
+        async for _ in adapter.stream(prompt="x", category="love", seed="s"):
+            pass  # pragma: no cover
 
-    with pytest.raises(NotImplementedError):
+    # The RuntimeError is raised inside the async generator at first
+    # iteration, surfaced through `asyncio.run`.
+    with pytest.raises(RuntimeError, match="ANTHROPIC_API_KEY"):
         asyncio.run(_runner())
