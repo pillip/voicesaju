@@ -208,15 +208,24 @@ def test_factory_dispatch_unknown_provider_raises() -> None:
         get_tts_adapter(settings=s)
 
 
-def test_supertone_stub_raises_not_implemented() -> None:
-    """`SupertoneAdapter` stub MUST raise NotImplementedError on use (Phase 2)."""
-    stub = SupertoneAdapter()
+def test_supertone_adapter_requires_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    """SupertoneAdapter raises a clear error when SUPERTONE_API_KEY is missing.
+
+    Replaces the original ISSUE-102 stub assertion: ISSUE-037 swaps the
+    NotImplementedError stub for a structural client that delegates to
+    `voicesaju.tts.supertone_client`. The real-Supertone path is still
+    gated behind ISSUE-036 provisioning — without an api key the client
+    must raise a RuntimeError pointing at that issue, NOT silently fall
+    through. This guards the production safety contract.
+    """
+    monkeypatch.delenv("SUPERTONE_API_KEY", raising=False)
+    adapter = SupertoneAdapter()
 
     async def _runner() -> None:
-        async for _ in stub.stream(text="x", voice_id="nuna"):
+        async for _ in adapter.stream(text="안녕하세요.", voice_id="nuna"):
             pass
 
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(RuntimeError, match="ISSUE-036"):
         asyncio.run(_runner())
 
 

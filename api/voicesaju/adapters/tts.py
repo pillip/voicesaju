@@ -162,22 +162,45 @@ class MockTTSAdapter:
 
 
 # ---------------------------------------------------------------------------
-# SupertoneAdapter — Phase 2 stub
+# SupertoneAdapter — ISSUE-037 (structural) + ISSUE-036 (real key)
 # ---------------------------------------------------------------------------
 
 
 class SupertoneAdapter:
-    """Phase 2 real-Supertone adapter — instantiation succeeds, calls fail.
+    """Real-Supertone adapter, structurally wired in ISSUE-037.
 
-    Importing/instantiating does NOT raise so ``TTS_PROVIDER=supertone``
-    can be wired before the real client lands; ``stream()`` raises
-    ``NotImplementedError`` pointing at ISSUE-036.
+    ``stream()`` delegates to :func:`voicesaju.tts.supertone_client.synthesize_stream`
+    which owns the httpx connection, sentence chunking, 429-backoff and
+    first-chunk timeout. The adapter merely adapts the
+    ``stream(text, voice_id) -> AsyncIterator[bytes]`` Protocol shape
+    expected by the reading pipeline.
+
+    Phase-1 vs Phase-2 (per ISSUE-037 spec):
+
+    - ``TTS_PROVIDER=mock`` (default) — the adapter factory does not
+      instantiate this class; ``MockTTSAdapter`` runs instead.
+    - ``TTS_PROVIDER=supertone`` (Phase-2) — needs ``SUPERTONE_API_KEY``
+      in the environment. The error is raised at *request* time (not
+      import) so the app still boots without a key for canary or test
+      processes that never call ``stream()``.
     """
 
     async def stream(self, text: str, voice_id: str) -> AsyncIterator[bytes]:
-        raise NotImplementedError("SupertoneAdapter is a Phase 2 stub. See ISSUE-036.")
-        # Unreachable but keeps mypy happy about the AsyncIterator return.
-        yield b""  # pragma: no cover
+        # Defer the import so the rest of ``voicesaju.adapters`` does
+        # not pay for httpx + the chunker at import time (the mock
+        # path doesn't need them).
+        from voicesaju.tts.supertone_client import synthesize_stream
+
+        async def _single_fragment() -> AsyncIterator[str]:
+            # The Protocol's ``text`` arg is a single completed string.
+            # ``synthesize_stream`` consumes an async-iterable so wrap.
+            yield text
+
+        async for chunk in synthesize_stream(
+            _single_fragment(),
+            voice_id=voice_id,
+        ):
+            yield chunk.data
 
 
 __all__ = [
