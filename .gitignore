@@ -50,3 +50,7 @@ logs/
 docs/sprint_state.md
 docs/review_notes.md
 docs/ui_review_notes.md
+
+# Local-fs storage adapter root (MockStorageAdapter, ISSUE-038)
+.local_storage/
+api/.local_storage/
