@@ -68,5 +68,6 @@ target-version = ["py311"]
 dev = [
     "aiosqlite>=0.19,<1.0",
     "mutagen>=1.47.0",
+    "pillow>=12.2.0",
     "respx>=0.23.1",
 ]

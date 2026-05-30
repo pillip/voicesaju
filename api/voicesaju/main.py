@@ -207,6 +207,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(tarot_today_router)
 
+    # ---- Daily tarot card art (placeholder + R2-backed) --------------
+    # ISSUE-055 (DEP-06). Mounts
+    # `GET /api/v1/tarot/cards/{card_index}/art` so the placeholder
+    # URL emitted by ISSUE-049's `_card_art_url` resolves to real PNG
+    # bytes from the active storage adapter (MockStorageAdapter under
+    # Phase-1, real R2 once ISSUE-005 lands).
+    from voicesaju.tarot.routers.cards_art import (
+        router as tarot_cards_art_router,
+    )
+
+    app.include_router(tarot_cards_art_router)
+
     return app
 
 
