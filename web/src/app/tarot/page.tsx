@@ -1,13 +1,17 @@
 "use client";
 
 /**
- * `/tarot` — Screen 12 (ISSUE-050).
+ * `/tarot` — Screen 12 (ISSUE-050, ISSUE-053).
  *
  * Page composition:
  *   1. `<TarotQuotaBanner>` at the top (copy_guide §10).
  *   2. Centered `<TarotCard>` hero. On mount we fetch
  *      `GET /api/v1/tarot/today` (ISSUE-049) to populate card data + quota.
  *   3. Subtitle below ("탭해서 뽑기" or "다시 듣기" depending on state).
+ *   4. KST midnight banner (ISSUE-053): when the clock crosses
+ *      Asia/Seoul 00:00:00 with the page open, a "새로운 카드가
+ *      준비됐어요" banner surfaces and `router.refresh()` re-fetches
+ *      tomorrow's card.
  *
  * Behaviour:
  *   - AC1: face-down + banner when free_remaining > 0.
@@ -18,6 +22,7 @@
  *   - AC5: when the backend marks the row already_flipped we hydrate
  *     into face_up state and render the "다시 듣기" CTA that routes
  *     to `/tarot/play` (ISSUE-051).
+ *   - ISSUE-053 AC1: KST midnight → banner + router.refresh().
  *
  * Why a single-state hook for the API result:
  * - The page has no fancy caching needs. A tiny `useEffect + fetch`
@@ -34,11 +39,13 @@
  *   AC adds a `?debug=` switch we'll need to add it then.
  */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchTarotToday, TarotApiError } from "@/lib/api/tarot";
 import { TarotCard, type TarotCardState } from "@/components/tarot/TarotCard";
 import { TarotQuotaBanner } from "@/components/tarot/TarotQuotaBanner";
+import { Banner } from "@/components/ui/Banner";
+import { useKstMidnightRefresh } from "@/lib/hooks/useKstMidnightRefresh";
 
 interface TodayState {
   card_index: number;
@@ -96,6 +103,25 @@ export default function TarotPage() {
   const reducedMotion = usePrefersReducedMotion();
   const [today, setToday] = useState<TodayState>(FALLBACK_TODAY);
   const [cardState, setCardState] = useState<TarotCardState>("face_down");
+  // ISSUE-053 — KST midnight has crossed → show the "새로운 카드가
+  // 준비됐어요" banner. The page also calls `router.refresh()` to
+  // re-fetch tomorrow's card; banner visibility persists across the
+  // refresh until the user dismisses by tapping the card.
+  const [kstMidnightCrossed, setKstMidnightCrossed] = useState(false);
+
+  // Memoise so the `useEffect` inside `useKstMidnightRefresh` doesn't
+  // re-arm on every render (which would in turn cancel + reschedule
+  // the timer and silently drift past the boundary).
+  const handleKstMidnight = useCallback(() => {
+    setKstMidnightCrossed(true);
+    // `router.refresh()` re-runs server components + re-fetches the
+    // page payload. The mount effect above then picks up the new
+    // tarot card automatically. We keep the banner visible across the
+    // refresh as a confirmation cue (ux_spec Flow C edge case).
+    router.refresh();
+  }, [router]);
+
+  useKstMidnightRefresh(handleKstMidnight);
 
   useEffect(() => {
     let cancelled = false;
@@ -171,6 +197,16 @@ export default function TarotPage() {
           unlimited={false}
         />
       </div>
+
+      {kstMidnightCrossed && (
+        // ISSUE-053 AC1 — KST midnight banner. Rendered above the
+        // hero so the new-card-of-the-day message is the first thing
+        // the user sees after the auto-refresh. Copy from copy_guide
+        // §10 ("Edge: 자정 갱신").
+        <div className="w-full" data-testid="tarot-kst-midnight-banner">
+          <Banner tone="success">새로운 카드가 준비됐어요</Banner>
+        </div>
+      )}
 
       <header className="text-center">
         <h1
