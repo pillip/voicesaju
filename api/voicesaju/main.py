@@ -219,6 +219,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(tarot_cards_art_router)
 
+    # ---- Quote cards (share endpoint) --------------------------------
+    # ISSUE-060 (FR-020). Mounts
+    # `GET /api/v1/quote-cards/by-slug/{slug}` so the Next.js OG route
+    # handler + SSR share landing page can resolve a public share_slug
+    # to the row metadata needed for image render / redirect.
+    from voicesaju.content.routers.quote_cards import (
+        router as quote_cards_router,
+    )
+
+    app.include_router(quote_cards_router)
+
     return app
 
 
