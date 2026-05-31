@@ -27,6 +27,9 @@ from voicesaju.payment.subscription_routes import (  # noqa: F401
 )
 from voicesaju.payment.webhook import router as payment_webhook_router
 from voicesaju.readings.routers.followups import router as reading_followups_router
+from voicesaju.readings.routers.history import (  # noqa: F401
+    router as reading_history_router,
+)
 from voicesaju.readings.routers.intro import router as reading_intro_router
 from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
 from voicesaju.users.routers.account import router as account_router  # noqa: F401
@@ -175,6 +178,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # `GET /api/v1/reading/{id}/followups` and
     # `POST /api/v1/reading/{id}/followups/{index}`.
     app.include_router(reading_followups_router)
+
+    # ---- Reading history list + archived audio replay ----------------
+    # ISSUE-066 (FR-028, US-16). Mounts
+    # `GET /api/v1/me/readings` (paginated list) and
+    # `GET /api/v1/reading/{id}/audio.mp3` (archived MP3 replay).
+    app.include_router(reading_history_router)
 
     # ---- Me + entitlement summary ------------------------------------
     # ISSUE-040 (FR-006, FR-014, FR-022). Mounts `GET /api/v1/me`,
