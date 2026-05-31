@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * `/onboarding/birth-time` — Screen 3 (ISSUE-028).
@@ -15,12 +15,13 @@
  *   - Keyboard nav is more predictable (Tab moves hour → minute → checkbox).
  */
 
-import { useEffect, useId, useState } from "react";
-import { useRouter } from "next/navigation";
-import { PrimaryButton } from "@/components/ui/PrimaryButton";
-import { OnboardingChrome } from "@/components/onboarding/OnboardingChrome";
-import { useOnboardingStore } from "@/lib/stores/onboarding-store";
-import { validateBirthTime } from "@/lib/validators/onboarding";
+import { useEffect, useId, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { OnboardingChrome } from '@/components/onboarding/OnboardingChrome';
+import { trackOnboardingStep } from '@/lib/analytics/events';
+import { useOnboardingStore } from '@/lib/stores/onboarding-store';
+import { validateBirthTime } from '@/lib/validators/onboarding';
 
 export default function BirthTimePage() {
   const router = useRouter();
@@ -31,25 +32,26 @@ export default function BirthTimePage() {
   const setBirthMinute = useOnboardingStore((s) => s.setBirthMinute);
   const setBirthTimeUnknown = useOnboardingStore((s) => s.setBirthTimeUnknown);
 
-  const [hour, setHour] = useState<string>(
-    storeHour === null ? "" : String(storeHour),
-  );
-  const [minute, setMinute] = useState<string>(
-    storeMinute === null ? "" : String(storeMinute),
-  );
+  const [hour, setHour] = useState<string>(storeHour === null ? '' : String(storeHour));
+  const [minute, setMinute] = useState<string>(storeMinute === null ? '' : String(storeMinute));
 
   // Re-sync from store on mount / when the store changes (back-nav contract).
   useEffect(() => {
-    setHour(storeHour === null ? "" : String(storeHour));
-    setMinute(storeMinute === null ? "" : String(storeMinute));
+    setHour(storeHour === null ? '' : String(storeHour));
+    setMinute(storeMinute === null ? '' : String(storeMinute));
   }, [storeHour, storeMinute]);
+
+  // ISSUE-080 AC1: fire ``onboarding_step`` once per visit (step 2 of 4).
+  useEffect(() => {
+    trackOnboardingStep(2);
+  }, []);
 
   const hourId = useId();
   const minuteId = useId();
   const checkboxId = useId();
 
-  const parsedHour = hour === "" ? null : Number(hour);
-  const parsedMinute = minute === "" ? null : Number(minute);
+  const parsedHour = hour === '' ? null : Number(hour);
+  const parsedMinute = minute === '' ? null : Number(minute);
   const validationCode = validateBirthTime({
     hour: parsedHour,
     minute: parsedMinute,
@@ -60,8 +62,8 @@ export default function BirthTimePage() {
   function handleUnknownChange(next: boolean) {
     setBirthTimeUnknown(next);
     if (next) {
-      setHour("");
-      setMinute("");
+      setHour('');
+      setMinute('');
     }
   }
 
@@ -71,7 +73,7 @@ export default function BirthTimePage() {
       setBirthHour(parsedHour);
       setBirthMinute(parsedMinute);
     }
-    router.push("/onboarding/gender");
+    router.push('/onboarding/gender');
   }
 
   return (
@@ -83,10 +85,7 @@ export default function BirthTimePage() {
 
       <div className="flex items-end gap-s3">
         <div className="flex-1">
-          <label
-            htmlFor={hourId}
-            className="block font-body text-sm text-cream-300"
-          >
+          <label htmlFor={hourId} className="block font-body text-sm text-cream-300">
             시
           </label>
           <input
@@ -104,10 +103,7 @@ export default function BirthTimePage() {
         </div>
         <span className="pb-s4 font-display text-cream-300">:</span>
         <div className="flex-1">
-          <label
-            htmlFor={minuteId}
-            className="block font-body text-sm text-cream-300"
-          >
+          <label htmlFor={minuteId} className="block font-body text-sm text-cream-300">
             분
           </label>
           <input
@@ -133,10 +129,7 @@ export default function BirthTimePage() {
           onChange={(e) => handleUnknownChange(e.target.checked)}
           className="mt-1 h-5 w-5 cursor-pointer rounded border-cream-600 bg-ink-800 text-amber-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
         />
-        <label
-          htmlFor={checkboxId}
-          className="cursor-pointer font-body text-base text-cream-100"
-        >
+        <label htmlFor={checkboxId} className="cursor-pointer font-body text-base text-cream-100">
           시간은 모르겠어요
         </label>
       </div>

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * `/onboarding/gender` — Screen 4 (ISSUE-028).
@@ -10,21 +10,28 @@
  *   - Back button → router.back() via OnboardingChrome.
  */
 
-import { useRouter } from "next/navigation";
-import { OnboardingChrome } from "@/components/onboarding/OnboardingChrome";
-import { useOnboardingStore } from "@/lib/stores/onboarding-store";
-import type { Gender } from "@/lib/stores/onboarding-store";
-import { cn } from "@/lib/utils";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { OnboardingChrome } from '@/components/onboarding/OnboardingChrome';
+import { trackOnboardingStep } from '@/lib/analytics/events';
+import { useOnboardingStore } from '@/lib/stores/onboarding-store';
+import type { Gender } from '@/lib/stores/onboarding-store';
+import { cn } from '@/lib/utils';
 
 export default function GenderPage() {
   const router = useRouter();
   const gender = useOnboardingStore((s) => s.gender);
   const setGender = useOnboardingStore((s) => s.setGender);
 
+  // ISSUE-080 AC1: fire ``onboarding_step`` once per visit (step 3 of 4).
+  useEffect(() => {
+    trackOnboardingStep(3);
+  }, []);
+
   function handleSelect(g: Gender) {
     setGender(g);
     // Auto-advance per Screen 4 spec — no explicit 다음 button.
-    router.push("/onboarding/name");
+    router.push('/onboarding/name');
   }
 
   return (
@@ -34,20 +41,16 @@ export default function GenderPage() {
         <p className="font-body text-base text-cream-300">짧게.</p>
       </div>
 
-      <div
-        role="radiogroup"
-        aria-label="성별 선택"
-        className="flex flex-col gap-s3"
-      >
+      <div role="radiogroup" aria-label="성별 선택" className="flex flex-col gap-s3">
         <GenderCard
           label="여자"
-          selected={gender === "female"}
-          onClick={() => handleSelect("female")}
+          selected={gender === 'female'}
+          onClick={() => handleSelect('female')}
         />
         <GenderCard
           label="남자"
-          selected={gender === "male"}
-          onClick={() => handleSelect("male")}
+          selected={gender === 'male'}
+          onClick={() => handleSelect('male')}
         />
       </div>
 
@@ -59,7 +62,7 @@ export default function GenderPage() {
 }
 
 interface GenderCardProps {
-  label: "여자" | "남자";
+  label: '여자' | '남자';
   selected: boolean;
   onClick: () => void;
 }
@@ -77,11 +80,11 @@ function GenderCard({ label, selected, onClick }: GenderCardProps) {
       aria-checked={selected}
       onClick={onClick}
       className={cn(
-        "flex h-[120px] w-full items-center justify-center rounded-md border font-display text-3xl transition-colors",
+        'flex h-[120px] w-full items-center justify-center rounded-md border font-display text-3xl transition-colors',
         selected
-          ? "border-amber-400 bg-ink-700 text-cream-50"
-          : "border-cream-600 bg-ink-800 text-cream-200 hover:border-cream-300",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300",
+          ? 'border-amber-400 bg-ink-700 text-cream-50'
+          : 'border-cream-600 bg-ink-800 text-cream-200 hover:border-cream-300',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300',
       )}
     >
       {label}

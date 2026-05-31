@@ -42,6 +42,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from voicesaju.analytics import emit_payment_completed
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.db.models.payments import Payment
@@ -117,6 +118,16 @@ async def _handle_payment_done(*, data: dict[str, Any], session: AsyncSession) -
     approved_at = _parse_iso(data.get("approvedAt"))
     payment.paid_at = approved_at or datetime.now(tz=UTC)
     await session.commit()
+
+    # ISSUE-080 AC3: fire ``payment_completed`` with amount + category.
+    # Emit AFTER commit so a duplicate webhook delivery (which the
+    # idempotency guard above no-ops) does not double-count the event.
+    emit_payment_completed(
+        user_id=str(payment.user_id),
+        payment_id=str(payment.id),
+        amount_krw=payment.amount_krw,
+        category=payment.kind,
+    )
 
 
 async def _handle_payment_failed(

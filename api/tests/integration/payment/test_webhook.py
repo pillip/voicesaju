@@ -192,6 +192,65 @@ def test_payment_done_flips_to_paid(engine: AsyncEngine) -> None:
     assert payment.paid_at is not None
 
 
+def test_payment_done_emits_payment_completed_event(engine: AsyncEngine) -> None:
+    """ISSUE-080 AC3: ``payment_completed`` fired with amount + category."""
+    from voicesaju.analytics import (
+        NoopAnalyticsBackend,
+        reset_default_backend_for_tests,
+        set_default_backend,
+    )
+
+    reset_default_backend_for_tests()
+    recorder = NoopAnalyticsBackend()
+    set_default_backend(recorder)
+
+    user_id = asyncio.run(_seed_user(engine))
+    asyncio.run(
+        _seed_pending_payment(
+            engine,
+            user_id=user_id,
+            toss_order_id="order-evt-1",
+            amount_krw=4900,
+        )
+    )
+
+    client = _make_client(engine)
+    payload = {
+        "eventType": "PAYMENT_DONE",
+        "data": {
+            "orderId": "order-evt-1",
+            "paymentKey": "tviva-paykey-evt-1",
+            "totalAmount": 4900,
+            "status": "DONE",
+            "approvedAt": "2026-05-29T10:00:00+09:00",
+        },
+    }
+    body = json.dumps(payload).encode("utf-8")
+    sig = _sign(body)
+
+    resp = client.post(
+        "/api/v1/payments/webhook",
+        content=body,
+        headers={
+            "Content-Type": "application/json",
+            "X-Toss-Signature": sig,
+        },
+    )
+    assert resp.status_code == 200, resp.text
+
+    payment_events = [e for e in recorder.received if e.name == "payment_completed"]
+    assert (
+        len(payment_events) == 1
+    ), f"expected exactly one payment_completed event; got {recorder.received}"
+    ev = payment_events[0]
+    assert ev.user_id == str(user_id)
+    assert ev.properties["amount_krw"] == 4900
+    assert ev.properties["category"] in {"single", "subscription"}
+
+    # Cleanup — restore default backend so other tests run with Noop.
+    reset_default_backend_for_tests()
+
+
 # ---------------------------------------------------------------------------
 # AC2 — invalid signature → 401 + no DB writes
 # ---------------------------------------------------------------------------
