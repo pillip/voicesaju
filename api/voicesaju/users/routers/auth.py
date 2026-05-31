@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Response, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from voicesaju.adapters import get_auth_adapter
@@ -253,6 +253,48 @@ async def apple_callback(
         db_session=db_session,
         session_store=session_store,
     )
+
+
+# ---------------------------------------------------------------------------
+# Logout (ISSUE-072)
+# ---------------------------------------------------------------------------
+
+
+@router.post(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+)
+async def logout(
+    request: Request,
+    response: Response,
+    session_store: SessionStore = Depends(_get_session_store_dep),  # noqa: B008
+) -> dict[str, bool]:
+    """Destroy the caller's session and clear the ``vs_sess`` cookie.
+
+    Architecture-Ref: §11.1 (vs_sess cookie + Redis-backed session).
+    PRD-Ref: ISSUE-072 AC1 ("session destroyed and redirected to /").
+
+    Idempotent: callers without a session still get ``{ok: true}`` so
+    the frontend can fire-and-forget. The cookie is always cleared on
+    the response so a stale browser session is hardened on logout.
+    """
+    sid = request.cookies.get(_SESSION_COOKIE_NAME)
+    if sid:
+        # Idempotent — `delete_session` is a no-op for unknown sids.
+        await session_store.delete_session(sid)
+    # Mirror the cookie attrs from the login path (HttpOnly + Secure +
+    # SameSite=lax + path=/) so browsers reliably match the cookie for
+    # deletion. We don't set max_age=0 alongside `delete_cookie` because
+    # Starlette's `delete_cookie` already emits the canonical "expired"
+    # Set-Cookie header.
+    response.delete_cookie(
+        key=_SESSION_COOKIE_NAME,
+        path="/",
+        secure=True,
+        httponly=True,
+        samesite="lax",
+    )
+    return {"ok": True}
 
 
 __all__ = [

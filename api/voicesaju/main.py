@@ -29,6 +29,7 @@ from voicesaju.payment.webhook import router as payment_webhook_router
 from voicesaju.readings.routers.followups import router as reading_followups_router
 from voicesaju.readings.routers.intro import router as reading_intro_router
 from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
+from voicesaju.users.routers.account import router as account_router  # noqa: F401
 from voicesaju.users.routers.auth import router as oauth_router
 from voicesaju.users.routers.device import router as device_router
 from voicesaju.users.routers.me import router as me_router
@@ -159,6 +160,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # ISSUE-029 (FR-001, FR-002, FR-027, FR-030). Mounts
     # `POST /api/v1/profile`.
     app.include_router(profile_router)
+
+    # ---- Account (logout + soft-delete) ------------------------------
+    # ISSUE-072 (NFR-005). Mounts `POST /api/v1/users/me/delete`.
+    app.include_router(account_router)
 
     # ---- Reading intro clip (persona audio lookup) -------------------
     # ISSUE-031 (FR-005). Mounts `GET /api/v1/reading/intro/{category}`.
