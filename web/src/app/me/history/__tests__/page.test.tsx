@@ -1,19 +1,29 @@
 /**
- * Unit tests for `/me/history/[id]` (ISSUE-066, Screen 19).
+ * Unit tests for `/me/history` (ISSUE-065, Screen 18).
  *
- * AC mapping (issues.md §ISSUE-066):
- *   AC1: past reading → `<audio>` element rendered with the audio URL.
- *   AC2: audio expired → "이 풀이는 더 이상 재생할 수 없습니다" copy.
- *   AC3: tap pause → audio stops (native behaviour; we assert the
- *        `<audio controls>` element is in the tree so the browser
- *        provides the pause affordance).
+ * AC mapping (issues.md §ISSUE-065):
+ *   AC1: 5 past readings → 5 rows in the order returned by the
+ *        backend (already desc by `started_at`).
+ *   AC2: 0 readings → empty state with 누님 illustration placeholder
+ *        + "아직 풀이가 없네. 첫 풀이 받아볼래?" + CTA → /reading/category.
+ *   AC3: expired audio row → "재생 불가" pill + aria-disabled + no link.
+ *   AC4: tap an available row → navigate to /me/history/[id].
+ *
+ * Strategy:
+ *   - Render `HistoryListView` directly so we can inject a fake
+ *     `fetchImpl` and skip the `page.tsx` Promise wrapper.
+ *   - Mock `next/navigation` so we can observe `router.replace` for
+ *     the 401 redirect path (covered as a separate test).
+ *   - `next/link` resolves to a passthrough <a> under jsdom (set up
+ *     globally in vitest.setup), so assertions on `href` and `tagName`
+ *     are stable.
  */
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 
 const replaceMock = vi.fn();
 
-vi.mock('next/navigation', () => ({
+vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
     replace: replaceMock,
@@ -23,105 +33,218 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
-import { MeHistoryItemView as MeHistoryItemPage } from '@/app/me/history/[id]/MeHistoryItemView';
+import { HistoryListView } from "@/app/me/history/HistoryListView";
 
-function mkResponse(status: number): Response {
+function mkOkResponse(body: unknown, status = 200): Response {
   return {
     ok: status >= 200 && status < 300,
+    status,
+    json: async () => body,
+  } as unknown as Response;
+}
+
+function mkErrResponse(status: number): Response {
+  return {
+    ok: false,
     status,
     json: async () => ({}),
   } as unknown as Response;
 }
 
-describe('MeHistoryItemPage', () => {
+// Five rows pre-sorted desc by started_at — mirrors the backend's
+// ORDER BY clause so the test asserts the page renders rows as
+// received without re-sorting.
+const FIVE_ROWS = [
+  {
+    id: "r-5",
+    category: "love",
+    started_at: "2026-05-25T09:30:00+00:00",
+    completed_at: "2026-05-25T09:31:30+00:00",
+    audio_available: true,
+    summary: "그 사람은 너랑 코드가 안 맞아.",
+  },
+  {
+    id: "r-4",
+    category: "work",
+    started_at: "2026-05-20T11:00:00+00:00",
+    completed_at: "2026-05-20T11:01:30+00:00",
+    audio_available: true,
+    summary: "이직? 1년만 더 버텨봐.",
+  },
+  {
+    id: "r-3",
+    category: "money",
+    started_at: "2026-05-15T08:00:00+00:00",
+    completed_at: "2026-05-15T08:01:30+00:00",
+    audio_available: true,
+    summary: "큰 돈은 안 들어와. 그래도 잘 버틸 거야.",
+  },
+  {
+    id: "r-2",
+    category: "tarot",
+    started_at: "2026-05-10T07:00:00+00:00",
+    completed_at: "2026-05-10T07:01:30+00:00",
+    audio_available: true,
+    summary: "오늘은 숨겨진 진실이 보이는 날.",
+  },
+  {
+    id: "r-1",
+    category: "love",
+    started_at: "2026-05-05T07:00:00+00:00",
+    completed_at: "2026-05-05T07:01:30+00:00",
+    audio_available: true,
+    summary: "결혼은 아직 일러.",
+  },
+] as const;
+
+const EXPIRED_ROW = {
+  id: "r-old",
+  category: "love",
+  started_at: "2025-12-01T07:00:00+00:00",
+  completed_at: "2025-12-01T07:01:30+00:00",
+  audio_available: false,
+  summary: "예전 풀이.",
+} as const;
+
+describe("HistoryListView (/me/history)", () => {
   beforeEach(() => {
     replaceMock.mockReset();
   });
 
-  it('AC1: renders the <audio controls> element when the blob is available', async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(mkResponse(200));
-
-    render(<MeHistoryItemPage params={{ id: 'r-1' }} fetchImpl={fetchImpl} />);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('me-history-loaded')).toBeInTheDocument();
-    });
-
-    const audio = screen.getByTestId('me-history-audio') as HTMLAudioElement;
-    expect(audio).toBeInTheDocument();
-    expect(audio.tagName).toBe('AUDIO');
-    // AC3: native controls present so the browser renders pause/play
-    // — testing-library doesn't render shadow DOM, so we assert the
-    // attribute rather than the rendered button.
-    expect(audio).toHaveAttribute('controls');
-    // Source points at the archive endpoint (FR-028, AC1).
-    expect(audio).toHaveAttribute('src', '/api/v1/reading/r-1/audio.mp3');
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it('AC2: shows the expired-audio fallback when probe returns 410', async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(mkResponse(410));
+  it("AC1: 5 readings → 5 rows in desc order", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(mkOkResponse(FIVE_ROWS));
 
-    render(<MeHistoryItemPage params={{ id: 'r-1' }} fetchImpl={fetchImpl} />);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('me-history-expired')).toBeInTheDocument();
-    });
-    expect(screen.getByText('이 풀이는 더 이상 재생할 수 없습니다')).toBeInTheDocument();
-    // Back-to-me link affordance per ux_spec.
-    expect(screen.getByTestId('me-history-back-link')).toHaveAttribute('href', '/me');
-  });
-
-  it("AC: 401 → router.replace('/auth/login')", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(mkResponse(401));
-
-    render(<MeHistoryItemPage params={{ id: 'r-1' }} fetchImpl={fetchImpl} />);
+    render(<HistoryListView fetchImpl={fetchImpl} />);
 
     await waitFor(() => {
-      expect(replaceMock).toHaveBeenCalledWith('/auth/login');
+      expect(screen.getByTestId("me-history-list-loaded")).toBeInTheDocument();
     });
+    const list = screen.getByTestId("me-history-list");
+    const items = list.querySelectorAll("li");
+    expect(items.length).toBe(5);
+
+    // Verify the order matches the input array (desc as returned).
+    // Each row's wrapper has data-testid="me-history-row-<id>".
+    const renderedIds = Array.from(items).map((li) => {
+      const wrapper = li.querySelector('[data-testid^="me-history-row-"]');
+      const id = wrapper?.getAttribute("data-testid") ?? "";
+      return id.replace(/^me-history-row-/, "");
+    });
+    expect(renderedIds).toEqual(["r-5", "r-4", "r-3", "r-2", "r-1"]);
+
+    // Date cell on the first row is the YYYY-MM-DD slice of started_at.
+    expect(screen.getByTestId("me-history-row-date-r-5").textContent).toBe(
+      "2026-05-25",
+    );
+    // Category badge on the first row maps love → 연애.
+    expect(screen.getByTestId("me-history-row-category-r-5").textContent).toBe(
+      "연애",
+    );
   });
 
-  it("AC: 404 → router.replace('/me')", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(mkResponse(404));
+  it("AC2: 0 readings → empty state + illustration placeholder + CTA → /reading/category", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(mkOkResponse([]));
 
-    render(<MeHistoryItemPage params={{ id: 'r-1' }} fetchImpl={fetchImpl} />);
+    render(<HistoryListView fetchImpl={fetchImpl} />);
 
     await waitFor(() => {
-      expect(replaceMock).toHaveBeenCalledWith('/me');
+      expect(screen.getByTestId("me-history-list-empty")).toBeInTheDocument();
     });
+    expect(
+      screen.getByTestId("me-history-list-empty-illustration"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("아직 풀이가 없네. 첫 풀이 받아볼래?"),
+    ).toBeInTheDocument();
+    const cta = screen.getByTestId("me-history-list-empty-cta");
+    expect(cta).toBeInTheDocument();
+    expect(cta.getAttribute("href")).toBe("/reading/category");
   });
 
-  it("network error → 'error' state with retry that re-triggers fetch", async () => {
+  it('AC3: expired audio row → "재생 불가" pill + aria-disabled + no link', async () => {
     const fetchImpl = vi
       .fn()
-      .mockRejectedValueOnce(new Error('offline'))
-      .mockResolvedValueOnce(mkResponse(200));
+      .mockResolvedValueOnce(mkOkResponse([EXPIRED_ROW]));
 
-    render(<MeHistoryItemPage params={{ id: 'r-1' }} fetchImpl={fetchImpl} />);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('me-history-error')).toBeInTheDocument();
-    });
-    expect(screen.getByText('잠시 후 다시 시도해주세요')).toBeInTheDocument();
-
-    // Tap retry → should re-run the probe → loaded.
-    fireEvent.click(screen.getByTestId('me-history-retry'));
+    render(<HistoryListView fetchImpl={fetchImpl} />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('me-history-loaded')).toBeInTheDocument();
+      expect(screen.getByTestId("me-history-list-loaded")).toBeInTheDocument();
     });
-    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    const row = screen.getByTestId(`me-history-row-${EXPIRED_ROW.id}`);
+    // Expired rows render as <div>, not <a>. Asserting on tagName
+    // catches a regression where the link wrapper gets rendered with
+    // an aria-disabled marker but still has a clickable href.
+    expect(row.tagName.toLowerCase()).toBe("div");
+    expect(row.getAttribute("aria-disabled")).toBe("true");
+    expect(
+      screen.getByTestId(`me-history-row-disabled-pill-${EXPIRED_ROW.id}`),
+    ).toHaveTextContent("재생 불가");
+    // No play icon next to expired rows.
+    expect(
+      screen.queryByTestId(`me-history-row-play-${EXPIRED_ROW.id}`),
+    ).toBeNull();
   });
 
-  it('renders the archive ribbon', async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(mkResponse(200));
+  it("AC4: tap an available row → href targets /me/history/[id] with date query", async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(mkOkResponse([FIVE_ROWS[0]]));
 
-    render(<MeHistoryItemPage params={{ id: 'r-1' }} fetchImpl={fetchImpl} />);
+    render(<HistoryListView fetchImpl={fetchImpl} />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('me-history-ribbon')).toBeInTheDocument();
+      expect(screen.getByTestId("me-history-list-loaded")).toBeInTheDocument();
     });
-    // Default ribbon copy when no ?d= query param is present.
-    expect(screen.getByTestId('me-history-ribbon').textContent).toContain('[풀이]');
+    const row = screen.getByTestId(`me-history-row-${FIVE_ROWS[0].id}`);
+    expect(row.tagName.toLowerCase()).toBe("a");
+    expect(row.getAttribute("href")).toBe("/me/history/r-5?d=2026-05-25");
+  });
+
+  it("renders the loading shell before the fetch resolves", () => {
+    const fetchImpl = vi
+      .fn()
+      .mockReturnValue(new Promise<Response>(() => undefined));
+
+    render(<HistoryListView fetchImpl={fetchImpl} />);
+
+    expect(screen.getByTestId("me-history-list-loading")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("me-history-list-loading").getAttribute("aria-busy"),
+    ).not.toBeNull();
+  });
+
+  it("renders an error shell + retry button when the fetch returns 500", async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(mkErrResponse(500))
+      .mockResolvedValueOnce(mkOkResponse(FIVE_ROWS));
+
+    render(<HistoryListView fetchImpl={fetchImpl} />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("me-history-list-error")).toBeInTheDocument();
+    });
+    const retry = screen.getByTestId("me-history-list-retry");
+    expect(retry).toBeInTheDocument();
+    // Tap retry → page reloads + transitions to loaded.
+    retry.click();
+    await waitFor(() => {
+      expect(screen.getByTestId("me-history-list-loaded")).toBeInTheDocument();
+    });
+  });
+
+  it("redirects to /auth/login on a 401 response", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(mkErrResponse(401));
+
+    render(<HistoryListView fetchImpl={fetchImpl} />);
+
+    await waitFor(() => {
+      expect(replaceMock).toHaveBeenCalledWith("/auth/login");
+    });
   });
 });
