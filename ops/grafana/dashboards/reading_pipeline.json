@@ -1,0 +1,335 @@
+{
+  "uid": "voicesaju-reading-pipeline",
+  "title": "VoiceSaju — Reading Pipeline",
+  "tags": ["voicesaju", "reading", "slo"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "graphTooltip": 0,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "hide": 0,
+        "refresh": 1,
+        "current": {
+          "selected": false,
+          "text": "Prometheus",
+          "value": "prometheus"
+        },
+        "options": [],
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Reading pipeline e2e — p95 (s)",
+      "description": "End-to-end wall time of the reading pipeline (chart -> LLM -> TTS -> R2 -> SSE). SLO: NFR-001 p95 <= 3s. Architecture §12.4 warn=3s, page=5s.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 3 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "tooltip": { "mode": "single", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.95, sum(rate(reading_pipeline_e2e_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95",
+          "interval": "",
+          "exemplar": true
+        }
+      ],
+      "alert": {
+        "name": "Reading e2e p95 breach",
+        "frequency": "1m",
+        "for": "5m",
+        "conditions": [
+          {
+            "evaluator": { "type": "gt", "params": [3] },
+            "operator": { "type": "and" },
+            "query": { "params": ["A", "5m", "now"] },
+            "reducer": { "type": "avg", "params": [] },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "noDataState": "no_data",
+        "message": "Reading pipeline e2e p95 > 3s for 5min (warn). Page at >5s."
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "TTS first chunk — p95 (s)",
+      "description": "Time from TTS request start to first audio chunk delivered. SLO: NFR-002 p95 <= 1.5s. Architecture §12.4 warn=1.5s, page=3s.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1.5 },
+              { "color": "red", "value": 3 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "tooltip": { "mode": "single", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.95, sum(rate(tts_first_chunk_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95",
+          "interval": "",
+          "exemplar": true
+        }
+      ],
+      "alert": {
+        "name": "TTS first chunk p95 breach",
+        "frequency": "1m",
+        "for": "5m",
+        "conditions": [
+          {
+            "evaluator": { "type": "gt", "params": [1.5] },
+            "operator": { "type": "and" },
+            "query": { "params": ["A", "5m", "now"] },
+            "reducer": { "type": "avg", "params": [] },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "noDataState": "no_data",
+        "message": "TTS first chunk p95 > 1.5s for 5min (warn). Page at >3s."
+      }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "LLM call duration — p50 / p95 (s)",
+      "description": "Single LLM streaming call duration (start -> terminal token). Proxy for per-reading LLM cost. Architecture §12.4 warn=>18% of single price (24h sustained), page=>20%.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 3 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.50, sum(rate(llm_call_duration_seconds_bucket[5m])) by (le, model))",
+          "legendFormat": "p50 {{model}}",
+          "interval": "",
+          "exemplar": false
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "histogram_quantile(0.95, sum(rate(llm_call_duration_seconds_bucket[5m])) by (le, model))",
+          "legendFormat": "p95 {{model}}",
+          "interval": "",
+          "exemplar": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Payment failure rate (per hour)",
+      "description": "Rate of payment_failures_total / sum(payment attempts) over 1h. SLO: NFR-009 <2%. Architecture §12.4 warn=0.01 (1%/hour), page=0.02 (2%/hour).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "decimals": 4,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.01 },
+              { "color": "red", "value": 0.02 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(payment_failures_total[1h])) / clamp_min(sum(rate(payment_attempts_total[1h])), 1)",
+          "legendFormat": "failure rate",
+          "interval": "",
+          "exemplar": false
+        }
+      ],
+      "alert": {
+        "name": "Payment failure rate breach",
+        "frequency": "1m",
+        "for": "60m",
+        "conditions": [
+          {
+            "evaluator": { "type": "gt", "params": [0.01] },
+            "operator": { "type": "and" },
+            "query": { "params": ["A", "1h", "now"] },
+            "reducer": { "type": "avg", "params": [] },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "noDataState": "ok",
+        "message": "Payment failure rate > 1%/hr (warn). Page at >2%/hr."
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Tone violation rate (per session)",
+      "description": "tone_violation_total / total reading sessions. SLO: NFR-010 <1%. Architecture §12.4 warn=0.005 (0.5%), page=0.01 (1%).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "decimals": 4,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.005 },
+              { "color": "red", "value": 0.01 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(rate(tone_violation_total[5m])) / clamp_min(sum(rate(reading_pipeline_e2e_seconds_count[5m])), 1)",
+          "legendFormat": "violation rate",
+          "interval": "",
+          "exemplar": false
+        }
+      ],
+      "alert": {
+        "name": "Tone violation rate breach",
+        "frequency": "1m",
+        "for": "5m",
+        "conditions": [
+          {
+            "evaluator": { "type": "gt", "params": [0.005] },
+            "operator": { "type": "and" },
+            "query": { "params": ["A", "5m", "now"] },
+            "reducer": { "type": "avg", "params": [] },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "noDataState": "ok",
+        "message": "Tone violation rate > 0.5% of sessions (warn). Page at >1%."
+      }
+    }
+  ]
+}
