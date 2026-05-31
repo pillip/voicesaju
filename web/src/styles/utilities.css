@@ -1,0 +1,30 @@
+/**
+ * ISSUE-091 — v2 utility classes (cave-depth vignette).
+ *
+ * Adds the `.vignette-edge` body utility documented in
+ * docs/design_system.md §"Vignette Edge — 동굴 같은 깊이". The radial
+ * gradient is painted via a fixed-position pseudo-element so it tracks
+ * the viewport rather than the scroll container — this is required for
+ * the "cave depth" feel on long scrolling reading pages.
+ *
+ * `mix-blend-mode: multiply` lets the vignette darken any underlying
+ * page tone without flattening it; on the v2 hanji-800 base this gives
+ * a ≥30% luminance drop at the corners vs the centre (per AC3).
+ */
+.vignette-edge {
+  position: relative;
+}
+
+.vignette-edge::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    var(--hanji-900) 110%
+  );
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: multiply;
+}

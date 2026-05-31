@@ -1,0 +1,48 @@
+/**
+ * ISSUE-091 — v2 design tokens (Ink, Amber & 印).
+ *
+ * Authoritative source: docs/design_system.md §"v2 ADDITIONS — 새 토큰".
+ * Both vermilion/hanji/baekrim colour scales AND the brush/mincho font
+ * stacks live here, alongside the inline-SVG `--grain-strong` noise
+ * pattern referenced by `.hanji-bg` and the new `.vignette-edge` utility.
+ *
+ * v1 tokens (`--ink-*`, `--cream-*`, `--amber-*`, `--cat-*`, motion,
+ * spacing, etc.) intentionally stay in `tailwind.config.ts` + the
+ * existing design-system source — this file ONLY adds v2. They must
+ * coexist through the M2.5 migration (issues 092..098). Do not remove
+ * v1 tokens here.
+ *
+ * Mirror EVERY name+value declared here in `web/src/lib/tokens.ts`;
+ * `v2-tokens.test.ts` enforces string equality between the two files.
+ */
+:root {
+  /* --- v2 Color · Vermilion (인주 도장) ---------------------------- */
+  --vermilion-100: #c95f4a; /* hover state / 호버 호박 */
+  --vermilion-300: #9b2a1a; /* 메인 인주 적색 — 도장 본체, 시그니처 */
+  --vermilion-500: #6c1d11; /* 도장 그림자, 인주 깊은 */
+
+  /* --- v2 Color · Hanji (한지 갈색 — 새 베이스) -------------------- */
+  --hanji-900: #0a0604; /* 가장자리 vignette, 깊은 그림자 */
+  --hanji-800: #1a1208; /* 메인 배경 (v1 ink-900 대체) */
+  --hanji-700: #241810; /* Elevated surface */
+  --hanji-500: #3a2a18; /* 종이 톤 표면 */
+  --hanji-300: #6e5a40; /* 한지 무늬 hairline */
+
+  /* --- v2 Color · Baekrim (백열등 색) ------------------------------ */
+  --baekrim-200: #d9c49a; /* 백열등 색 텍스트 (희소) */
+
+  /* --- v2 Typography stacks ---------------------------------------- */
+  /* Concrete font files are loaded via next/font in app/layout.tsx;
+   * the CSS variable provides a runtime indirection so component CSS
+   * can `font-family: var(--font-brush)` regardless of how next/font
+   * exposes the family. Keep the documented fallbacks intact. */
+  --font-brush: "Nanum Brush Script", "East Sea Dokdo", cursive;
+  --font-mincho: "Noto Serif KR", "Gowun Batang", serif;
+
+  /* --- v2 Grain texture (stronger noise overlay) ------------------- */
+  /* opacity 0.10 — heavier than --grain-medium (0.05) so the hanji
+   * texture stays visible on the v2 hanji-800 base. The data URI MUST
+   * be inline (not an external file) so it is available before any
+   * stylesheet has had a chance to load. */
+  --grain-strong: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.10'/></svg>");
+}
