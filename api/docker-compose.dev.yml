@@ -1,0 +1,66 @@
+# api/docker-compose.dev.yml — local dev convenience for ISSUE-083.
+#
+# Brings up the API image alongside the existing postgres/redis services
+# (see top-level docker-compose.yml) under a single compose project so
+# you can iterate on the container build without re-typing a 12-flag
+# ``docker run``.
+#
+# Usage:
+#   # From repo root (uses top-level postgres/redis):
+#   docker compose -f docker-compose.yml -f api/docker-compose.dev.yml up -d
+#
+#   # Standalone (no infra services — useful for `docker build` smoke):
+#   docker compose -f api/docker-compose.dev.yml up --build api
+#
+# Process groups:
+#   - ``api``    — uvicorn web process, port 8000.
+#   - ``worker`` — arq cron / queue worker, no exposed port.
+#
+# We deliberately do NOT include postgres/redis here — the top-level
+# compose owns those volumes so dev data persists across image rebuilds.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: voicesaju-api:dev
+    container_name: voicesaju-api
+    environment:
+      # Defaults point at the top-level docker-compose services. Override
+      # via .env files at runtime; never bake real secrets here.
+      DATABASE_URL: postgresql+asyncpg://voicesaju:voicesaju@postgres:5432/voicesaju
+      REDIS_URL: redis://redis:6379/0
+      LOG_LEVEL: INFO
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    healthcheck:
+      # Mirror the Dockerfile HEALTHCHECK so `docker compose ps` reflects
+      # readiness without needing a separate probe.
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: voicesaju-api:dev
+    container_name: voicesaju-worker
+    environment:
+      DATABASE_URL: postgresql+asyncpg://voicesaju:voicesaju@postgres:5432/voicesaju
+      REDIS_URL: redis://redis:6379/0
+      LOG_LEVEL: INFO
+      ENVIRONMENT: development
+    # The same image, but boot the arq worker instead of uvicorn. Note:
+    # arq pulls ``WorkerSettings`` from ``voicesaju.jobs.worker``; the
+    # registry side-effects happen at import time (see worker.py).
+    command: ["python", "-m", "arq", "voicesaju.jobs.worker.WorkerSettings"]
+    restart: unless-stopped
+
+# This file does NOT define top-level networks/volumes — when composed
+# with the root docker-compose.yml, those come from the root file.
