@@ -7,6 +7,7 @@ and at startup before any session is opened.
 
 from __future__ import annotations
 
+from voicesaju.db.models.audit_events import AuditEvent
 from voicesaju.db.models.character_voices import CharacterVoice
 from voicesaju.db.models.devices import Device
 from voicesaju.db.models.free_tokens import FreeToken
@@ -29,6 +30,7 @@ from voicesaju.db.models.tone_violation_events import ToneViolationEvent
 from voicesaju.db.models.users import User
 
 __all__ = [
+    "AuditEvent",
     "CharacterVoice",
     "Device",
     "FreeToken",
