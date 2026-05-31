@@ -1,0 +1,55 @@
+# .dockerignore — keep the build context minimal so multi-stage caching
+# is fast and the final image doesn't accidentally ship tests / secrets.
+
+# Python toolchain artifacts
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/*.so
+.python-version
+
+# Virtual envs (host-side)
+.venv/
+venv/
+.envrc
+
+# Test artifacts
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Linter / type-checker caches
+.ruff_cache/
+.mypy_cache/
+
+# Editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Local env files — never bake creds into the image.
+.env
+.env.*
+!.env.example
+
+# Docs / non-runtime metadata
+README.md
+docs/
+
+# Git metadata (the build doesn't need it; pyproject.toml is the source
+# of truth for the version).
+.git
+.gitignore
+
+# Local SQLite scratch dbs occasionally produced by aiosqlite tests.
+*.db
+*.sqlite
+*.sqlite3
