@@ -116,6 +116,16 @@ class Settings(BaseSettings):
     # is shipping the header on every mutating fetch.
     csrf_enabled: bool = False
 
+    # --- Rate limit (ISSUE-081) ---
+    # Master switch + per-bucket specs. Architecture §11.4 default is
+    # 10 req/min per IP on auth endpoints and 5 req/min per IP on
+    # payment checkout. Defaults off so existing tests pass; production
+    # flips ``RATE_LIMIT_ENABLED=true`` once observability is in place
+    # to alert on 429 spikes.
+    rate_limit_enabled: bool = False
+    rate_limit_auth_spec: str = "10/min"
+    rate_limit_payment_spec: str = "5/min"
+
     def model_post_init(self, __context: object) -> None:
         """Guardrail: mock-* adapters must not run in production."""
         if self.environment == "prod" and self.auth_provider == "mock":
