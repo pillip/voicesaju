@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * `/onboarding/name` — Screen 5 (ISSUE-028).
@@ -13,13 +13,14 @@
  *   - Profile API call is out of scope (handled by ISSUE-029).
  */
 
-import { useEffect, useId, useState } from "react";
-import { useRouter } from "next/navigation";
-import { PrimaryButton } from "@/components/ui/PrimaryButton";
-import { SecondaryButton } from "@/components/ui/SecondaryButton";
-import { OnboardingChrome } from "@/components/onboarding/OnboardingChrome";
-import { useOnboardingStore } from "@/lib/stores/onboarding-store";
-import { NAME_TOO_LONG_COPY, validateName } from "@/lib/validators/onboarding";
+import { useEffect, useId, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { SecondaryButton } from '@/components/ui/SecondaryButton';
+import { OnboardingChrome } from '@/components/onboarding/OnboardingChrome';
+import { trackOnboardingStep } from '@/lib/analytics/events';
+import { useOnboardingStore } from '@/lib/stores/onboarding-store';
+import { NAME_TOO_LONG_COPY, validateName } from '@/lib/validators/onboarding';
 
 export default function NamePage() {
   const router = useRouter();
@@ -32,33 +33,36 @@ export default function NamePage() {
     setValue(storeName);
   }, [storeName]);
 
+  // ISSUE-080 AC1: fire ``onboarding_step`` once per visit (step 4 of 4).
+  useEffect(() => {
+    trackOnboardingStep(4);
+  }, []);
+
   const inputId = useId();
   const errorId = useId();
   const errorCode = validateName(value);
-  const errorMsg = errorCode === "too-long" ? NAME_TOO_LONG_COPY : null;
+  const errorMsg = errorCode === 'too-long' ? NAME_TOO_LONG_COPY : null;
   const canSubmit = errorCode === null;
   const trimmed = value.trim();
 
-  const primaryLabel = trimmed.length === 0 ? "이름 없이 계속하기" : "완료";
+  const primaryLabel = trimmed.length === 0 ? '이름 없이 계속하기' : '완료';
 
   function handleSubmit() {
     if (!canSubmit) return;
     setStoreName(trimmed);
-    router.push("/reading/category");
+    router.push('/reading/category');
   }
 
   function handleSkip() {
-    setStoreName("");
-    router.push("/reading/category");
+    setStoreName('');
+    router.push('/reading/category');
   }
 
   return (
     <OnboardingChrome step={4}>
       <div className="flex flex-col gap-s2">
         <h1 className="font-display-han text-2xl text-cream-50">이름</h1>
-        <p className="font-body text-base text-cream-300">
-          부를 때 쓸게. 안 적어도 돼.
-        </p>
+        <p className="font-body text-base text-cream-300">부를 때 쓸게. 안 적어도 돼.</p>
       </div>
 
       <div className="flex flex-col gap-s3">
