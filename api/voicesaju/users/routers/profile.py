@@ -391,7 +391,199 @@ async def get_profile_me(
     )
 
 
+class ProfileCorrectionRequest(BaseModel):
+    """Body for ``PATCH /api/v1/profile`` (ISSUE-071, FR-029).
+
+    Mirrors :class:`ProfileCreateRequest` but every field is required
+    — corrections always replace the saju inputs in full, so a partial
+    PATCH would risk leaving the chart in an inconsistent state.
+    """
+
+    birth_date: str = Field(..., description="ISO-8601 date, e.g. '1997-08-13'.")
+    birth_time: str | None = Field(
+        default=None,
+        description="ISO-8601 time-of-day 'HH:MM'. ``None`` → time unknown.",
+    )
+    is_lunar: bool = False
+    gender: str = Field(..., description="'M' or 'F'.")
+    name: str | None = Field(default=None, max_length=10)
+
+    @field_validator("birth_date")
+    @classmethod
+    def _validate_birth_date(cls, v: str) -> str:
+        try:
+            datetime.strptime(v, "%Y-%m-%d")
+        except ValueError as e:
+            raise ValueError("birth_date must be YYYY-MM-DD") from e
+        return v
+
+    @field_validator("birth_time")
+    @classmethod
+    def _validate_birth_time(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        try:
+            datetime.strptime(v, "%H:%M")
+        except ValueError as e:
+            raise ValueError("birth_time must be HH:MM") from e
+        return v
+
+    @field_validator("gender")
+    @classmethod
+    def _validate_gender(cls, v: str) -> str:
+        upper = v.upper()
+        if upper not in ("M", "F"):
+            raise ValueError("gender must be 'M' or 'F'")
+        return upper
+
+
+class ProfileCorrectionResponse(BaseModel):
+    """Response body for ``PATCH /api/v1/profile`` (ISSUE-071).
+
+    Echoes the new profile + chart pair so the client can refresh the
+    local cache without a follow-up GET. ``corrections_remaining``
+    surfaces the post-mutation counter for the banner UI.
+    """
+
+    profile_id: str
+    chart_id: str
+    chart: SajuChartOut
+    corrections_remaining: int
+
+
+# Hard cap for free corrections (FR-029 spec). Stored at module scope so
+# tests can patch it without monkeypatching the route handler.
+MAX_CORRECTIONS: int = 2
+
+
+@router.patch(
+    "/profile",
+    response_model=ProfileCorrectionResponse,
+)
+async def correct_profile(
+    body: ProfileCorrectionRequest,
+    user_id: str = Depends(_get_current_user_id),
+    db_session: AsyncSession = Depends(get_session),  # noqa: B008
+) -> ProfileCorrectionResponse:
+    """Correct the caller's saju profile (ISSUE-071, FR-029).
+
+    Architecture-Ref: §6.2, AP-14 (correction quota + new chart per
+    correction so past readings retain their old `chart_id`).
+    PRD-Ref: FR-029, US-17.
+
+    Flow:
+      1. Load the caller's profile. 404 if absent (caller should hit
+         `POST /api/v1/profile` first).
+      2. Enforce the quota: ``correction_count < MAX_CORRECTIONS``.
+         Over-quota → 403 with ``error.code='correction_quota_exceeded'``
+         (AC2).
+      3. Compute the new chart via the saju engine. Reuse the cached
+         row if another user already has the same ``chart_hash``
+         (AP-11) — otherwise insert a fresh ``saju_charts`` row.
+         **Always** insert a NEW chart row when the new chart_hash
+         differs from the existing one so past readings keep
+         referencing the OLD chart_id (AC4).
+      4. Re-encrypt ``birth_dt`` (envelope.encrypt_field via the
+         model setter), update the profile's plaintext-shaped fields,
+         and increment ``correction_count``.
+      5. Return the new ``profile_id``/``chart_id`` + the chart payload
+         + the post-mutation ``corrections_remaining``.
+
+    Idempotency note: this endpoint is NOT idempotent — a repeat call
+    with identical inputs still increments the counter. The frontend
+    is responsible for guarding against duplicate submissions (Confirm
+    Modal one-shot dispatch).
+    """
+    profile = (
+        await db_session.execute(
+            select(Profile).where(
+                Profile.user_id == user_id,
+                Profile.deleted_at.is_(None),
+            )
+        )
+    ).scalar_one_or_none()
+    if profile is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="profile not found",
+        )
+
+    # AC2: quota gate. We surface the cap in the body so the frontend
+    # can render the "운영 문의" empty state without a separate GET.
+    if profile.correction_count >= MAX_CORRECTIONS:
+        # Korean message kept under 88 chars per ruff E501.
+        _quota_msg = "수정 한도(2회)를 모두 사용했어요. 운영 문의로 진행해주세요."
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "error": {
+                    "code": "correction_quota_exceeded",
+                    "message": _quota_msg,
+                    "corrections_remaining": 0,
+                }
+            },
+        )
+
+    # Compute the new chart (pure function, safe inside the txn).
+    birth_dt = _parse_birth_dt(body.birth_date, body.birth_time)
+    time_unknown = body.birth_time is None
+    new_chart = compute_chart(
+        birth_dt,
+        is_lunar=body.is_lunar,
+        gender=body.gender,
+        time_unknown=time_unknown,
+    )
+
+    # AP-11 + AC4: always insert a new chart row for this user's
+    # corrected inputs, EXCEPT when another user's row already exists
+    # at the same chart_hash (in which case the cache hit reuses
+    # *their* row — past readings of *this* user still reference the
+    # old chart row because we never mutate the old row).
+    chart_row = (
+        await db_session.execute(
+            select(SajuChartRow).where(SajuChartRow.chart_hash == new_chart.chart_hash)
+        )
+    ).scalar_one_or_none()
+    if chart_row is None:
+        chart_row = SajuChartRow(
+            user_id=user_id,
+            chart_hash=new_chart.chart_hash,
+            engine_version=new_chart.engine_version,
+            pillars={
+                "year": new_chart.year.to_dict(),
+                "month": new_chart.month.to_dict(),
+                "day": new_chart.day.to_dict(),
+                "hour": new_chart.hour.to_dict() if new_chart.hour else None,
+            },
+            time_known=not time_unknown,
+        )
+        db_session.add(chart_row)
+        await db_session.flush()
+
+    # Re-encrypt birth_dt (via the property setter) + update the
+    # plaintext-shaped fields. ``correction_count`` is incremented in
+    # the same transaction so the quota check above is race-free under
+    # READ COMMITTED isolation.
+    profile.birth_dt = _format_birth_dt_plaintext(body.birth_date, body.birth_time)
+    profile.birth_is_lunar = body.is_lunar
+    profile.birth_time_known = not time_unknown
+    profile.name_optional = body.name
+    profile.correction_count = profile.correction_count + 1
+    await db_session.flush()
+    await db_session.commit()
+
+    return ProfileCorrectionResponse(
+        profile_id=str(profile.id),
+        chart_id=str(chart_row.id),
+        chart=_chart_value_to_out(new_chart),
+        corrections_remaining=MAX_CORRECTIONS - profile.correction_count,
+    )
+
+
 __all__ = [
+    "MAX_CORRECTIONS",
+    "ProfileCorrectionRequest",
+    "ProfileCorrectionResponse",
     "_get_current_user_id",  # exported for test dependency override
     "router",
 ]

@@ -10,7 +10,13 @@
  *   - Unexpected shape raises ProfileFetchError.
  */
 import { describe, expect, it, vi } from "vitest";
-import { fetchProfileMe, ProfileFetchError } from "@/lib/api/profile";
+import {
+  CORRECTION_QUOTA_EXCEEDED,
+  fetchProfileMe,
+  patchProfile,
+  ProfileFetchError,
+  type ProfileCorrectionRequest,
+} from "@/lib/api/profile";
 
 const GOOD_BODY = {
   profile_id: "p-1",
@@ -106,6 +112,114 @@ describe("fetchProfileMe (ISSUE-064)", () => {
     const fakeFetch = vi.fn(async () => mkOk({ profile_id: "x" }));
     await expect(
       fetchProfileMe(fakeFetch as unknown as typeof fetch),
+    ).rejects.toBeInstanceOf(ProfileFetchError);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// patchProfile (ISSUE-071, FR-029)
+// ---------------------------------------------------------------------------
+
+const VALID_PATCH_BODY: ProfileCorrectionRequest = {
+  birth_date: "1998-09-14",
+  birth_time: "09:45",
+  is_lunar: false,
+  gender: "F",
+  name: "민지",
+};
+
+const VALID_PATCH_RESPONSE = {
+  profile_id: "p-1",
+  chart_id: "c-2",
+  chart: GOOD_BODY.chart,
+  corrections_remaining: 1,
+};
+
+function mkPatchErr(status: number, errorCode?: string): Response {
+  return {
+    ok: false,
+    status,
+    json: async () =>
+      errorCode
+        ? { detail: { error: { code: errorCode, message: "" } } }
+        : { detail: "fail" },
+  } as unknown as Response;
+}
+
+describe("patchProfile (ISSUE-071)", () => {
+  it("200 → typed response with corrections_remaining", async () => {
+    const fakeFetch = vi.fn(async () => mkOk(VALID_PATCH_RESPONSE));
+    const out = await patchProfile(
+      VALID_PATCH_BODY,
+      fakeFetch as unknown as typeof fetch,
+    );
+    expect(out.profile_id).toBe("p-1");
+    expect(out.chart_id).toBe("c-2");
+    expect(out.corrections_remaining).toBe(1);
+    expect(fakeFetch).toHaveBeenCalledWith(
+      "/api/v1/profile",
+      expect.objectContaining({
+        method: "PATCH",
+        credentials: "include",
+      }),
+    );
+  });
+
+  it("PATCH body is JSON-serialised request", async () => {
+    const fakeFetch = vi.fn(async () => mkOk(VALID_PATCH_RESPONSE));
+    await patchProfile(VALID_PATCH_BODY, fakeFetch as unknown as typeof fetch);
+    const init = fakeFetch.mock.calls[0][1] as RequestInit;
+    expect(JSON.parse(init.body as string)).toEqual(VALID_PATCH_BODY);
+  });
+
+  it("403 with quota code → error.message === CORRECTION_QUOTA_EXCEEDED", async () => {
+    const fakeFetch = vi.fn(async () =>
+      mkPatchErr(403, CORRECTION_QUOTA_EXCEEDED),
+    );
+    try {
+      await patchProfile(
+        VALID_PATCH_BODY,
+        fakeFetch as unknown as typeof fetch,
+      );
+      throw new Error("should have thrown");
+    } catch (err) {
+      expect(err).toBeInstanceOf(ProfileFetchError);
+      expect((err as ProfileFetchError).status).toBe(403);
+      expect((err as ProfileFetchError).message).toBe(
+        CORRECTION_QUOTA_EXCEEDED,
+      );
+    }
+  });
+
+  it("401 → ProfileFetchError with status=401", async () => {
+    const fakeFetch = vi.fn(async () => mkPatchErr(401));
+    await expect(
+      patchProfile(VALID_PATCH_BODY, fakeFetch as unknown as typeof fetch),
+    ).rejects.toMatchObject({ name: "ProfileFetchError", status: 401 });
+  });
+
+  it("404 → ProfileFetchError with status=404", async () => {
+    const fakeFetch = vi.fn(async () => mkPatchErr(404));
+    await expect(
+      patchProfile(VALID_PATCH_BODY, fakeFetch as unknown as typeof fetch),
+    ).rejects.toMatchObject({ status: 404 });
+  });
+
+  it("network failure → ProfileFetchError with status=null", async () => {
+    const fakeFetch = vi.fn(async () => {
+      throw new Error("offline");
+    });
+    await expect(
+      patchProfile(VALID_PATCH_BODY, fakeFetch as unknown as typeof fetch),
+    ).rejects.toMatchObject({ status: null });
+  });
+
+  it("malformed body shape → ProfileFetchError", async () => {
+    const fakeFetch = vi.fn(async () =>
+      mkOk({ profile_id: "p-1", chart_id: "c-2" }),
+    );
+    await expect(
+      patchProfile(VALID_PATCH_BODY, fakeFetch as unknown as typeof fetch),
     ).rejects.toBeInstanceOf(ProfileFetchError);
   });
 });
