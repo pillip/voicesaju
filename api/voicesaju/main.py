@@ -20,6 +20,10 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.observability.logging import (  # noqa: F401 -- referenced below in create_app
+    RequestIdMiddleware,
+    configure_logging,
+)
 from voicesaju.observability.otel import (  # noqa: F401 -- used in create_app
     attach_metrics_route,
     configure_otel,
@@ -76,10 +80,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """
     settings = settings or get_settings()
 
-    # ISSUE-077: Configure OpenTelemetry BEFORE the FastAPI app is built
-    # so the legacy ``voicesaju.tracing`` shim swap is visible to every
-    # import that follows. When ``otel_enabled`` is false, ``configure_otel``
-    # is a no-op and the existing no-op shim keeps delivering.
+    # ISSUE-079: structured JSON logging — runs first so subsequent
+    # subsystem startup logs are rendered as JSON with redaction.
+    configure_logging(
+        service_name=settings.app_name,
+        log_level=settings.log_level,
+    )
+
+    # ISSUE-077: Configure OpenTelemetry. No-op when otel_enabled=False.
     configure_otel(
         enabled=settings.otel_enabled,
         endpoint=settings.otel_endpoint,
@@ -94,16 +102,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
     )
 
-    # ISSUE-077: Auto-instrument FastAPI + httpx so every route gets a
-    # span and downstream HTTP calls (Anthropic, Toss, Supertone) are
-    # automatically captured under the same trace.
+    # ISSUE-077: Auto-instrument FastAPI + httpx + Prometheus /metrics.
     if settings.otel_enabled:
         instrument_app(app)
-
-    # ISSUE-077: Prometheus /metrics endpoint. Always mounted (cheap)
-    # so Grafana Cloud / local-dev scrapers can hit it without flipping
-    # ``otel_enabled``.
     attach_metrics_route(app)
+
+    # ISSUE-079: inject per-request `request_id` ContextVar. LIFO
+    # ordering: registered AFTER AuthMiddleware so request_id is set
+    # before the auth layer runs.
+    app.add_middleware(RequestIdMiddleware)
 
     # Resolve user from Bearer token on every request → request.state.user.
     app.add_middleware(AuthMiddleware)
