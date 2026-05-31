@@ -146,6 +146,21 @@ class ProfileCreateResponse(BaseModel):
     chart: SajuChartOut
 
 
+class ProfileMeResponse(BaseModel):
+    """Response body for ``GET /api/v1/profile/me`` (ISSUE-064).
+
+    Returns the caller's persisted saju chart so the frontend
+    ``/me/saju`` page (Screen 17) can render the 4-pillar grid without
+    re-running the engine. ``birth_time_known`` is mirrored from the
+    ``profiles`` row so the page can render "모름" handling per AC2.
+    """
+
+    profile_id: str
+    chart_id: str
+    chart: SajuChartOut
+    birth_time_known: bool
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -311,6 +326,68 @@ async def create_profile(
         profile_id=str(profile.id),
         chart_id=str(chart_row.id),
         chart=_chart_value_to_out(chart_value),
+    )
+
+
+@router.get(
+    "/profile/me",
+    response_model=ProfileMeResponse,
+)
+async def get_profile_me(
+    user_id: str = Depends(_get_current_user_id),
+    db_session: AsyncSession = Depends(get_session),  # noqa: B008
+) -> ProfileMeResponse:
+    """Return the caller's persisted profile + saju chart (ISSUE-064).
+
+    Architecture-Ref: §6.2.
+    PRD-Ref: FR-011 (My Page chart visualization), US-05.
+
+    Drives the ``/me/saju`` page (Screen 17). The chart row is read
+    straight from ``saju_charts`` — we do NOT re-compute. ``birth_time_known``
+    comes from the ``profiles`` row so the page can render the "모름"
+    treatment on the Hour Pillar (AC2).
+
+    Auth: 401 when anonymous (consistent with ``POST /api/v1/profile``).
+    404 when the caller is signed in but has no profile yet (typical of
+    a user that completed OAuth but skipped onboarding — the page should
+    bounce them to `/onboarding`).
+
+    Soft-deleted profiles (``deleted_at IS NOT NULL``) are treated as
+    "not present" so the chart isn't served from a tombstoned row.
+    """
+    profile = (
+        await db_session.execute(
+            select(Profile).where(
+                Profile.user_id == user_id,
+                Profile.deleted_at.is_(None),
+            )
+        )
+    ).scalar_one_or_none()
+    if profile is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="profile not found",
+        )
+
+    chart_row = (
+        await db_session.execute(
+            select(SajuChartRow).where(SajuChartRow.user_id == user_id)
+        )
+    ).scalar_one_or_none()
+    if chart_row is None:
+        # Same defensive guard as the POST path — profile + chart are
+        # always written in the same transaction, so this should be
+        # unreachable; raise 500 rather than silently 404.
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="profile present without chart",
+        )
+
+    return ProfileMeResponse(
+        profile_id=str(profile.id),
+        chart_id=str(chart_row.id),
+        chart=_chart_row_to_out(chart_row),
+        birth_time_known=profile.birth_time_known,
     )
 
 
