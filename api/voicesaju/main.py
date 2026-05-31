@@ -42,6 +42,7 @@ from voicesaju.readings.routers.history import (  # noqa: F401
 )
 from voicesaju.readings.routers.intro import router as reading_intro_router
 from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
+from voicesaju.security.csrf import install_csrf  # noqa: F401 -- used in create_app
 from voicesaju.users.routers.account import router as account_router  # noqa: F401
 from voicesaju.users.routers.auth import router as oauth_router
 from voicesaju.users.routers.device import router as device_router
@@ -121,6 +122,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     # Resolve user from Bearer token on every request → request.state.user.
     app.add_middleware(AuthMiddleware)
+
+    # ISSUE-082: CSRF gate (X-VS-CSRF) — non-GET requests require a
+    # matching header. Bearer requests bypass (Toss WebView etc.).
+    # Mounts ``GET /api/v1/csrf`` for the SPA to fetch the token.
+    # Gate defaults off via ``settings.csrf_enabled`` for the staged
+    # rollout; production turns it on with ``CSRF_ENABLED=true`` once
+    # the frontend is shipping the header on every mutating fetch.
+    install_csrf(app, enabled=settings.csrf_enabled)
 
     @app.get("/healthz", tags=["meta"])
     async def healthz() -> dict[str, str]:
