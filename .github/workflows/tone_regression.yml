@@ -1,0 +1,52 @@
+name: Tone Regression
+
+# Pre-launch tone evalset regression gate (ISSUE-090, PRD FR-032).
+#
+# Runs the layer-3 deny-list correctness gate against the 55+ fixture
+# cases in api/tests/fixtures/tone_evalset.json. The job is wired to
+# pull_request + push:main so every change to the deny-list, the
+# fixture, or the guardrail surface gets gated.
+#
+# To make this a *blocking* required check on main, an admin must add
+# "Tone Regression / tone-evalset" to the protected-branch required
+# status checks in Settings > Branches > main. The workflow name +
+# job id stay stable across releases so the required-check pin does
+# not drift.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: tone-regression-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tone-evalset:
+    name: Tone evalset regression (deny-list)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: api/uv.lock
+
+      - name: Sync dependencies (incl. dev extras)
+        run: uv sync --frozen --extra dev
+
+      - name: Run tone regression
+        run: uv run pytest tests/regression/test_tone_evalset.py -m tone_regression -v
