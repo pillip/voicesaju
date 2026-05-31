@@ -20,6 +20,7 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.observability.sentry import init_sentry  # noqa: F401 -- used below
 from voicesaju.payment.history import router as payment_history_router
 from voicesaju.payment.routes import router as payment_router  # noqa: F401
 from voicesaju.payment.subscription_routes import (  # noqa: F401
@@ -70,6 +71,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         503 otherwise.
     """
     settings = settings or get_settings()
+
+    # ISSUE-078: Sentry SDK init. No-op when SENTRY_DSN is unset so the
+    # local-dev / test path stays free of network side-effects.
+    init_sentry(
+        dsn=settings.sentry_dsn,
+        environment=settings.sentry_environment or settings.environment,
+        release=settings.sentry_release,
+    )
 
     app = FastAPI(
         title=settings.app_name,

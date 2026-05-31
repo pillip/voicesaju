@@ -98,6 +98,15 @@ class Settings(BaseSettings):
     anthropic_haiku_input_krw_per_mtok: float = 1_000.0
     anthropic_haiku_output_krw_per_mtok: float = 5_000.0
 
+    # --- Sentry (ISSUE-078) ---
+    # DSN is the single switch. When unset, the SDK is never initialised
+    # so import-time overhead stays zero in tests / local dev.
+    # The `before_send` hook strips PII (birth_dt, payment keys, Toss
+    # order IDs, JWTs) before any event reaches the wire.
+    sentry_dsn: str | None = None
+    sentry_environment: str | None = None
+    sentry_release: str | None = None
+
     def model_post_init(self, __context: object) -> None:
         """Guardrail: mock-* adapters must not run in production."""
         if self.environment == "prod" and self.auth_provider == "mock":
