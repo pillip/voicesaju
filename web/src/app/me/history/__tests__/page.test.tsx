@@ -23,7 +23,7 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
-import MeHistoryItemPage from '@/app/me/history/[id]/page';
+import { MeHistoryItemView as MeHistoryItemPage } from '@/app/me/history/[id]/MeHistoryItemView';
 
 function mkResponse(status: number): Response {
   return {
