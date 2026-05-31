@@ -125,6 +125,33 @@ class MockTossClient:
             amount_krw=amount_krw,
         )
 
+    async def refund_payment(
+        self,
+        *,
+        payment_key: str,
+        amount_krw: int,
+    ) -> str:
+        """Synthesise a Toss-side refund id (ISSUE-076).
+
+        Phase-1 has no real Toss API to call; the automatic refund
+        worker (:mod:`voicesaju.jobs.refund_retry`) wires this method
+        as its injected ``toss_refund_call``. The return value is the
+        synthetic ``toss_refund_id`` written to ``refunds.toss_refund_id``
+        — opaque to the caller, deterministic per ``payment_key`` so
+        SQLite tests stay reproducible.
+
+        Production (Phase-2) swaps this for
+        :meth:`TossHTTPClient.refund_payment` once ISSUE-043 lands the
+        merchant credentials. The signature matches the
+        ``TossRefundCall`` Protocol (``payment_key``, ``amount_krw`` →
+        ``str``) so the swap is a one-line change.
+        """
+        # Keep the id format aligned with the Toss-side convention
+        # (``mock-refund-<payment_key>``) so the integration tests can
+        # assert on it without coupling to a UUID factory.
+        _ = amount_krw  # noted for parity with TossHTTPClient.refund_payment
+        return f"mock-refund-{payment_key}"
+
 
 # ---------------------------------------------------------------------------
 # TossHTTPClient — real httpx wrapper (ISSUE-043 Phase-2)
