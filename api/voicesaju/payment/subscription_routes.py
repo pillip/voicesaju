@@ -98,9 +98,61 @@ class _SubscriptionResponse(BaseModel):
     cancel_requested_at: datetime | None = None
 
 
+class _MeSubscriptionResponse(BaseModel):
+    """Envelope for ``GET /api/v1/subscriptions/me``.
+
+    ``subscription`` is ``null`` when the caller has no active row, so the
+    FE can branch on a single nullable field rather than two HTTP status
+    codes. Matches ISSUE-067's billing page contract: non-subscribers
+    render the "구독 시작하기" CTA without an extra request.
+    """
+
+    subscription: _SubscriptionResponse | None = None
+
+
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
+
+@router.get(
+    "/me",
+    response_model=_MeSubscriptionResponse,
+)
+async def get_my_subscription(
+    user_id: Annotated[str, Depends(_get_current_user_id)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> _MeSubscriptionResponse:
+    """Return the caller's current subscription, or ``null``.
+
+    Surfaces the row whose ``status`` is either ``active`` or
+    ``cancel_at_period_end`` — both states keep the user inside the
+    paid period (FR-022), and the billing page (ISSUE-067) needs the
+    distinction to render the "해지 예정" pill copy.
+
+    Terminal-state rows (``canceled``, ``past_due``) are NOT returned;
+    once a subscription has terminated, the FE shows the same empty
+    state as a never-subscribed user.
+
+    Auth: required. A 401 is raised by ``_get_current_user_id`` for
+    anonymous callers.
+    """
+    sub = (
+        (
+            await session.execute(
+                select(Subscription)
+                .where(Subscription.user_id == user_id)
+                .where(Subscription.status.in_(("active", "cancel_at_period_end")))
+                .order_by(Subscription.current_period_end.desc())
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    if sub is None:
+        return _MeSubscriptionResponse(subscription=None)
+    return _MeSubscriptionResponse(subscription=_to_response(sub))
 
 
 @router.post(
