@@ -109,6 +109,13 @@ class Settings(BaseSettings):
     sentry_environment: str | None = None
     sentry_release: str | None = None
 
+    # --- CSRF (ISSUE-082) ---
+    # Master switch for the X-VS-CSRF gate (architecture §11.1). Defaults
+    # off so existing endpoints stay accessible during the staged rollout;
+    # production turns this on via ``CSRF_ENABLED=true`` once the frontend
+    # is shipping the header on every mutating fetch.
+    csrf_enabled: bool = False
+
     def model_post_init(self, __context: object) -> None:
         """Guardrail: mock-* adapters must not run in production."""
         if self.environment == "prod" and self.auth_provider == "mock":
