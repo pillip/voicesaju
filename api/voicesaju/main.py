@@ -29,6 +29,7 @@ from voicesaju.observability.otel import (  # noqa: F401 -- used in create_app
     configure_otel,
     instrument_app,
 )
+from voicesaju.observability.sentry import init_sentry  # noqa: F401 -- used below
 from voicesaju.payment.history import router as payment_history_router
 from voicesaju.payment.routes import router as payment_router  # noqa: F401
 from voicesaju.payment.subscription_routes import (  # noqa: F401
@@ -80,11 +81,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """
     settings = settings or get_settings()
 
-    # ISSUE-079: structured JSON logging — runs first so subsequent
-    # subsystem startup logs are rendered as JSON with redaction.
+    # ISSUE-079: structured JSON logging first.
     configure_logging(
         service_name=settings.app_name,
         log_level=settings.log_level,
+    )
+
+    # ISSUE-078: Sentry SDK init. No-op when SENTRY_DSN is unset.
+    init_sentry(
+        dsn=settings.sentry_dsn,
+        environment=settings.sentry_environment or settings.environment,
+        release=settings.sentry_release,
     )
 
     # ISSUE-077: Configure OpenTelemetry. No-op when otel_enabled=False.
