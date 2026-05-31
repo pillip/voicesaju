@@ -30,6 +30,7 @@ dependencies = [
     "opentelemetry-instrumentation-httpx>=0.63b1",
     "prometheus-client>=0.25.0",
     "structlog>=25.5.0",
+    "sentry-sdk[fastapi]>=2.61.0",
 ]
 
 [project.optional-dependencies]
