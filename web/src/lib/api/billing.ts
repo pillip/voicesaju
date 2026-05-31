@@ -51,7 +51,7 @@
 
 export interface SubscriptionRow {
   id: string;
-  status: "active" | "cancel_at_period_end";
+  status: 'active' | 'cancel_at_period_end';
   monthly_saju_remaining: number;
   current_period_start: string;
   current_period_end: string;
@@ -64,7 +64,7 @@ export interface MeSubscriptionResponse {
 
 export interface PaymentHistoryRow {
   id: string;
-  type: "single" | "subscription";
+  type: 'single' | 'subscription';
   category: string | null;
   amount_krw: number;
   status: string;
@@ -76,7 +76,7 @@ export class BillingFetchError extends Error {
   readonly status: number | null;
   constructor(message: string, status: number | null = null) {
     super(message);
-    this.name = "BillingFetchError";
+    this.name = 'BillingFetchError';
     this.status = status;
   }
 }
@@ -90,9 +90,9 @@ async function _getJson<T>(
   let res: Response;
   try {
     res = await fetchImpl(url, {
-      method: "GET",
-      credentials: "include",
-      headers: { Accept: "application/json" },
+      method: 'GET',
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
     });
   } catch (err) {
     throw new BillingFetchError(
@@ -101,10 +101,7 @@ async function _getJson<T>(
     );
   }
   if (!res.ok) {
-    throw new BillingFetchError(
-      `non-OK response from ${context}: HTTP ${res.status}`,
-      res.status,
-    );
+    throw new BillingFetchError(`non-OK response from ${context}: HTTP ${res.status}`, res.status);
   }
   let body: unknown;
   try {
@@ -131,10 +128,10 @@ export async function fetchMySubscription(
   fetchImpl: typeof fetch = fetch,
 ): Promise<MeSubscriptionResponse> {
   return _getJson<MeSubscriptionResponse>(
-    "/api/v1/subscriptions/me",
+    '/api/v1/subscriptions/me',
     fetchImpl,
     isMeSubscriptionResponse,
-    "/subscriptions/me",
+    '/subscriptions/me',
   );
 }
 
@@ -151,8 +148,66 @@ export async function fetchPaymentHistory(
     `/api/v1/payments/history?page=${page}`,
     fetchImpl,
     isPaymentHistoryArray,
-    "/payments/history",
+    '/payments/history',
   );
+}
+
+/**
+ * Open (or reuse) the caller's active subscription via
+ * `POST /api/v1/subscriptions`.
+ *
+ * Backend behaviour (ISSUE-068):
+ *   - No active row → 201 + freshly-created row.
+ *   - Existing active row → 200 + same row (idempotent).
+ *
+ * Either way the response shape is identical, so we surface a single
+ * `SubscriptionRow`. The caller can branch on
+ * `result.status === "active"` to confirm success.
+ *
+ * `method` defaults to "tosspay" to match the Phase-1 Toss-only
+ * checkout flow. Adding KakaoPay later only requires passing
+ * `"kakaopay"` from the UI.
+ */
+export async function createSubscription(
+  fetchImpl: typeof fetch = fetch,
+  method: 'tosspay' | 'kakaopay' = 'tosspay',
+): Promise<SubscriptionRow> {
+  let res: Response;
+  try {
+    res = await fetchImpl('/api/v1/subscriptions', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ method }),
+    });
+  } catch (err) {
+    throw new BillingFetchError(
+      `network error creating subscription: ${err instanceof Error ? err.message : String(err)}`,
+      null,
+    );
+  }
+  if (!res.ok) {
+    throw new BillingFetchError(
+      `non-OK response from /subscriptions: HTTP ${res.status}`,
+      res.status,
+    );
+  }
+  let body: unknown;
+  try {
+    body = await res.json();
+  } catch (err) {
+    throw new BillingFetchError(
+      `malformed JSON from /subscriptions: ${err instanceof Error ? err.message : String(err)}`,
+      res.status,
+    );
+  }
+  if (!isSubscriptionRow(body)) {
+    throw new BillingFetchError(`unexpected shape from /subscriptions`, res.status);
+  }
+  return body;
 }
 
 /**
@@ -168,10 +223,10 @@ export async function cancelMySubscription(
 ): Promise<SubscriptionRow> {
   let res: Response;
   try {
-    res = await fetchImpl("/api/v1/subscriptions/cancel", {
-      method: "POST",
-      credentials: "include",
-      headers: { Accept: "application/json" },
+    res = await fetchImpl('/api/v1/subscriptions/cancel', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
     });
   } catch (err) {
     throw new BillingFetchError(
@@ -195,10 +250,7 @@ export async function cancelMySubscription(
     );
   }
   if (!isSubscriptionRow(body)) {
-    throw new BillingFetchError(
-      `unexpected shape from /subscriptions/cancel`,
-      res.status,
-    );
+    throw new BillingFetchError(`unexpected shape from /subscriptions/cancel`, res.status);
   }
   return body;
 }
@@ -206,41 +258,34 @@ export async function cancelMySubscription(
 // ---- type guards ----------------------------------------------------------
 
 function isSubscriptionRow(value: unknown): value is SubscriptionRow {
-  if (typeof value !== "object" || value === null) return false;
+  if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
-  if (typeof v.id !== "string") return false;
-  if (v.status !== "active" && v.status !== "cancel_at_period_end")
-    return false;
-  if (typeof v.monthly_saju_remaining !== "number") return false;
-  if (typeof v.current_period_start !== "string") return false;
-  if (typeof v.current_period_end !== "string") return false;
-  if (
-    v.cancel_requested_at !== null &&
-    typeof v.cancel_requested_at !== "string"
-  )
-    return false;
+  if (typeof v.id !== 'string') return false;
+  if (v.status !== 'active' && v.status !== 'cancel_at_period_end') return false;
+  if (typeof v.monthly_saju_remaining !== 'number') return false;
+  if (typeof v.current_period_start !== 'string') return false;
+  if (typeof v.current_period_end !== 'string') return false;
+  if (v.cancel_requested_at !== null && typeof v.cancel_requested_at !== 'string') return false;
   return true;
 }
 
-function isMeSubscriptionResponse(
-  value: unknown,
-): value is MeSubscriptionResponse {
-  if (typeof value !== "object" || value === null) return false;
+function isMeSubscriptionResponse(value: unknown): value is MeSubscriptionResponse {
+  if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
   if (v.subscription === null) return true;
   return isSubscriptionRow(v.subscription);
 }
 
 function isPaymentHistoryRow(value: unknown): value is PaymentHistoryRow {
-  if (typeof value !== "object" || value === null) return false;
+  if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
-  if (typeof v.id !== "string") return false;
-  if (v.type !== "single" && v.type !== "subscription") return false;
-  if (v.category !== null && typeof v.category !== "string") return false;
-  if (typeof v.amount_krw !== "number") return false;
-  if (typeof v.status !== "string") return false;
-  if (v.paid_at !== null && typeof v.paid_at !== "string") return false;
-  if (typeof v.refunded_amount_krw !== "number") return false;
+  if (typeof v.id !== 'string') return false;
+  if (v.type !== 'single' && v.type !== 'subscription') return false;
+  if (v.category !== null && typeof v.category !== 'string') return false;
+  if (typeof v.amount_krw !== 'number') return false;
+  if (typeof v.status !== 'string') return false;
+  if (v.paid_at !== null && typeof v.paid_at !== 'string') return false;
+  if (typeof v.refunded_amount_krw !== 'number') return false;
   return true;
 }
 
