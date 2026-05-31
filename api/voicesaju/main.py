@@ -43,6 +43,10 @@ from voicesaju.readings.routers.history import (  # noqa: F401
 from voicesaju.readings.routers.intro import router as reading_intro_router
 from voicesaju.readings.routers.pipeline import router as reading_pipeline_router
 from voicesaju.security.csrf import install_csrf  # noqa: F401 -- used in create_app
+from voicesaju.security.ratelimit import (  # noqa: F401 -- used in create_app
+    install_path_rate_limit,
+    install_rate_limit,
+)
 from voicesaju.users.routers.account import router as account_router  # noqa: F401
 from voicesaju.users.routers.auth import router as oauth_router
 from voicesaju.users.routers.device import router as device_router
@@ -130,6 +134,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # rollout; production turns it on with ``CSRF_ENABLED=true`` once
     # the frontend is shipping the header on every mutating fetch.
     install_csrf(app, enabled=settings.csrf_enabled)
+
+    # ISSUE-081: token-bucket rate limit on auth + payment checkout
+    # (architecture §11.4). Defaults: 10/min per IP for auth, 5/min
+    # per IP for checkout. Gate defaults off via
+    # ``settings.rate_limit_enabled`` so existing tests pass; flip
+    # ``RATE_LIMIT_ENABLED=true`` in prod once 429 alerting is in
+    # place. Fail-open on backend errors (NEVER fail-closed).
+    install_rate_limit(app)
+    install_path_rate_limit(
+        app,
+        enabled=settings.rate_limit_enabled,
+        auth_spec=settings.rate_limit_auth_spec,
+        payment_spec=settings.rate_limit_payment_spec,
+    )
 
     @app.get("/healthz", tags=["meta"])
     async def healthz() -> dict[str, str]:
