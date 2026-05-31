@@ -44,12 +44,14 @@ def register(func: Callable[..., Awaitable[Any]]) -> Callable[..., Awaitable[Any
 # stub piggybacks on the same module-level state.
 from voicesaju.jobs.audio_finalize import finalize_audio  # noqa: E402
 from voicesaju.jobs.og_bake import og_bake  # noqa: E402
+from voicesaju.jobs.refund_retry import refund_for_reading  # noqa: E402
 from voicesaju.jobs.subscription_cancel_retry import (  # noqa: E402
     subscription_cancel_retry,
 )
 
 register(finalize_audio)
 register(og_bake)
+register(refund_for_reading)
 register(subscription_cancel_retry)
 
 
