@@ -158,9 +158,7 @@ class _OTelSpanAdapter:
         code = (
             StatusCode.OK
             if status.lower() == "ok"
-            else StatusCode.ERROR
-            if status.lower() == "error"
-            else StatusCode.UNSET
+            else StatusCode.ERROR if status.lower() == "error" else StatusCode.UNSET
         )
         self._span.set_status(Status(code, description=description))
 
