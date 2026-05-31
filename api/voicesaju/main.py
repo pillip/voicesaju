@@ -20,6 +20,11 @@ from voicesaju.adapters.payment import (
 from voicesaju.config import Settings, get_settings
 from voicesaju.db.engine import get_session
 from voicesaju.middleware.auth import AuthMiddleware
+from voicesaju.observability.otel import (  # noqa: F401 -- used in create_app
+    attach_metrics_route,
+    configure_otel,
+    instrument_app,
+)
 from voicesaju.payment.history import router as payment_history_router
 from voicesaju.payment.routes import router as payment_router  # noqa: F401
 from voicesaju.payment.subscription_routes import (  # noqa: F401
@@ -71,12 +76,34 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """
     settings = settings or get_settings()
 
+    # ISSUE-077: Configure OpenTelemetry BEFORE the FastAPI app is built
+    # so the legacy ``voicesaju.tracing`` shim swap is visible to every
+    # import that follows. When ``otel_enabled`` is false, ``configure_otel``
+    # is a no-op and the existing no-op shim keeps delivering.
+    configure_otel(
+        enabled=settings.otel_enabled,
+        endpoint=settings.otel_endpoint,
+        service_name=settings.otel_service_name,
+        environment=settings.environment,
+    )
+
     app = FastAPI(
         title=settings.app_name,
         version="0.1.0",
         docs_url="/docs",
         redoc_url=None,
     )
+
+    # ISSUE-077: Auto-instrument FastAPI + httpx so every route gets a
+    # span and downstream HTTP calls (Anthropic, Toss, Supertone) are
+    # automatically captured under the same trace.
+    if settings.otel_enabled:
+        instrument_app(app)
+
+    # ISSUE-077: Prometheus /metrics endpoint. Always mounted (cheap)
+    # so Grafana Cloud / local-dev scrapers can hit it without flipping
+    # ``otel_enabled``.
+    attach_metrics_route(app)
 
     # Resolve user from Bearer token on every request → request.state.user.
     app.add_middleware(AuthMiddleware)

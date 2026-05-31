@@ -98,6 +98,17 @@ class Settings(BaseSettings):
     anthropic_haiku_input_krw_per_mtok: float = 1_000.0
     anthropic_haiku_output_krw_per_mtok: float = 5_000.0
 
+    # --- OpenTelemetry (ISSUE-077) ---
+    # ``otel_enabled`` is the master switch. When false (default), the
+    # legacy :mod:`voicesaju.tracing` no-op shim keeps delivering and
+    # nothing in the OTel SDK chain is instantiated. When true, the SDK
+    # is configured with an OTLP HTTP exporter pointing at
+    # ``otel_endpoint`` (Grafana Cloud or a local collector); spans
+    # already emitted from the reading + tarot pipelines flow through.
+    otel_enabled: bool = False
+    otel_endpoint: str | None = None
+    otel_service_name: str = "voicesaju-api"
+
     def model_post_init(self, __context: object) -> None:
         """Guardrail: mock-* adapters must not run in production."""
         if self.environment == "prod" and self.auth_provider == "mock":
