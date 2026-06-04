@@ -1,0 +1,190 @@
+/**
+ * ISSUE-096 — Per-screen v2 navigation chrome.
+ *
+ * Source of truth: docs/design_system.md §"Updated Nav Patterns".
+ *
+ * - `.nav-vertical` — left-anchored, writing-mode: vertical-rl. The vertical
+ *   orientation is intentional friction (Toss-funnel entry slow-down) per
+ *   the ISSUE-096 Implementation Notes — do NOT change writing-mode.
+ *   Tap targets must remain ≥ 44 px (NFR-012/013) even in vertical layout,
+ *   so we set min-width/min-height on the link cells.
+ *
+ * - `.nav-bottom-v2` — sticky bottom strip with a hanji backdrop and a
+ *   12 px backdrop-filter blur for the "immersive" reading-play feel.
+ *   Padding-bottom uses `env(safe-area-inset-bottom)` so it never hides
+ *   behind iOS home indicators.
+ *
+ * - `.hanja-tab-bar` — bottom-pinned 4-button bar with hanja glyphs. The
+ *   per-button cell is locked to ≥ 44 × 44 px for tap-target safety and
+ *   uses `var(--font-mincho)` so the hanja glyph carries weight 900.
+ *   Aria-label drives the SR announcement, not the visible hanja (AC5).
+ *
+ * - `.nav-landing-shell` — landing-only chrome (brand-mark top-right +
+ *   back affordance top-left). No bottom bar, no side nav, no fixed
+ *   chrome — matches docs/wireframes.md §1.
+ *
+ * `data-nav-variant` is also tagged on the root container so the
+ * Playwright + integration tests can assert which variant rendered
+ * without inspecting CSS class names directly.
+ */
+
+/* category — 좌측 세로축 nav */
+.nav-vertical {
+  position: sticky;
+  top: 0;
+  /* Vertical-RL = top-to-bottom, right-to-left columns. Required friction
+   * per design_system.md §Nav. */
+  writing-mode: vertical-rl;
+  /* `inline-end / block-end` are flipped under vertical-rl; using physical
+   * padding keeps it predictable across browsers. */
+  padding: var(--space-6) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  letter-spacing: 0.3em;
+  color: var(--cream-300);
+  border-right: 1px solid var(--hanji-300);
+}
+
+.nav-vertical__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Tap target ≥ 44 px even in vertical orientation. Under vertical-rl
+   * the visual "width" is the block-axis, so we set both. */
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-1);
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-vertical__item:hover,
+.nav-vertical__item:focus-visible {
+  color: var(--baekrim-200);
+}
+
+.nav-vertical__item--active {
+  color: var(--vermilion-300);
+}
+
+/* reading-play — 하단 nav (몰입형) v2 */
+.nav-bottom-v2 {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: var(--space-4) var(--space-6);
+  /* iOS safe-area: never overlap the home indicator. */
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--hanji-300);
+  /* Hanji-tinted translucent background so the subtitle band underneath
+   * stays partially visible — matches the "immersive" requirement. */
+  background: color-mix(in srgb, var(--hanji-800) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* min-height keeps the bar from collapsing on empty children and
+   * ensures the subtitle band reserves space for it at 375 px height. */
+  min-height: 56px;
+}
+
+.nav-bottom-v2__cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--cream-200);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* my-page — 4 hanja tabs (家 命 月 我) */
+.hanja-tab-bar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: var(--space-2) var(--space-4);
+  padding-bottom: calc(var(--space-2) + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--hanji-300);
+  background: var(--hanji-900);
+}
+
+.hanja-tab-bar__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* AC4: tap target ≥ 44 × 44. */
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--space-2);
+  font-family: var(--font-mincho);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--cream-300);
+  text-decoration: none;
+}
+
+.hanja-tab-bar__cell:hover,
+.hanja-tab-bar__cell:focus-visible {
+  color: var(--baekrim-200);
+  outline: 2px solid var(--vermilion-300);
+  outline-offset: -2px;
+}
+
+.hanja-tab-bar__cell--active {
+  color: var(--vermilion-300);
+}
+
+/* landing — brand + back only (no fixed chrome) */
+.nav-landing-shell {
+  /* Float-free, frame-less layer. Children pin themselves with absolute
+   * positioning so the landing copy below has the entire viewport. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-4);
+  pointer-events: none; /* re-enable on children */
+}
+
+.nav-landing-shell > * {
+  pointer-events: auto;
+}
+
+.nav-landing-shell__back,
+.nav-landing-shell__brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--cream-300);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-landing-shell__brand {
+  font-family: var(--font-mincho);
+  font-weight: 900;
+  font-size: 16px;
+  color: var(--baekrim-200);
+}
