@@ -4091,11 +4091,11 @@ The 3 historical system-tone strings tagged `// copy-lint: formal-ok` during ISS
 - PRD-Ref: FR-044
 - Priority: P3
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Branch: feat/issue-105-utility-collapse
+- GH-Issue: https://github.com/pillip/voicesaju/issues/161
+- PR: https://github.com/pillip/voicesaju/pull/162 (merge 2619cf3)
 - Depends-On: ISSUE-094, ISSUE-095, ISSUE-098
 
 ### Goal
