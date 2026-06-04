@@ -36,3 +36,21 @@ export function isTarotV2SpreadEnabled(): boolean {
 export function isQuoteCardV2Enabled(): boolean {
   return parseBoolFlag(process.env.NEXT_PUBLIC_QUOTE_CARD_V2);
 }
+
+/**
+ * `NEXT_PUBLIC_NAV_V2` — ISSUE-096 rollout gate.
+ *
+ * When true: `<RouteShell>` mounts the per-screen v2 chrome
+ * (landing minimal · `.nav-vertical` on category · `.nav-bottom-v2`
+ * on reading-play · hanja tab bar on /me).
+ *
+ * When false / unset (default): `<RouteShell>` renders the v1
+ * TopAppBar/BottomTabBar pair on every screen so production stays on
+ * the ISSUE-022 chrome until launch readiness flips this. The rollback
+ * path documented in the issue body (NAV_V2=false) is identical to
+ * "env var unset" — both paths short-circuit before any v2 CSS class
+ * lands in the DOM.
+ */
+export function isNavV2Enabled(): boolean {
+  return parseBoolFlag(process.env.NEXT_PUBLIC_NAV_V2);
+}

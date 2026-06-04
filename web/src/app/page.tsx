@@ -23,77 +23,66 @@
  * Scope-out: SEO meta + OG tags (deferred to a follow-up).
  */
 
-import { LandingCtas } from "@/components/landing/LandingCtas";
-import { TrustStrip } from "@/components/landing/TrustStrip";
+import { LandingCtas } from '@/components/landing/LandingCtas';
+import { TrustStrip } from '@/components/landing/TrustStrip';
+import { RouteShell } from '@/components/nav/RouteShell';
 
 export default function LandingPage() {
+  // RouteShell mounts the landing chrome (brand mark + back affordance)
+  // when NEXT_PUBLIC_NAV_V2 is true; pass-through otherwise. ISSUE-096 AC1.
   return (
-    <main
-      data-testid="landing"
-      className="relative flex min-h-screen flex-col items-center justify-between px-6 py-12 text-center"
-    >
-      {/* Top region — hero illustration + tagline. */}
-      <section className="flex w-full max-w-md flex-col items-center gap-6 pt-6">
-        {/* Hero illustration placeholder.
-         *
-         * The real silhouette pair (시니컬 누님 + 노인 도사) lands as
-         * DEP-XX; until then we render a minimal pair of stacked
-         * silhouette ovals via inline SVG so the layout doesn't shift
-         * when the real art drops in.
-         */}
-        <div
-          aria-hidden="true"
-          data-testid="hero-illustration"
-          className="flex h-48 w-48 items-center justify-center text-cream-200"
-        >
-          <svg
-            viewBox="0 0 120 120"
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-full w-full"
-            role="img"
-            aria-label="silhouette placeholder"
+    <RouteShell>
+      <main
+        data-testid="landing"
+        className="relative flex min-h-screen flex-col items-center justify-between px-6 py-12 text-center"
+      >
+        {/* Top region — hero illustration + tagline. */}
+        <section className="flex w-full max-w-md flex-col items-center gap-6 pt-6">
+          {/* Hero illustration placeholder.
+           *
+           * The real silhouette pair (시니컬 누님 + 노인 도사) lands as
+           * DEP-XX; until then we render a minimal pair of stacked
+           * silhouette ovals via inline SVG so the layout doesn't shift
+           * when the real art drops in.
+           */}
+          <div
+            aria-hidden="true"
+            data-testid="hero-illustration"
+            className="flex h-48 w-48 items-center justify-center text-cream-200"
           >
-            {/* Left silhouette — younger figure (누님). */}
-            <ellipse
-              cx="42"
-              cy="48"
-              rx="14"
-              ry="16"
-              fill="currentColor"
-              opacity="0.7"
-            />
-            <path d="M28 100 Q42 70 56 100" fill="currentColor" opacity="0.7" />
-            {/* Right silhouette — elder figure (도사). */}
-            <ellipse
-              cx="80"
-              cy="54"
-              rx="13"
-              ry="15"
-              fill="currentColor"
-              opacity="0.5"
-            />
-            <path d="M67 100 Q80 76 93 100" fill="currentColor" opacity="0.5" />
-          </svg>
-        </div>
+            <svg
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-full w-full"
+              role="img"
+              aria-label="silhouette placeholder"
+            >
+              {/* Left silhouette — younger figure (누님). */}
+              <ellipse cx="42" cy="48" rx="14" ry="16" fill="currentColor" opacity="0.7" />
+              <path d="M28 100 Q42 70 56 100" fill="currentColor" opacity="0.7" />
+              {/* Right silhouette — elder figure (도사). */}
+              <ellipse cx="80" cy="54" rx="13" ry="15" fill="currentColor" opacity="0.5" />
+              <path d="M67 100 Q80 76 93 100" fill="currentColor" opacity="0.5" />
+            </svg>
+          </div>
 
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="font-display text-4xl italic tracking-tight">
-            VoiceSaju
-          </h1>
-          <p className="font-display text-lg text-cream-300">
-            새벽 3시의 누님이, 직접 풀어줍니다.
-          </p>
-          <p className="font-body text-sm text-cream-400">목소리로.</p>
-        </div>
-      </section>
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="font-display text-4xl italic tracking-tight">VoiceSaju</h1>
+            <p className="font-display text-lg text-cream-300">
+              새벽 3시의 누님이, 직접 풀어줍니다.
+            </p>
+            <p className="font-body text-sm text-cream-400">목소리로.</p>
+          </div>
+        </section>
 
-      {/* Center region — CTAs. Client island so it can read
-       * localStorage + POST device-ID after mount.
-       */}
-      <LandingCtas />
+        {/* Center region — CTAs. Client island so it can read
+         * localStorage + POST device-ID after mount.
+         */}
+        <LandingCtas />
 
-      {/* Bottom region — trust strip. */}
-      <TrustStrip />
-    </main>
+        {/* Bottom region — trust strip. */}
+        <TrustStrip />
+      </main>
+    </RouteShell>
   );
 }
