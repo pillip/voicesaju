@@ -3992,6 +3992,141 @@ Lightweight CSS utilities that operationalise the v2 "uncanny tilt" motif and th
 
 ---
 
+# Post-MVP Cleanup (Discovered Issues — batched after the M2.5 sprint)
+
+> Three low-priority cleanups surfaced as Discovered Issues during M2.5 (ISSUE-095, 097, 098). Each is ~0.5d, no external dependencies, no runtime impact. Bundled here as ISSUE-103..105.
+
+## ISSUE-103: Pyright type-annotation sweep on og_bake.py + v2 integration tests
+- Track: backend
+- UI: false
+- Platform: web
+- Manual: false
+- PRD-Ref: NFR-014 (code quality)
+- Priority: P3
+- Estimate: 0.5d
+- Status: backlog
+- Owner:
+- Branch:
+- GH-Issue:
+- PR:
+- Depends-On: none
+
+### Goal
+Resolve the 6 Pyright diagnostics surfaced after ISSUE-095 merged, so `og_bake.py` and `test_og_bake_v2.py` have clean type annotations without weakening runtime behaviour.
+
+### Scope (In/Out)
+- In: Targeted edits in `api/voicesaju/jobs/og_bake.py` and `api/tests/integration/jobs/test_og_bake_v2.py` to clear these specific diagnostics:
+  - `og_bake.py:348` `_composite_png_v2 not defined` (Pyright forward-ref false positive — silence by reordering def above the call, OR by adding a `# pyright: ignore[reportUndefinedVariable]` if reorder is invasive).
+  - `og_bake.py:419` `_load_font` annotated as `ImageFont` but returns `FreeTypeFont | ImageFont`. Widen the annotation to the union.
+  - `og_bake.py:618` `Image.BICUBIC` → `Image.Resampling.BICUBIC` (Pillow 12 idiom; runtime equivalent).
+  - `test_og_bake_v2.py:162/196/221` Pillow `getpixel()` typed as `float | tuple[int, ...] | None`. Wrap with `cast(tuple[int, int, int], img.getpixel(...))` from `typing.cast`.
+  - `test_og_bake_v2.py:277` `r, g, b = seal_sample` — same `getpixel` typing; add an `assert isinstance(seal_sample, tuple)` guard or `cast`.
+- Out: Broader project-wide Pyright sweep (this issue is scoped to the og_bake surface only).
+
+### Acceptance Criteria (DoD)
+- [ ] Given Pyright runs over `api/voicesaju/jobs/og_bake.py` and `api/tests/integration/jobs/test_og_bake_v2.py`, when invoked, then zero `error` diagnostics remain on the lines listed above (info `_unused` notes on pytest autouse fixtures may stay).
+- [ ] Given `uv run pytest tests/integration/jobs/test_og_bake_v2.py -m integration`, when invoked, then all 9 tests still pass byte-for-byte (no behavioural change).
+- [ ] Given `uv run pytest -q` runs the full unit suite, when invoked, then all tests continue to pass.
+
+### Implementation Notes
+- Path of least resistance: import `cast` from `typing` in the test file; use `Image.Resampling.BICUBIC` in og_bake.py; widen `_load_font` return to `FreeTypeFont | ImageFont`. The forward-ref issue is genuinely a Pyright limitation — reorder if doing so doesn't disturb the file layout.
+
+### Tests
+- [ ] Existing test suite continues to pass after edits.
+- [ ] (Optional) Add a pre-commit hook to run Pyright in CI; out of scope for this issue unless trivial.
+
+### Rollback
+- Revert the commit; no behaviour change either direction.
+
+---
+
+## ISSUE-104: Copy sweep — migrate 3 system-tone strings to 누님 voice
+- Track: frontend, content
+- UI: true
+- Platform: web
+- Manual: false
+- PRD-Ref: FR-043 (copy tone)
+- Priority: P3
+- Estimate: 0.5d
+- Status: backlog
+- Owner:
+- Branch:
+- GH-Issue:
+- PR:
+- Depends-On: ISSUE-097
+
+### Goal
+The 3 historical system-tone strings tagged `// copy-lint: formal-ok` during ISSUE-097 are rewritten in the 누님 voice and the `// copy-lint: formal-ok` markers removed. After this issue, the linter exits 0 against the cleaned files even WITHOUT the formal-ok bypass.
+
+### Scope (In/Out)
+- In: Rewrite the 3 strings + remove the bypass markers in:
+  - `web/src/app/not-found.tsx:28` — sr-only "페이지를 찾을 수 없습니다" → 누님 voice equivalent (per `docs/copy_guide.md`).
+  - `web/src/app/reading/play/PlayClient.tsx:57` (`NETWORK_BANNER_COPY`) — "네트워크 연결이 끊겼습니다" → 누님 voice.
+  - `web/src/app/me/history/[id]/MeHistoryItemView.tsx:152` — "이 풀이는 더 이상 재생할 수 없습니다" (R2 blob expiry message) → 누님 voice.
+- Out: Linter rule changes (the v1 ruleset stays as-is; this issue only fixes the strings it already catches).
+
+### Acceptance Criteria (DoD)
+- [ ] Given the 3 files are edited, when `// copy-lint: formal-ok` markers are removed, then `pnpm copy:lint` still exits 0 (no rule violations).
+- [ ] Given the rewritten strings are reviewed against `docs/copy_guide.md` §Voice & Tone, when checked, then each matches the 누님 voice register (informal, slightly cynical, accessible).
+- [ ] Given existing vitest cases that assert specific strings (if any), when updated to match the new copy, then the suite passes.
+
+### Implementation Notes
+- The copy lives in error/empty states — keep accessible (no obscure metaphors), short, and informationally equivalent to the original. Avoid sympathy-flavoured warmth; match the existing 누님 character.
+- Update any vitest snapshots that include the old copy.
+
+### Tests
+- [ ] `pnpm copy:lint` exits 0 with markers removed.
+- [ ] Existing vitest suite passes; any string-pinned tests updated.
+
+### Rollback
+- Restore the original strings + `// copy-lint: formal-ok` markers. No functional impact either direction.
+
+---
+
+## ISSUE-105: Collapse scoped .tilted/.reveal-* rules onto ISSUE-098 canonical utilities
+- Track: frontend
+- UI: true
+- Platform: web
+- Manual: false
+- PRD-Ref: FR-044
+- Priority: P3
+- Estimate: 0.5d
+- Status: backlog
+- Owner:
+- Branch:
+- GH-Issue:
+- PR:
+- Depends-On: ISSUE-094, ISSUE-095, ISSUE-098
+
+### Goal
+The component-scoped `.tilted` / `.reveal-*` CSS rules carried locally inside `TarotSpread.tsx` (ISSUE-094) and `QuoteCardPreview.tsx` (ISSUE-095) are removed; consumers now use the global canonical utilities from `web/src/styles/utilities.css` (shipped in ISSUE-098). No visual regression.
+
+### Scope (In/Out)
+- In:
+  - Remove the scoped `<style>` rules from `web/src/components/tarot/TarotSpread.tsx` that re-declare `.tilted` / `.reveal-hidden` / `.reveal-visible` / `.tap-hint` / `@keyframes tap-hint-pulse`.
+  - Remove the inline `transform: rotate(-1.5deg)` on `<QuoteCardPreview v="v2">` and replace with `className="tilted"`.
+  - Verify the global utilities at `web/src/styles/utilities.css` cover the scoped variants (tilt -1.5 / -3 / +1.5, reveal hide/show, tap-hint pulse).
+- Out: Adding new utilities (use only what ISSUE-098 already shipped).
+
+### Acceptance Criteria (DoD)
+- [ ] Given the scoped style blocks are removed from `TarotSpread.tsx`, when the `/tarot` page renders with the v2 spread, then the visual output is byte-identical to the pre-removal state (Playwright visual regression < 0.1%).
+- [ ] Given `<QuoteCardPreview v="v2">` is rendered, when the DOM is inspected, then the tilt comes from `class="... tilted"` and NOT an inline `style="transform: ..."`.
+- [ ] Given `pnpm test -- --run` runs the existing vitest suite for `TarotSpread` and `QuoteCardPreview`, when invoked, then 0 regressions (any assertions that grep `style="transform:` should be updated to grep for `class*="tilted"`).
+- [ ] Given `pnpm build` succeeds, when inspected, then the TarotSpread bundle shrinks by the size of the inlined `<style>` block (sanity check; tiny diff is acceptable).
+
+### Implementation Notes
+- This is purely a refactor — no new behaviour. Keep the change small and reviewable.
+- `prefers-reduced-motion` semantics live in the canonical utilities now; remove any duplicate `@media` blocks in scoped places.
+
+### Tests
+- [ ] Existing TarotSpread + QuoteCardPreview vitest cases pass after the refactor (update transform assertions to class assertions).
+- [ ] `pnpm build` succeeds.
+
+### Rollback
+- Restore the inline `<style>` block in TarotSpread.tsx and the inline `transform` on QuoteCardPreview.tsx. No data migration.
+
+---
+
 # Self-Review Summary
 
 ## Requirement coverage
