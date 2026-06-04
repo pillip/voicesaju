@@ -25,3 +25,14 @@ function parseBoolFlag(raw: string | undefined): boolean {
 export function isTarotV2SpreadEnabled(): boolean {
   return parseBoolFlag(process.env.NEXT_PUBLIC_TAROT_V2_SPREAD);
 }
+
+/**
+ * `NEXT_PUBLIC_QUOTE_CARD_V2` — ISSUE-095 rollout gate.
+ *
+ * When true: `<QuoteCardPreview v="v2">` renders client-side AND the
+ * edge route serves the v2 OG layout. When false (default): the v1
+ * Pillow-baked / `@vercel/og` JSX from ISSUE-058/060 is served.
+ */
+export function isQuoteCardV2Enabled(): boolean {
+  return parseBoolFlag(process.env.NEXT_PUBLIC_QUOTE_CARD_V2);
+}

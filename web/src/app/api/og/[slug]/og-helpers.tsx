@@ -13,6 +13,8 @@
 
 import type * as React from 'react';
 
+import { OG_LAYOUT_V2, v2BorderColorForCategory, v2SealHanjaForCategory } from '@/lib/ogLayoutV2';
+
 // ---------------------------------------------------------------------------
 // Layout constants — mirror `voicesaju.jobs.og_bake` (ISSUE-058)
 // ---------------------------------------------------------------------------
@@ -202,6 +204,112 @@ export function buildOgJsx(card: {
         }}
       >
         VoiceSaju
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// v2 OG render — ISSUE-095
+// ---------------------------------------------------------------------------
+
+/**
+ * Build the v2 quote-card JSX rendered by `@vercel/og` when the
+ * `NEXT_PUBLIC_QUOTE_CARD_V2` flag is enabled.
+ *
+ * Layout (mirrored by the Pillow worker via `og/layout_v2.json`):
+ *
+ *   ┌─────────────────────────────┐  border: per-category 8px frame
+ *   │                             │  canvas: hanji-800 (#1A1208)
+ *   │     <quote_text>           │   quote: baekrim-200 (#D9C49A), centered
+ *   │                             │
+ *   │                  ┌────┐    │   seal: vermilion (#9B2A1A), tilt +2.5°,
+ *   │                  │ 月 │    │         hanja per FR-038 category map
+ *   │      VoiceSaju  └────┘    │   watermark: hanji-300 (#6E5A40), bottom-left
+ *   └─────────────────────────────┘
+ *
+ * Rendered with `@vercel/og`, which uses Satori under the hood. Satori
+ * does NOT honour `backgroundBlendMode`, so the grain overlay from the
+ * spec is approximated with a very subtle inset shadow (the canvas is
+ * already dark hanji-800 — heavy noise would compete with the quote).
+ */
+export function buildOgJsxV2(card: {
+  category: string;
+  character_key: string;
+  quote_text: string;
+}): React.ReactElement {
+  const layout = OG_LAYOUT_V2;
+  const borderColor = v2BorderColorForCategory(card.category);
+  const sealHanja = v2SealHanjaForCategory(card.category);
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: layout.canvas.background,
+        borderStyle: 'solid',
+        borderWidth: `${layout.border.width_px * 4}px`,
+        borderColor,
+        padding: `${layout.canvas.padding}px`,
+        position: 'relative',
+        fontFamily: 'serif',
+      }}
+    >
+      {/* Quote text — centered, takes the full vertical band */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          color: layout.typography.quote_color,
+          fontSize: layout.typography.quote_font_px,
+          lineHeight: layout.typography.quote_line_height,
+          fontWeight: 600,
+          padding: '0 80px',
+        }}
+      >
+        {card.quote_text}
+      </div>
+
+      {/* Watermark — bottom-left of the inner content area */}
+      <div
+        style={{
+          display: 'flex',
+          alignSelf: 'flex-start',
+          fontSize: layout.typography.watermark_font_px,
+          color: layout.typography.watermark_color,
+          letterSpacing: '0.12em',
+          fontWeight: 500,
+        }}
+      >
+        VoiceSaju
+      </div>
+
+      {/* Seal — vermilion square in the bottom-right with category hanja */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: layout.seal.margin_px,
+          right: layout.seal.margin_px,
+          width: layout.seal.size_px,
+          height: layout.seal.size_px,
+          backgroundColor: layout.seal.vermilion_fill,
+          color: layout.seal.baekrim_text,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: Math.round(layout.seal.size_px * 0.6),
+          fontWeight: 900,
+          transform: `rotate(${layout.seal.tilt_deg}deg)`,
+          boxShadow: 'inset 0 0 0 2px #6C1D11',
+        }}
+      >
+        {sealHanja}
       </div>
     </div>
   );

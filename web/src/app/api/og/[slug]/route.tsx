@@ -53,11 +53,14 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { isQuoteCardV2Enabled } from '@/lib/featureFlags';
+
 import {
   OG_HEIGHT,
   OG_WIDTH,
   QuoteCardBySlugResponse,
   buildOgJsx,
+  buildOgJsxV2,
   fetchQuoteCard,
 } from './og-helpers';
 
@@ -112,8 +115,11 @@ export async function GET(
   //
   // Until then both `baked` and `pending` go through @vercel/og.
 
-  // Inline render via @vercel/og.
-  return new ImageResponse(buildOgJsx(card), {
+  // Inline render via @vercel/og. ISSUE-095 — when the v2 flag is set,
+  // serve the new layout; otherwise fall back to the v1 JSX so the
+  // Rollback path stays one env var away.
+  const jsx = isQuoteCardV2Enabled() ? buildOgJsxV2(card) : buildOgJsx(card);
+  return new ImageResponse(jsx, {
     width: OG_WIDTH,
     height: OG_HEIGHT,
     headers: {
