@@ -3516,11 +3516,11 @@ Two reusable display primitives that anchor the v2 visual identity across landin
 - PRD-Ref: FR-013, FR-040
 - Priority: P1
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Branch: feat/issue-094-tarot-spread-v2
+- GH-Issue: https://github.com/pillip/voicesaju/issues/147
+- PR: https://github.com/pillip/voicesaju/pull/148
 - Depends-On: ISSUE-051, ISSUE-091
 
 ### Goal
@@ -3564,11 +3564,11 @@ The `/tarot` (Screen 12) is upgraded from a single face-down card to a 5-card fa
 - PRD-Ref: FR-018, FR-020, FR-021, FR-041
 - Priority: P1
 - Estimate: 1.5d
-- Status: backlog
-- Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Status: done
+- Owner: claude
+- Branch: feat/issue-095-quote-card-v2
+- GH-Issue: https://github.com/pillip/voicesaju/issues/149
+- PR: https://github.com/pillip/voicesaju/pull/150
 - Depends-On: ISSUE-058, ISSUE-060, ISSUE-092
 
 ### Goal
@@ -3611,11 +3611,11 @@ The quote card on `/reading/end` and `/tarot/end` is re-styled to the v2 spec (9
 - PRD-Ref: FR-042
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Branch: feat/issue-096-nav-variants
+- GH-Issue: https://github.com/pillip/voicesaju/issues/151
+- PR: https://github.com/pillip/voicesaju/pull/152
 - Depends-On: ISSUE-091, ISSUE-022
 
 ### Goal
