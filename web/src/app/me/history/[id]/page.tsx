@@ -16,8 +16,9 @@
  * AC mapping (ISSUE-066):
  *   AC1 → past reading → archived audio streams (test exercised on
  *         the view: probe → 200, audio element gets src set).
- *   AC2 → blob missing → "이 풀이는 더 이상 재생할 수 없습니다"
- *         (test: probe → 410, fallback rendered).
+ *   AC2 → blob missing → "이 풀이는 이제 다시 못 들어." (test: probe →
+ *         410, fallback rendered). ISSUE-104: copy migrated from
+ *         "이 풀이는 더 이상 재생할 수 없습니다" to 누님 voice.
  *   AC3 → tap pause → audio stops (native browser behavior on the
  *         `<audio controls>` element).
  */
