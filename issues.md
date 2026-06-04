@@ -3657,11 +3657,11 @@ Each v2 screen renders the correct navigation chrome per the wireframes: landing
 - PRD-Ref: FR-043
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
-- Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Status: done
+- Owner: claude
+- Branch: feat/issue-097-copy-tone (merged + deleted)
+- GH-Issue: https://github.com/pillip/voicesaju/issues/153
+- PR: https://github.com/pillip/voicesaju/pull/154 (merged ef1f6a1)
 - Depends-On: ISSUE-091, ISSUE-092
 
 ### Goal
