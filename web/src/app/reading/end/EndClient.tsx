@@ -33,6 +33,7 @@ import { useSearchParams } from 'next/navigation';
 import { QuoteCardPreview } from '@/components/share/QuoteCardPreview';
 import { ShareButtonRow } from '@/components/share/ShareButtonRow';
 import { SignupPromptModal } from '@/components/auth/SignupPromptModal';
+import { isQuoteCardV2Enabled } from '@/lib/featureFlags';
 import type { QuoteCardBySlugResponse } from '@/app/api/og/[slug]/og-helpers';
 
 /** copy_guide §9 + supporting strings. */
@@ -153,7 +154,11 @@ export default function EndClient() {
             <p className="font-display text-lg text-cream-100">{ERROR_COPY}</p>
           </div>
         ) : (
-          <QuoteCardPreview slug={slug as string} card={cardForPreview} />
+          <QuoteCardPreview
+            slug={slug as string}
+            card={cardForPreview}
+            v={isQuoteCardV2Enabled() ? 'v2' : 'v1'}
+          />
         )}
       </section>
 
