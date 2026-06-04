@@ -3,7 +3,8 @@
  *
  * AC mapping (issues.md §ISSUE-066):
  *   AC1: past reading → `<audio>` element rendered with the audio URL.
- *   AC2: audio expired → "이 풀이는 더 이상 재생할 수 없습니다" copy.
+ *   AC2: audio expired → "이 풀이는 이제 다시 못 들어." copy
+ *        (ISSUE-104: migrated from "이 풀이는 더 이상 재생할 수 없습니다").
  *   AC3: tap pause → audio stops (native behaviour; we assert the
  *        `<audio controls>` element is in the tree so the browser
  *        provides the pause affordance).
@@ -66,7 +67,7 @@ describe('MeHistoryItemPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('me-history-expired')).toBeInTheDocument();
     });
-    expect(screen.getByText('이 풀이는 더 이상 재생할 수 없습니다')).toBeInTheDocument();
+    expect(screen.getByText('이 풀이는 이제 다시 못 들어.')).toBeInTheDocument();
     // Back-to-me link affordance per ux_spec.
     expect(screen.getByTestId('me-history-back-link')).toHaveAttribute('href', '/me');
   });

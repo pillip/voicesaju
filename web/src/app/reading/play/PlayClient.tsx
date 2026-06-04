@@ -32,11 +32,12 @@
  *   docs/copy_guide.md §7
  *   docs/requirements.md FR-007, FR-008, FR-011, FR-035
  *
- * copy-lint: formal-ok — NETWORK_BANNER_COPY ("네트워크 연결이 끊겼습니다")
- * is intentionally system-tone — it matches OS-level connectivity
- * messaging convention and the existing error catalogue from ISSUE-042.
- * Logged as a discovered tone-migration candidate for a future copy
- * sweep; ISSUE-097 v1 lint exempts it at the file level.
+ * ISSUE-104: NETWORK_BANNER_COPY migrated from the system-tone
+ * "네트워크 연결이 끊겼습니다" (ISSUE-042 baseline) to copy_guide §7 toast
+ * wording "끊겼어. 재연결되면 이어줄게." — 누님 voice, same informational
+ * payload (disconnect + auto-resume promise). The ISSUE-097 file-level
+ * bypass marker was removed; the file now passes `pnpm copy:lint` cleanly
+ * without an exemption.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -60,7 +61,7 @@ import {
 
 const LOADING_COPY = '별기운을 모으는 중…';
 const ERROR_COPY = '별기운이 잠시 약하네…';
-const NETWORK_BANNER_COPY = '네트워크 연결이 끊겼습니다';
+const NETWORK_BANNER_COPY = '끊겼어. 재연결되면 이어줄게.';
 
 type Category = 'love' | 'work' | 'money';
 

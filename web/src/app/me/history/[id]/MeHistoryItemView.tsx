@@ -12,11 +12,11 @@
  * The vitest page test renders this component directly so the test
  * can pass an injected `fetchImpl` without having to fake a Promise.
  *
- * copy-lint: formal-ok — expired-blob copy "이 풀이는 더 이상 재생할 수
- * 없습니다" is intentionally system-tone (matches the existing R2 lifecycle
- * messaging convention from ISSUE-066). Logged as a discovered tone-
- * migration candidate for a future copy sweep; ISSUE-097 v1 lint exempts
- * it at the file level.
+ * ISSUE-104: expired-blob copy migrated from the system-tone "이 풀이는
+ * 더 이상 재생할 수 없습니다" (ISSUE-066 baseline) to "이 풀이는 이제 다시
+ * 못 들어." — 누님 voice, soft refusal, same informational payload. The
+ * ISSUE-097 file-level bypass marker was removed; the file now passes
+ * `pnpm copy:lint` cleanly without an exemption.
  */
 
 import { useRouter } from 'next/navigation';
@@ -155,7 +155,7 @@ export function MeHistoryItemView({ params, fetchImpl }: MeHistoryItemViewProps)
           className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-s4 px-s4 py-s8"
           data-testid="me-history-expired"
         >
-          <p className="font-body text-base text-cream-200">이 풀이는 더 이상 재생할 수 없습니다</p>
+          <p className="font-body text-base text-cream-200">이 풀이는 이제 다시 못 들어.</p>
           <a
             href="/me"
             className="rounded-md border border-ink-700 px-s4 py-s2 font-body text-sm text-cream-50 hover:bg-ink-800"

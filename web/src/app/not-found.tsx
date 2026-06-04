@@ -9,10 +9,11 @@
  * Server Component (no `'use client'`) so the not-found HTML ships
  * pre-rendered for fastest paint.
  *
- * copy-lint: formal-ok — sr-only system announcement on line 28 uses
- * `페이지를 찾을 수 없습니다.` which is intentionally system-tone (matches
- * the browser-native 404 SR text and the page metadata title). Logged
- * as a discovered tone-migration candidate for a future copy sweep.
+ * ISSUE-104: sr-only announcement migrated from the system-tone
+ * "페이지를 찾을 수 없습니다." (ISSUE-075 baseline) to "길을 잘못 들었어." —
+ * same informational payload as the visible h1, in 누님 voice. The
+ * ISSUE-097 file-level bypass marker was removed; the file now passes
+ * `pnpm copy:lint` cleanly without an exemption.
  */
 
 import Link from 'next/link';
@@ -30,7 +31,7 @@ export default function NotFound() {
       data-testid="not-found"
     >
       <div role="status" aria-live="polite" className="sr-only">
-        페이지를 찾을 수 없습니다.
+        길을 잘못 들었어.
       </div>
       <CharacterIllustration character="nuna" data-testid="not-found-persona" />
       <h1 className="font-display text-2xl">길을 잘못 들었네…</h1>
