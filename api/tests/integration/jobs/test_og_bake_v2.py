@@ -194,9 +194,9 @@ async def test_og_bake_v2_top_edge_per_category(
     assert img.size == OG_CANVAS_SIZE
 
     top_pixel = img.getpixel((540, 2))
-    assert _channels_within(top_pixel, expected_rgb, tolerance=2), (
-        f"top edge for {category} expected ~{expected_rgb}, got {top_pixel}"
-    )
+    assert _channels_within(
+        top_pixel, expected_rgb, tolerance=2
+    ), f"top edge for {category} expected ~{expected_rgb}, got {top_pixel}"
 
 
 @pytest.mark.asyncio
@@ -219,9 +219,9 @@ async def test_og_bake_v2_canvas_interior_uses_hanji_background(
     # x=120 (inside the 96px padding + 8px border), y=400 (top quarter,
     # avoiding the quote text vertically centered around y=960).
     interior = img.getpixel((120, 400))
-    assert _channels_within(interior, (0x1A, 0x12, 0x08), tolerance=8), (
-        f"interior expected hanji-800, got {interior}"
-    )
+    assert _channels_within(
+        interior, (0x1A, 0x12, 0x08), tolerance=8
+    ), f"interior expected hanji-800, got {interior}"
 
 
 @pytest.mark.asyncio
@@ -276,6 +276,6 @@ async def test_og_bake_v2_seal_corner_has_vermilion_fill(
     # the seal edge — we only need to confirm the patch is unambiguously
     # red, not the hanji background.
     r, g, b = seal_sample
-    assert r > g and r > b and r > 0x60, (
-        f"seal sample at (856, 1672) should be vermilion-ish, got {seal_sample}"
-    )
+    assert (
+        r > g and r > b and r > 0x60
+    ), f"seal sample at (856, 1672) should be vermilion-ish, got {seal_sample}"
