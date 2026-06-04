@@ -41,6 +41,7 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image, ImageDraw, ImageFont
+from PIL.ImageFont import FreeTypeFont
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from tenacity import (
@@ -345,7 +346,7 @@ def _composite_png(
     canvas) that the edge route shares via ``og/layout_v2.json``.
     """
     if _v2_enabled():
-        return _composite_png_v2(
+        return _composite_png_v2(  # pyright: ignore[reportUndefinedVariable]
             category=category,
             character_key=character_key,
             quote_text=quote_text,
@@ -404,14 +405,16 @@ def _composite_png(
     return buffer.getvalue()
 
 
-def _load_font(*, size: int) -> ImageFont.ImageFont:
+def _load_font(*, size: int) -> FreeTypeFont | ImageFont.ImageFont:
     """Pillow default font at the requested size.
 
     We deliberately skip system-font discovery so the worker stays
     hermetic across linux containers / mac dev. Pillow ≥10 honours the
-    ``size=`` kwarg on the bundled TrueType default; on older builds
-    it silently no-ops which we treat as acceptable for the
-    placeholder.
+    ``size=`` kwarg on the bundled TrueType default (returning a
+    :class:`FreeTypeFont`); on older builds it silently no-ops which we
+    treat as acceptable for the placeholder. The runtime return is
+    union-typed because the legacy fallback yields a bitmap
+    :class:`ImageFont.ImageFont` instead.
     """
     try:
         return ImageFont.load_default(size=size)  # type: ignore[call-arg]
@@ -613,7 +616,7 @@ def _draw_seal_corner(
 
     # Rotate around the scratch centre. ``Image.rotate`` returns a new
     # image of the same canvas size — preserves the alpha channel.
-    rotated = scratch.rotate(tilt_deg, resample=Image.BICUBIC, expand=False)
+    rotated = scratch.rotate(tilt_deg, resample=Image.Resampling.BICUBIC, expand=False)
 
     # Anchor: bottom-right of the rotated scratch lands at
     # (canvas_w - margin, canvas_h - margin). We paste the scratch so

@@ -19,6 +19,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import AsyncIterator
 from io import BytesIO
+from typing import cast
 
 import pytest
 import pytest_asyncio
@@ -159,7 +160,9 @@ async def test_og_bake_v2_money_top_edge_is_brass(
     # Top edge midpoint at y=2 (well inside the border stroke even at the
     # thinnest 8 px width). x=540 is the dead centre of the canvas so we
     # land in the middle of the brass-coloured border stroke.
-    top_pixel = img.getpixel((540, 2))
+    # ``img`` is RGB-converted above so ``getpixel`` returns a 3-tuple;
+    # cast clarifies the runtime contract for the type checker.
+    top_pixel = cast(tuple[int, int, int], img.getpixel((540, 2)))
     assert _channels_within(top_pixel, (0xB6, 0x8B, 0x3F), tolerance=2)
 
 
@@ -193,7 +196,7 @@ async def test_og_bake_v2_top_edge_per_category(
     img = Image.open(BytesIO(raw)).convert("RGB")
     assert img.size == OG_CANVAS_SIZE
 
-    top_pixel = img.getpixel((540, 2))
+    top_pixel = cast(tuple[int, int, int], img.getpixel((540, 2)))
     assert _channels_within(
         top_pixel, expected_rgb, tolerance=2
     ), f"top edge for {category} expected ~{expected_rgb}, got {top_pixel}"
@@ -218,7 +221,7 @@ async def test_og_bake_v2_canvas_interior_uses_hanji_background(
     # Sample a point well inside the border, above the quote text band:
     # x=120 (inside the 96px padding + 8px border), y=400 (top quarter,
     # avoiding the quote text vertically centered around y=960).
-    interior = img.getpixel((120, 400))
+    interior = cast(tuple[int, int, int], img.getpixel((120, 400)))
     assert _channels_within(
         interior, (0x1A, 0x12, 0x08), tolerance=8
     ), f"interior expected hanji-800, got {interior}"
@@ -271,7 +274,7 @@ async def test_og_bake_v2_seal_corner_has_vermilion_fill(
     # tilt is a thin rotation so the bounding box around (840, 1656) →
     # (1008, 1824) contains vermilion fill near the corners. Sample
     # 16 px inside the bounding box top-left corner.
-    seal_sample = img.getpixel((856, 1672))
+    seal_sample = cast(tuple[int, int, int], img.getpixel((856, 1672)))
     # Tolerance is wide because rotation produces sub-pixel blending at
     # the seal edge — we only need to confirm the patch is unambiguously
     # red, not the hanji background.
