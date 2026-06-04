@@ -237,7 +237,14 @@ export function TarotSpread({
       </div>
 
       <div
-        className={cn('tarot-spread__reveal', state.phase === 'revealed' && 'reveal-visible')}
+        className={cn(
+          'tarot-spread__reveal',
+          // ISSUE-105 — the canonical `.reveal-hidden` / `.reveal-visible`
+          // utilities from `web/src/styles/utilities.css` (ISSUE-098) now
+          // own the opacity baseline + transition. We toggle the two
+          // classes instead of relying on a spread-local opacity rule.
+          state.phase === 'revealed' ? 'reveal-visible' : 'reveal-hidden',
+        )}
         aria-live="polite"
       >
         {state.phase === 'revealed' && (
@@ -451,18 +458,18 @@ const SPREAD_CSS = `
   object-fit: contain;
 }
 
-/* Reveal panel — fades in over 400ms after the flip transition lands. */
+/* Reveal panel — layout only. The opacity baseline and 400ms fade are
+   owned by the canonical reveal-hidden / reveal-visible utilities in
+   web/src/styles/utilities.css (ISSUE-098). ISSUE-105 collapsed the
+   formerly-scoped opacity rule pair onto those globals so the
+   prefers-reduced-motion contract and visibility timing stay
+   consistent with the rest of v2. */
 [data-tarot-spread="root"] .tarot-spread__reveal {
   margin-top: 24px;
-  opacity: 0;
-  transition: opacity 400ms ease-out;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-}
-[data-tarot-spread="root"] .tarot-spread__reveal.reveal-visible {
-  opacity: 1;
 }
 [data-tarot-spread="root"] .tarot-spread__reveal-art {
   width: clamp(120px, 30vw, 200px);

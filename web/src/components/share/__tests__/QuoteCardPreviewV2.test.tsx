@@ -27,16 +27,20 @@ const baseCard: QuoteCardBySlugResponse = {
 };
 
 describe('QuoteCardPreview v="v2" (ISSUE-095)', () => {
-  it('AC1 — love → border #B7414B + transform rotate(-1.5deg)', () => {
+  it('AC1 — love → border #B7414B + .tilted utility (-1.5deg)', () => {
     render(<QuoteCardPreview slug="lv" card={baseCard} v="v2" />);
     const card = screen.getByTestId('quote-card-v2');
     expect(card).toBeInTheDocument();
-    // Inline styles drive both the border and the tilt — assert via the
-    // style attribute so we're checking the rendered DOM, not the
-    // component internal state.
+    // Inline style drives the border colour; the -1.5deg auto-tilt now
+    // comes from the canonical `.tilted` utility (ISSUE-105 — was an
+    // inline `transform: rotate(-1.5deg)` until the collapse PR).
     expect(card.getAttribute('data-cat')).toBe('love');
     expect(card.style.borderColor).toBe('rgb(183, 65, 75)'); // #B7414B
-    expect(card.style.transform).toContain('rotate(-1.5deg)');
+    expect(card.className).toMatch(/(?:^|\s)tilted(?:\s|$)/);
+    // Guard: the inline transform must NOT come back — otherwise the
+    // canonical utility's `prefers-reduced-motion` decision can be
+    // overridden by inline-style specificity.
+    expect(card.style.transform).toBe('');
   });
 
   it.each<[string, string]>([
