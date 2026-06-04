@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "copy:lint": "node scripts/copy-lint.mjs"
   },
   "dependencies": {
     "@vercel/og": "^0.11.1",

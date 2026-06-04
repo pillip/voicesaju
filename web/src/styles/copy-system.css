@@ -1,0 +1,56 @@
+/**
+ * ISSUE-097 — Copy tone system global layer.
+ *
+ * Implements the typographic glue described in docs/copy_guide.md
+ * §Voice & Tone:
+ *
+ *   1. `article em` marker-highlight — the highlighter-pen sweep that
+ *      makes a single emphasised word feel like a누님 marked it with
+ *      a vermilion brush. The gradient stops at 60% so only the bottom
+ *      40% of the line height takes ink; opacity 0.22 keeps the cream
+ *      text legible on top.
+ *
+ *   2. `data-pause` leading adjustment — `<Pause />` renders
+ *      `<br data-pause>`. Lines that follow gain extra top margin so
+ *      the silence reads visually. The selector targets any element
+ *      that immediately follows a `data-pause` break inside a paragraph
+ *      or article; the `margin-top` lives on the next line's first
+ *      child via the `* + br[data-pause] + *` pattern.
+ *
+ * The `@layer copy-system` wrapper keeps these rules at a known cascade
+ * position — Tailwind's `utilities` layer can always override but
+ * component-level inline styles win by default.
+ *
+ * Architecture refs:
+ *   docs/copy_guide.md §Voice & Tone
+ *   docs/design_system.md §Typography
+ */
+
+@layer copy-system {
+  /* 1. Marker-style emphasis inside any <article>. */
+  article em {
+    background: linear-gradient(180deg, transparent 60%, rgba(155, 42, 26, 0.22) 60%);
+    /* Subtle baseline offset so the stripe sits flush with descenders
+     * instead of clipping them off at the bottom. */
+    padding-bottom: 0.05em;
+    /* Keep the emphasis cue distinct from default italic — the
+     * highlight is the cue, italics would double-stress. */
+    font-style: normal;
+  }
+
+  /* 2. Adjusted leading after a `<Pause />` break.
+   *
+   * `<br data-pause>` itself has no box; the gap comes from the line
+   * that follows. We can't reach "the next line after a <br>" via
+   * pure CSS, so we add the breath as `margin-block-start` on the
+   * `<br>` element itself (browsers honour margin on `<br>` for
+   * line-spacing purposes — same trick CKEditor uses for soft
+   * paragraph breaks). 0.4em is roughly one extra half-line at the
+   * 18px body text size used throughout the reading flow.
+   */
+  br[data-pause] {
+    display: block;
+    margin-block-start: 0.4em;
+    content: '';
+  }
+}
