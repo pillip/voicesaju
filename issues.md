@@ -4004,11 +4004,11 @@ Lightweight CSS utilities that operationalise the v2 "uncanny tilt" motif and th
 - PRD-Ref: NFR-014 (code quality)
 - Priority: P3
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
 - Branch:
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/158 (merge 4bf40c0)
 - Depends-On: none
 
 ### Goal
@@ -4048,11 +4048,11 @@ Resolve the 6 Pyright diagnostics surfaced after ISSUE-095 merged, so `og_bake.p
 - PRD-Ref: FR-043 (copy tone)
 - Priority: P3
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
 - Branch:
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/160 (merge 04094a3)
 - Depends-On: ISSUE-097
 
 ### Goal
