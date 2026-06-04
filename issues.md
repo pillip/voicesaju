@@ -3702,11 +3702,11 @@ The "누님이 횡설수설" voice is operationalised as a small set of typograp
 - PRD-Ref: FR-044
 - Priority: P2
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Branch: feat/issue-098-tilted-reveal-utilities
+- GH-Issue: https://github.com/pillip/voicesaju/issues/155
+- PR: https://github.com/pillip/voicesaju/pull/156
 - Depends-On: ISSUE-091
 
 ### Goal
