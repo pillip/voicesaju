@@ -256,21 +256,24 @@ function cardPhaseClass(phase: SpreadPhase, isTapped: boolean): string {
     case 'idle':
       return '';
     case 'moving':
-      // All five cards animate in the moving phase: non-tapped slide
-      // off-screen, the tapped one starts its translate-to-centre.
-      return 'is-moving';
+      // Non-tapped cards slide off-screen (`is-moving`); the tapped
+      // card carries `is-moving is-tapped` so the CSS can hold it in
+      // place while the others discard. Both classes are present so
+      // the DOM contract from AC2 ("non-tapped translate off-screen,
+      // tapped will centre") remains observable.
+      return isTapped ? 'is-moving is-tapped' : 'is-moving';
     case 'centered':
       // Only the tapped card centres; non-tapped stay in `is-moving`
       // (their slide can still be running, and they stay hidden).
-      return isTapped ? 'is-centered' : 'is-moving is-gone';
+      return isTapped ? 'is-centered is-tapped' : 'is-moving is-gone';
     case 'pressed':
       // The tapped card has finished centring and is now flipping; CSS
       // keys off `aria-pressed=true` for the flip transform itself.
-      return isTapped ? 'is-centered is-flipping' : 'is-moving is-gone';
+      return isTapped ? 'is-centered is-flipping is-tapped' : 'is-moving is-gone';
     case 'revealed':
       // Cascade complete — the reveal panel handles the surfacing; the
       // tapped card stays centred + flipped (front face visible).
-      return isTapped ? 'is-centered is-flipping is-revealed' : 'is-moving is-gone';
+      return isTapped ? 'is-centered is-flipping is-revealed is-tapped' : 'is-moving is-gone';
   }
 }
 
@@ -336,13 +339,27 @@ const SPREAD_CSS = `
   outline-offset: 6px;
   border-radius: 6px;
 }
-/* Moving — non-tapped cards translate up + fade out. */
-[data-tarot-spread="root"] .spread-card.is-moving:not(.is-centered) {
+/* Moving — non-tapped cards translate up + fade out. The tapped card
+   carries the is-tapped marker so it is excluded from the discard
+   and runs a paired hold animation instead; both animationends fire
+   at the 650ms boundary so the reducer can advance to centered. */
+[data-tarot-spread="root"]
+  .spread-card.is-moving:not(.is-tapped):not(.is-centered) {
   animation: spread-discard 650ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+[data-tarot-spread="root"]
+  .spread-card.is-moving.is-tapped:not(.is-centered) {
+  animation: spread-hold 650ms linear forwards;
 }
 [data-tarot-spread="root"] .spread-card.is-moving.is-gone {
   opacity: 0;
   pointer-events: none;
+}
+@keyframes spread-hold {
+  /* No-op timing track. Defining an animatable property keeps the
+     browser animation engine awake so animationend fires on schedule. */
+  from { opacity: 1; }
+  to   { opacity: 1; }
 }
 /* Centered — the tapped card slides to dead centre over 450ms. */
 [data-tarot-spread="root"] .spread-card.is-centered {
