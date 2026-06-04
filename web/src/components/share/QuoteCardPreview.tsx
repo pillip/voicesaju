@@ -155,12 +155,17 @@ function QuoteCardPreviewV2({ card, className }: QuoteCardPreviewV2Props) {
   const borderColor = v2BorderColorForCategory(card.category);
   const sealHanja = v2SealHanjaForCategory(card.category);
 
+  // ISSUE-105 — the `-1.5deg` auto-tilt is now applied via the canonical
+  // `.tilted` utility from `web/src/styles/utilities.css` (ISSUE-098)
+  // instead of being inlined here. `layout.tilt.rotate_deg` stays in the
+  // layout JSON because the Pillow / edge baker still consumes it server
+  // side; on the client we delegate to the global class so the
+  // prefers-reduced-motion + design-system rules apply uniformly.
   const cardStyle: CSSProperties = {
     backgroundColor: layout.canvas.background,
     borderStyle: 'solid',
     borderWidth: `${layout.border.width_px}px`,
     borderColor,
-    transform: `rotate(${layout.tilt.rotate_deg}deg)`,
     transformOrigin: 'center center',
     position: 'relative',
     overflow: 'hidden',
@@ -196,6 +201,9 @@ function QuoteCardPreviewV2({ card, className }: QuoteCardPreviewV2Props) {
         'aspect-[9/16] w-full max-w-sm rounded-sm shadow-2xl',
         'flex flex-col items-stretch justify-between px-s8 py-s10',
         'font-display text-baekrim-200',
+        // ISSUE-105 — canonical -1.5deg tilt utility (replaces the
+        // formerly inlined `transform: rotate(-1.5deg)` on cardStyle).
+        'tilted',
         className,
       )}
       style={cardStyle}
