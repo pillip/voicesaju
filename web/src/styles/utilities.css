@@ -16,15 +16,136 @@
 }
 
 .vignette-edge::before {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 30%,
-    var(--hanji-900) 110%
-  );
+  background: radial-gradient(ellipse at center, transparent 30%, var(--hanji-900) 110%);
   pointer-events: none;
   z-index: 2;
   mix-blend-mode: multiply;
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * ISSUE-098 — Tilted utilities + reveal-section fade-in pattern (v2).
+ *
+ * Operationalises the "uncanny tilt" motif and the reveal-section
+ * fade-in used by FR-040 (tarot reveal — ISSUE-094) and FR-041 (quote
+ * card reveal — ISSUE-095). Spec: docs/design_system.md §Utilities,
+ * docs/interactions.md §Flow C, F.
+ *
+ * Co-existence with ISSUE-094 / ISSUE-095:
+ *   The tarot spread (`TarotSpread.tsx`) and the quote card preview
+ *   (`QuoteCardPreview.tsx`) deliberately ship scoped local equivalents
+ *   of these rules (`[data-tarot-spread="root"] .tilted`, inline
+ *   `transform: rotate()` style on the quote card). Those local copies
+ *   are intentionally left in place this iteration so the components
+ *   keep working on their own; a future cleanup PR can collapse them
+ *   onto the canonical surface below. Do NOT delete the scoped rules
+ *   in the same PR that introduces these globals — see ISSUE-094
+ *   PR #148 review fix for prior art on cascade fragility.
+ *
+ * prefers-reduced-motion decision (documented inline per the AC):
+ *   Tilt is treated as IDENTITY, not motion. The static rotation
+ *   communicates the v2 brand voice ("uncanny tilt") and disappears
+ *   only if we removed the rotation entirely — there is no motion
+ *   budget consumed because the transform is static. Therefore the
+ *   prefers-reduced-motion: reduce block PRESERVES `.tilted*`
+ *   rotations and only suppresses (a) the `.tap-hint` pulse animation
+ *   and (b) the `.reveal-*` opacity/visibility transitions (which
+ *   become instant). See AC4 below.
+ *
+ * Pure CSS — no JS bundle impact.
+ */
+
+/* ── Tilt — uncanny ambiguity (FR-044) ──────────────────────────── */
+.tilted {
+  transform: rotate(-1.5deg);
+}
+
+.tilted--right {
+  transform: rotate(1.5deg);
+}
+
+.tilted--more {
+  transform: rotate(-3deg);
+}
+
+/* ── Reveal — fade-in for the reveal-section pattern ────────────── *
+ * The visibility delay on `.reveal-hidden` matches the opacity
+ * duration so the element stays hit-test-eligible for the full
+ * fade-out window. `.reveal-visible` flips visibility to `visible`
+ * with `0s linear 0s` so it becomes interactable IMMEDIATELY on
+ * enter — this is the AC2 contract. */
+.reveal-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s ease-out,
+    visibility 0s linear 0.4s;
+}
+
+.reveal-visible {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.4s ease-out,
+    visibility 0s linear 0s;
+}
+
+/* ── Reveal-show-hide / Reveal-hide ─────────────────────────────── *
+ * Footer-hiding pair used during the reveal sequence (Flow C / F).
+ * Critically uses `visibility: hidden` (NOT `display: none`) so the
+ * footer keeps reserving its layout box and toggling it does not
+ * produce a CLS jump > 0.1 (AC5). The `.reveal-show-hide` rule is the
+ * "shown" default; `.reveal-hide` flips visibility off. Consumers
+ * toggle classes via JS without manipulating display. */
+.reveal-show-hide {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity 0.4s ease-out,
+    visibility 0s linear 0s;
+}
+
+.reveal-hide {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.4s ease-out,
+    visibility 0s linear 0.4s;
+}
+
+/* ── Tap hint — pulse to signal "tap me" (AC3) ──────────────────── */
+@keyframes tap-hint-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tap-hint {
+  animation: tap-hint-pulse 1.6s ease-in-out infinite;
+}
+
+/* ── prefers-reduced-motion: reduce (AC4) ──────────────────────── *
+ * Tilt is IDENTITY (static, not motion) — documented decision: we
+ * KEEP `.tilted*` rotations untouched here so the brand voice
+ * survives. Only the `.tap-hint` animation and the `.reveal-*`
+ * transitions are suppressed; reveals become instant fade-skip. */
+@media (prefers-reduced-motion: reduce) {
+  .tap-hint {
+    animation: none;
+  }
+
+  .reveal-hidden,
+  .reveal-visible,
+  .reveal-show-hide,
+  .reveal-hide {
+    transition: none;
+  }
 }
