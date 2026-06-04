@@ -3750,11 +3750,11 @@ Lightweight CSS utilities that operationalise the v2 "uncanny tilt" motif and th
 - PRD-Ref: FR-024
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Branch: issue/099-mock-payment-adapter
+- GH-Issue: https://github.com/pillip/voicesaju/issues/21
+- PR: https://github.com/pillip/voicesaju/pull/22
 - Depends-On: ISSUE-001
 
 ### Goal
@@ -3792,11 +3792,11 @@ Lightweight CSS utilities that operationalise the v2 "uncanny tilt" motif and th
 - PRD-Ref: FR-016, FR-017
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
+- Branch: issue/100-mock-auth-adapter (merged + deleted)
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/24 (merge 9912921)
 - Depends-On: ISSUE-001
 
 ### Goal
@@ -3835,11 +3835,11 @@ Lightweight CSS utilities that operationalise the v2 "uncanny tilt" motif and th
 - PRD-Ref: FR-008, FR-009
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
-- GH-Issue:
-- PR:
+- Branch: issue/101-mock-llm-adapter (merged + deleted)
+- GH-Issue: https://github.com/pillip/voicesaju/issues/45
+- PR: https://github.com/pillip/voicesaju/pull/46 (merge 8573f69)
 - Depends-On: ISSUE-001
 
 ### Goal
@@ -3878,11 +3878,11 @@ Lightweight CSS utilities that operationalise the v2 "uncanny tilt" motif and th
 - PRD-Ref: FR-010, NFR-002
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
-- Branch:
+- Branch: issue-102-mock-tts-adapter (merged + deleted)
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/50 (merge a24629d)
 - Depends-On: ISSUE-001
 
 ### Goal
