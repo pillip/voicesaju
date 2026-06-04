@@ -8,14 +8,19 @@
  *
  * Server Component (no `'use client'`) so the not-found HTML ships
  * pre-rendered for fastest paint.
+ *
+ * copy-lint: formal-ok — sr-only system announcement on line 28 uses
+ * `페이지를 찾을 수 없습니다.` which is intentionally system-tone (matches
+ * the browser-native 404 SR text and the page metadata title). Logged
+ * as a discovered tone-migration candidate for a future copy sweep.
  */
 
-import Link from "next/link";
+import Link from 'next/link';
 
-import { CharacterIllustration } from "@/components/ui";
+import { CharacterIllustration } from '@/components/ui';
 
 export const metadata = {
-  title: "페이지를 찾을 수 없어요 | 보이스사주",
+  title: '페이지를 찾을 수 없어요 | 보이스사주',
 };
 
 export default function NotFound() {

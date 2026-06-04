@@ -33,6 +33,7 @@ import { useSearchParams } from 'next/navigation';
 import { QuoteCardPreview } from '@/components/share/QuoteCardPreview';
 import { ShareButtonRow } from '@/components/share/ShareButtonRow';
 import { SignupPromptModal } from '@/components/auth/SignupPromptModal';
+import { SignedMark } from '@/components/copy';
 import { isQuoteCardV2Enabled } from '@/lib/featureFlags';
 import type { QuoteCardBySlugResponse } from '@/app/api/og/[slug]/og-helpers';
 
@@ -173,6 +174,14 @@ export default function EndClient() {
           />
         </section>
       )}
+
+      {/* End-of-reading signature — `<SignedMark>` per ISSUE-097 AC3.
+       *   Sits after the quote card so the surface reads as a signed
+       *   note. The seal child is memoised inside SignedMark.
+       */}
+      <section className="mt-s4 flex w-full justify-center" aria-label="서명">
+        <SignedMark />
+      </section>
 
       {/* Secondary CTAs */}
       <section className="mt-s8 flex w-full max-w-md flex-col items-center gap-s3">

@@ -11,6 +11,12 @@
  *
  * The vitest page test renders this component directly so the test
  * can pass an injected `fetchImpl` without having to fake a Promise.
+ *
+ * copy-lint: formal-ok — expired-blob copy "이 풀이는 더 이상 재생할 수
+ * 없습니다" is intentionally system-tone (matches the existing R2 lifecycle
+ * messaging convention from ISSUE-066). Logged as a discovered tone-
+ * migration candidate for a future copy sweep; ISSUE-097 v1 lint exempts
+ * it at the file level.
  */
 
 import { useRouter } from 'next/navigation';

@@ -31,11 +31,18 @@
  *   docs/architecture.md §6.3 / §8.2
  *   docs/copy_guide.md §7
  *   docs/requirements.md FR-007, FR-008, FR-011, FR-035
+ *
+ * copy-lint: formal-ok — NETWORK_BANNER_COPY ("네트워크 연결이 끊겼습니다")
+ * is intentionally system-tone — it matches OS-level connectivity
+ * messaging convention and the existing error catalogue from ISSUE-042.
+ * Logged as a discovered tone-migration candidate for a future copy
+ * sweep; ISSUE-097 v1 lint exempts it at the file level.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { VoicePlayer } from '@/components/audio';
+import { SignedMark } from '@/components/copy';
 import { PLACEHOLDER_CHART, SajuChart } from '@/components/saju';
 import {
   Banner,
@@ -329,7 +336,12 @@ export default function PlayClient({
       </section>
 
       {runtimeState.kind === 'ended' && (
-        <div className="px-s4 pb-s8" data-testid="ended-cta-wrap">
+        <div className="flex flex-col items-center gap-s4 px-s4 pb-s8" data-testid="ended-cta-wrap">
+          {/* ISSUE-097 AC3 — `<SignedMark>` mounts at end of /reading/play
+           * the moment audio playback completes. Sits above the CTA so
+           * the sign-off reads as a closing punctuation on the reading
+           * itself, before the next-step affordance. */}
+          <SignedMark data-testid="play-ended-signature" />
           <PrimaryButton
             onClick={handleNavigateMy}
             data-testid="ended-cta"

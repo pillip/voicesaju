@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
-import {
-  Nanum_Brush_Script,
-  Noto_Serif_KR,
-  Cormorant_Garamond,
-} from "next/font/google";
+import type { Metadata } from 'next';
+import { Nanum_Brush_Script, Noto_Serif_KR, Cormorant_Garamond } from 'next/font/google';
 
-import "./globals.css";
-import "@/styles/tokens.css";
-import "@/styles/utilities.css";
-import { RuntimeProvider } from "@/lib/context/runtime-context";
+import './globals.css';
+import '@/styles/tokens.css';
+import '@/styles/utilities.css';
+import '@/styles/copy-system.css';
+import { RuntimeProvider } from '@/lib/context/runtime-context';
 
 /**
  * ISSUE-091 — v2 typography loaders.
@@ -29,31 +26,31 @@ import { RuntimeProvider } from "@/lib/context/runtime-context";
  * need to know about next/font's hashed family names.
  */
 const nanumBrush = Nanum_Brush_Script({
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--next-font-brush",
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--next-font-brush',
 });
 
 const notoSerifKr = Noto_Serif_KR({
-  weight: ["900"],
-  subsets: ["latin"],
-  display: "swap",
+  weight: ['900'],
+  subsets: ['latin'],
+  display: 'swap',
   preload: false,
-  variable: "--next-font-mincho",
+  variable: '--next-font-mincho',
 });
 
 const cormorant = Cormorant_Garamond({
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--next-font-accent",
+  weight: ['300', '400', '500'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--next-font-accent',
 });
 
 export const metadata: Metadata = {
-  title: "VoiceSaju",
-  description: "AI-powered Saju reading and daily tarot service.",
+  title: 'VoiceSaju',
+  description: 'AI-powered Saju reading and daily tarot service.',
 };
 
 export default function RootLayout({
