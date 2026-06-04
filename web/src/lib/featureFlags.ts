@@ -1,0 +1,27 @@
+/**
+ * v2 (Ink, Amber & 印) feature flags — ISSUE-094 (and forward-compat
+ * for ISSUE-095/096/097/098).
+ *
+ * Why a tiny module instead of inlining `process.env.NEXT_PUBLIC_*`:
+ * - Centralises the truthy parsing so "true" / "1" / "TRUE" all behave
+ *   identically, and unrelated values fall through to false.
+ * - Gives tests a stable import surface — they mutate `process.env`
+ *   directly, then call the accessor, and don't need to re-mock Next
+ *   internals.
+ * - Lets the page/component code stay declarative: a boolean import
+ *   replaces a stringly-typed env lookup with branching.
+ *
+ * Read-on-call semantics (not cached at module load) so the test suite
+ * can flip the flag between test cases. In production the env var is
+ * baked at build time by Next so the runtime overhead is negligible.
+ */
+
+function parseBoolFlag(raw: string | undefined): boolean {
+  if (!raw) return false;
+  const v = raw.trim().toLowerCase();
+  return v === 'true' || v === '1';
+}
+
+export function isTarotV2SpreadEnabled(): boolean {
+  return parseBoolFlag(process.env.NEXT_PUBLIC_TAROT_V2_SPREAD);
+}

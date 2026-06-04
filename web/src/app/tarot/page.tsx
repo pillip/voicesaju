@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * `/tarot` — Screen 12 (ISSUE-050, ISSUE-053).
@@ -39,13 +39,15 @@
  *   AC adds a `?debug=` switch we'll need to add it then.
  */
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { fetchTarotToday, TarotApiError } from "@/lib/api/tarot";
-import { TarotCard, type TarotCardState } from "@/components/tarot/TarotCard";
-import { TarotQuotaBanner } from "@/components/tarot/TarotQuotaBanner";
-import { Banner } from "@/components/ui/Banner";
-import { useKstMidnightRefresh } from "@/lib/hooks/useKstMidnightRefresh";
+import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { fetchTarotToday, TarotApiError } from '@/lib/api/tarot';
+import { TarotCard, type TarotCardState } from '@/components/tarot/TarotCard';
+import { TarotSpread } from '@/components/tarot/TarotSpread';
+import { TarotQuotaBanner } from '@/components/tarot/TarotQuotaBanner';
+import { Banner } from '@/components/ui/Banner';
+import { useKstMidnightRefresh } from '@/lib/hooks/useKstMidnightRefresh';
+import { isTarotV2SpreadEnabled } from '@/lib/featureFlags';
 
 interface TodayState {
   card_index: number;
@@ -65,8 +67,8 @@ const FALLBACK_TODAY: TodayState = {
   // placeholder per architecture §6.4 (the real card lands once the
   // backend responds; the tap path still goes through paywall logic).
   card_index: 0,
-  card_name: "오늘의 카드",
-  card_art_url: "",
+  card_name: '오늘의 카드',
+  card_art_url: '',
   free_remaining: 1,
   requires_payment: false,
   already_flipped: false,
@@ -79,16 +81,16 @@ function usePrefersReducedMotion(): boolean {
   // post-mount when the media query matches.
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReduced(mql.matches);
     const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
     // Safari only got addEventListener('change') in iOS 14; we keep
     // the addListener fallback for completeness (Toss WebView on older
     // Android still surfaces a webkit-based browser).
-    if (typeof mql.addEventListener === "function") {
-      mql.addEventListener("change", handler);
-      return () => mql.removeEventListener("change", handler);
+    if (typeof mql.addEventListener === 'function') {
+      mql.addEventListener('change', handler);
+      return () => mql.removeEventListener('change', handler);
     }
     // Legacy MediaQueryList API.
     type LegacyMql = MediaQueryList & {
@@ -106,7 +108,12 @@ export default function TarotPage() {
   const router = useRouter();
   const reducedMotion = usePrefersReducedMotion();
   const [today, setToday] = useState<TodayState>(FALLBACK_TODAY);
-  const [cardState, setCardState] = useState<TarotCardState>("face_down");
+  const [cardState, setCardState] = useState<TarotCardState>('face_down');
+  // ISSUE-094 — v2 5-card spread is behind a feature flag so the rollback
+  // path is a single env-var flip. We read it ONCE at mount to avoid the
+  // page swapping component trees mid-session (which would lose the
+  // already_flipped + cardState branches the legacy path tracks).
+  const useSpread = isTarotV2SpreadEnabled();
   // ISSUE-053 — KST midnight has crossed → show the "새로운 카드가
   // 준비됐어요" banner. The page also calls `router.refresh()` to
   // re-fetch tomorrow's card; banner visibility persists across the
@@ -145,7 +152,7 @@ export default function TarotPage() {
         setToday(hydrated);
         if (hydrated.already_flipped) {
           // AC5 — server says we already flipped today's card.
-          setCardState("face_up");
+          setCardState('face_up');
         }
       } catch (err) {
         // Optimistic fallback per ux_spec Screen 12 — keep the
@@ -153,10 +160,10 @@ export default function TarotPage() {
         // the failure rate without surfacing UI noise.
         if (err instanceof TarotApiError) {
           // eslint-disable-next-line no-console
-          console.warn("tarot/today fetch failed", err.status);
+          console.warn('tarot/today fetch failed', err.status);
         } else {
           // eslint-disable-next-line no-console
-          console.warn("tarot/today fetch failed", err);
+          console.warn('tarot/today fetch failed', err);
         }
       }
     })();
@@ -168,28 +175,41 @@ export default function TarotPage() {
   const handleTap = () => {
     // AC3 — quota=0, no subscription → paywall, no flip.
     if (today.requires_payment) {
-      router.push("/tarot/paywall");
+      router.push('/tarot/paywall');
       return;
     }
     // AC5 — already-flipped state owns its own CTA, the card tap is
     // inert (the user uses "다시 듣기" instead).
-    if (cardState === "face_up") {
+    if (cardState === 'face_up') {
       return;
     }
     // AC2 — flip into face_up. The actual reading playback is on
     // ISSUE-051's `/tarot/play`; for now we surface the same "다시
     // 듣기" affordance once the flip completes.
-    setCardState("face_up");
+    setCardState('face_up');
   };
 
   const handleReplay = () => {
-    router.push("/tarot/play");
+    router.push('/tarot/play');
   };
+
+  // ISSUE-094 — wired only when `useSpread` is true. The v2 spread
+  // resolves the determinism guarantee at the component level (the
+  // reveal card art comes from the same `today.card_art_url` no matter
+  // which fan card the user taps). When the cascade completes the
+  // spread invokes onReveal, which transitions the legacy cardState to
+  // `face_up` so the "다시 듣기" CTA wiring below still works.
+  const handleSpreadReveal = useCallback(() => {
+    if (today.requires_payment) {
+      router.push('/tarot/paywall');
+      return;
+    }
+    setCardState('face_up');
+  }, [today.requires_payment, router]);
 
   // The subtitle morphs between "탭해서 뽑기" (default) and a quiet
   // hint when the card is already revealed. Per copy_guide.md §10.
-  const subtitle =
-    cardState === "face_up" ? "오늘의 카드는 이미 뒤집었네." : "탭해서 뽑기";
+  const subtitle = cardState === 'face_up' ? '오늘의 카드는 이미 뒤집었네.' : '탭해서 뽑기';
 
   return (
     <main
@@ -197,10 +217,7 @@ export default function TarotPage() {
       className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center gap-s6 bg-ink-900 px-s4 py-s8 text-cream-100"
     >
       <div className="w-full">
-        <TarotQuotaBanner
-          freeRemaining={today.free_remaining}
-          isSubscriber={today.is_subscriber}
-        />
+        <TarotQuotaBanner freeRemaining={today.free_remaining} isSubscriber={today.is_subscriber} />
       </div>
 
       {kstMidnightCrossed && (
@@ -214,32 +231,37 @@ export default function TarotPage() {
       )}
 
       <header className="text-center">
-        <h1
-          className="font-display-han text-3xl text-cream-50"
-          data-testid="tarot-title"
-        >
+        <h1 className="font-display-han text-3xl text-cream-50" data-testid="tarot-title">
           오늘의 카드
         </h1>
       </header>
 
       <div className="flex flex-1 items-center justify-center">
-        <TarotCard
-          state={cardState}
-          cardArtUrl={today.card_art_url}
-          cardName={today.card_name}
-          onTap={handleTap}
-          disableAnimation={reducedMotion}
-        />
+        {useSpread ? (
+          // ISSUE-094 v2 — 5-card fan spread. The reveal card art is
+          // derived from `today.card_art_url` (FR-013), NOT from the
+          // tap target, so determinism holds across sessions.
+          <TarotSpread
+            card={{ artUrl: today.card_art_url, name: today.card_name }}
+            onReveal={handleSpreadReveal}
+            prefersReducedMotion={reducedMotion}
+          />
+        ) : (
+          <TarotCard
+            state={cardState}
+            cardArtUrl={today.card_art_url}
+            cardName={today.card_name}
+            onTap={handleTap}
+            disableAnimation={reducedMotion}
+          />
+        )}
       </div>
 
-      <p
-        className="font-body text-sm text-cream-300"
-        data-testid="tarot-subtitle"
-      >
+      <p className="font-body text-sm text-cream-300" data-testid="tarot-subtitle">
         {subtitle}
       </p>
 
-      {cardState === "face_up" && (
+      {cardState === 'face_up' && (
         <button
           type="button"
           onClick={handleReplay}
