@@ -426,7 +426,7 @@ def _draw_centered(
     draw: ImageDraw.ImageDraw,
     text: str,
     *,
-    font: ImageFont.ImageFont,
+    font: FreeTypeFont | ImageFont.ImageFont,
     center_x: int,
     baseline_y: int,
     fill: tuple[int, int, int],
