@@ -17,13 +17,16 @@ Confidence: **High** — All FRs (FR-001 to FR-044) and US-01 to US-17 mapped; N
 ## Board (status quick-glance)
 
 ### Backlog
-ISSUE-001 .. ISSUE-102 (see below; ISSUE-005, ISSUE-025, ISSUE-035, ISSUE-036, ISSUE-043, ISSUE-084, ISSUE-085 are `Status: deferred` to Phase 2)
+(empty)
 
 ### In Progress
 (empty)
 
 ### Done
-(empty)
+ISSUE-001 .. ISSUE-102 — **94 shipped** (M1: 25, M2: 16, M3: 8, M4: 7, M5: 11, M6: 14, M2.5: 8, Mock Adapters: 4 + ISSUE-049/050/052/053 historical fills). See per-issue `- PR:` and `- Status: done` lines.
+
+### Deferred (Phase 2 / out of MVP scope)
+ISSUE-005 (Cloudflare R2), ISSUE-025 (Kakao/Apple OAuth), ISSUE-035 (Anthropic key), ISSUE-036 (Supertone key), ISSUE-043 (Toss app), ISSUE-084 (Fly.io), ISSUE-085 (Vercel) — original Phase-2 set; **plus ISSUE-087** (M6 deferred — see `docs/sprint_state.m6.md`).
 
 ---
 
@@ -50,11 +53,11 @@ ISSUE-001 .. ISSUE-102 (see below; ISSUE-005, ISSUE-025, ISSUE-035, ISSUE-036, I
 - PRD-Ref: NFR-016
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
 - Branch:
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/3 (merge bfebc83)
 - Depends-On: none
 
 ### Goal
@@ -92,11 +95,11 @@ A FastAPI 0.110+ service runs locally via `uv run uvicorn` and exposes `/healthz
 - PRD-Ref: NFR-014
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
 - Branch:
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/5 (merge 853075e)
 - Depends-On: none
 
 ### Goal
@@ -134,8 +137,9 @@ A Next.js 15 (App Router, TypeScript, RSC) project runs locally and renders a pl
 - PRD-Ref: NFR-017
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/8 (merge ee61807)
 - Depends-On: ISSUE-001, ISSUE-002
 
 ### Goal
@@ -171,8 +175,9 @@ Every PR triggers backend + frontend lint/typecheck/test in GitHub Actions.
 - PRD-Ref: NFR-005, NFR-016
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/10 (merge fce4800)
 - Depends-On: none
 
 > **Note (2026-05-28):** Manual external provisioning is no longer required for Phase 1 PoC. Use docker-compose.yml from ISSUE-001 deliverable (Postgres 16 + Redis 7 containers). Cloud provisioning deferred to Phase 2 (post-MVP launch).
@@ -248,8 +253,9 @@ A Cloudflare R2 bucket exists for audio + OG assets with S3-compatible credentia
 - PRD-Ref: NFR-005
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/16 (merge ba66c0a)
 - Depends-On: ISSUE-001, ISSUE-004
 
 ### Goal
@@ -286,8 +292,9 @@ The FastAPI service connects to Postgres via SQLAlchemy 2.0 async engine, and Al
 - PRD-Ref: FR-001..036 (foundation)
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/16 (merge ba66c0a)
 - Depends-On: ISSUE-006
 
 ### Goal
@@ -322,8 +329,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-016, FR-003
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/107 (merge e48f610)
 - Depends-On: ISSUE-007
 
 ### Goal
@@ -359,8 +367,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: NFR-005
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/12 (merge 2f36a3a)
 - Depends-On: ISSUE-001
 
 ### Goal
@@ -400,8 +409,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-027, NFR-005, FR-030
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/25 (merge fcf5d98)
 - Depends-On: ISSUE-008, ISSUE-009
 
 ### Goal
@@ -439,8 +449,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-030, FR-031, NFR-017
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/68 (merge 0cd12ba)
 - Depends-On: ISSUE-010
 
 ### Goal
@@ -479,8 +490,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-030, NFR-017, DEP-04
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/30 (merge 364dbc7)
 - Depends-On: ISSUE-011
 
 ### Goal
@@ -516,8 +528,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-003, FR-017, FR-023
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/61 (merge be6193d)
 - Depends-On: ISSUE-008
 
 ### Goal
@@ -554,8 +567,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-021, FR-022, FR-023
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/99 (merge dab344b)
 - Depends-On: ISSUE-008
 
 ### Goal
@@ -591,8 +605,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-007, FR-009, FR-010, FR-028
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/66 (merge bb2d16b)
 - Depends-On: ISSUE-010, ISSUE-013, ISSUE-014
 
 ### Goal
@@ -627,8 +642,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-012, FR-013, FR-014, FR-015
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/80 (merge 99325df)
 - Depends-On: ISSUE-010
 
 ### Goal
@@ -664,8 +680,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-005, FR-018, FR-020
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/90 (merge 0264dab)
 - Depends-On: ISSUE-015, ISSUE-016
 
 ### Goal
@@ -699,8 +716,9 @@ All 11 Postgres enums from data_model §4.1 exist in the DB.
 - PRD-Ref: FR-032, NFR-010
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/38 (merge 7f193be)
 - Depends-On: ISSUE-015, ISSUE-016
 
 ### Goal
@@ -733,8 +751,9 @@ All three tone-related tables exist with constraints from data_model §4.20–§
 - PRD-Ref: FR-032
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/44 (merge c2d2940)
 - Depends-On: ISSUE-018
 
 ### Goal
@@ -769,8 +788,9 @@ All three tone-related tables exist with constraints from data_model §4.20–§
 - PRD-Ref: FR-032, NFR-010
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/89 (merge 3d2c503)
 - Depends-On: ISSUE-019
 
 ### Goal
@@ -806,8 +826,9 @@ All three tone-related tables exist with constraints from data_model §4.20–§
 - PRD-Ref: NFR-012, NFR-014
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/148 (merge 16ca736)
 - Depends-On: ISSUE-002
 
 ### Goal
@@ -844,8 +865,9 @@ Tailwind theme is configured with category colors (love=pink, work=blue, money=g
 - PRD-Ref: US-01..US-17 (navigation foundation)
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/56 (merge 58b165c)
 - Depends-On: ISSUE-021
 
 ### Goal
@@ -882,8 +904,9 @@ Navigation chrome + modal primitives are implemented and accessible.
 - PRD-Ref: FR-024, FR-019
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/97 (merge f3b6013)
 - Depends-On: ISSUE-002
 
 ### Goal
@@ -918,8 +941,9 @@ Navigation chrome + modal primitives are implemented and accessible.
 - PRD-Ref: FR-003, FR-013
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/42 (merge 6d1664a)
 - Depends-On: ISSUE-008
 
 ### Goal
@@ -993,8 +1017,9 @@ Kakao Developers app registered + Apple Developer Sign-In Services enabled; cred
 - PRD-Ref: FR-016, US-13
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/74 (merge 55fc6bf)
 - Depends-On: ISSUE-008, ISSUE-013, ISSUE-024, ISSUE-100
 
 ### Goal
@@ -1032,8 +1057,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: FR-016, US-13, US-02
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/56 (merge 58b165c)
 - Depends-On: ISSUE-022, ISSUE-023, ISSUE-026
 
 ### Goal
@@ -1072,8 +1098,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: FR-001, FR-002, US-01
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/58 (merge 0195638)
 - Depends-On: ISSUE-021, ISSUE-022
 
 ### Goal
@@ -1112,8 +1139,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: FR-001, FR-002, FR-027, FR-030
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/56 (merge 58b165c)
 - Depends-On: ISSUE-010, ISSUE-011
 
 ### Goal
@@ -1150,8 +1178,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: FR-004, US-03
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/61 (merge be6193d)
 - Depends-On: ISSUE-028, ISSUE-029
 
 ### Goal
@@ -1187,8 +1216,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: FR-005
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/63 (merge f8d0816)
 - Depends-On: ISSUE-017
 
 ### Goal
@@ -1222,8 +1252,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: FR-005, US-03
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/63 (merge f8d0816)
 - Depends-On: ISSUE-030, ISSUE-031, ISSUE-101
 
 ### Goal
@@ -1258,8 +1289,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: NFR-002, NFR-015, FR-007
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/88 (merge 66d9bcf)
 - Depends-On: ISSUE-021
 
 ### Goal
@@ -1298,8 +1330,9 @@ Kakao + Apple OAuth callbacks create/log in users, store session in Redis, set `
 - PRD-Ref: NFR-007, NFR-011, FR-007, FR-010, FR-015
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/89 (merge 3d2c503)
 - Depends-On: ISSUE-001
 
 ### Goal
@@ -1414,8 +1447,9 @@ Supertone API contract finalized; 시니컬 누님 + 노인 도사 voice IDs ass
 - PRD-Ref: NFR-002, FR-007, FR-034
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/68 (merge 0cd12ba)
 - Depends-On: ISSUE-017, ISSUE-034
 
 ### Goal
@@ -1453,8 +1487,9 @@ Supertone API contract finalized; 시니컬 누님 + 노인 도사 voice IDs ass
 - PRD-Ref: FR-028
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/90 (merge 0264dab)
 - Depends-On: ISSUE-005, ISSUE-015
 
 ### Goal
@@ -1490,8 +1525,9 @@ R2 client uploads audio chunks + stitched mp3; arq worker `finalize_audio` stitc
 - PRD-Ref: FR-007, NFR-001, NFR-011
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/128 (merge cd9dc9e)
 - Depends-On: ISSUE-011, ISSUE-020, ISSUE-034, ISSUE-037, ISSUE-038, ISSUE-040
 
 ### Goal
@@ -1530,8 +1566,9 @@ R2 client uploads audio chunks + stitched mp3; arq worker `finalize_audio` stitc
 - PRD-Ref: FR-006, FR-014, FR-022
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/103 (merge e60c0e9)
 - Depends-On: ISSUE-013, ISSUE-014
 
 ### Goal
@@ -1566,8 +1603,9 @@ R2 client uploads audio chunks + stitched mp3; arq worker `finalize_audio` stitc
 - PRD-Ref: FR-009, FR-010, NFR-004
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/69 (merge c621210)
 - Depends-On: ISSUE-034, ISSUE-037, ISSUE-039
 
 ### Goal
@@ -1606,8 +1644,9 @@ R2 client uploads audio chunks + stitched mp3; arq worker `finalize_audio` stitc
 - PRD-Ref: FR-007, FR-008, FR-011, US-03, US-05
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/146 (merge 4d4fc42)
 - Depends-On: ISSUE-033, ISSUE-039
 
 ### Goal
@@ -1683,8 +1722,9 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-021, US-09, US-10
 - Priority: P0
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/119 (merge 5264ed8)
 - Depends-On: ISSUE-014, ISSUE-040, ISSUE-099
 
 ### Goal
@@ -1721,8 +1761,9 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-021, FR-022
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/101 (merge e5bdd15)
 - Depends-On: ISSUE-044
 
 ### Goal
@@ -1758,8 +1799,9 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-016, FR-024, US-14
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/74 (merge 55fc6bf)
 - Depends-On: ISSUE-026, ISSUE-044
 
 ### Goal
@@ -1798,8 +1840,9 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-013
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/80 (merge 99325df)
 - Depends-On: ISSUE-016
 
 ### Goal
@@ -1834,8 +1877,9 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-014
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/85 (merge b92c2f4)
 - Depends-On: ISSUE-016, ISSUE-040
 
 ### Goal
@@ -1954,8 +1998,9 @@ Toss Payments merchant account is approved; webhook URL is registered; test cred
 - PRD-Ref: FR-015, US-06
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/148 (merge 16ca736)
 - Depends-On: ISSUE-033, ISSUE-050
 
 ### Goal
@@ -2064,8 +2109,9 @@ At KST midnight, the `/tarot` page either auto-refreshes or shows a "새로운 �
 - PRD-Ref: FR-018, US-08
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/88 (merge 66d9bcf)
 - Depends-On: ISSUE-051, ISSUE-058
 
 ### Goal
@@ -2099,8 +2145,9 @@ At KST midnight, the `/tarot` page either auto-refreshes or shows a "새로운 �
 - PRD-Ref: DEP-06
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/87 (merge a6dfce1)
 - Depends-On: ISSUE-016
 
 ### Goal
@@ -2136,8 +2183,9 @@ At KST midnight, the `/tarot` page either auto-refreshes or shows a "새로운 �
 - PRD-Ref: FR-018
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/90 (merge 0264dab)
 - Depends-On: ISSUE-034
 
 ### Goal
@@ -2173,8 +2221,9 @@ At KST midnight, the `/tarot` page either auto-refreshes or shows a "새로운 �
 - PRD-Ref: FR-018, FR-020
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/91 (merge b3621cc)
 - Depends-On: ISSUE-017, ISSUE-056
 
 ### Goal
@@ -2208,8 +2257,9 @@ At reading or tarot session end, a `quote_cards` row is inserted with `share_slu
 - PRD-Ref: FR-018, FR-020
 - Priority: P1
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/150 (merge 5f11722)
 - Depends-On: ISSUE-038, ISSUE-057
 
 ### Goal
@@ -2245,8 +2295,9 @@ arq worker job `og_bake(quote_card_id)` composites the 1080×1920 image (backgro
 - PRD-Ref: FR-019, US-08
 - Priority: P1
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/97 (merge f3b6013)
 - Depends-On: ISSUE-057, ISSUE-058
 
 ### Goal
@@ -2283,8 +2334,9 @@ arq worker job `og_bake(quote_card_id)` composites the 1080×1920 image (backgro
 - PRD-Ref: FR-020
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/97 (merge f3b6013)
 - Depends-On: ISSUE-058
 
 ### Goal
@@ -2318,8 +2370,9 @@ arq worker job `og_bake(quote_card_id)` composites the 1080×1920 image (backgro
 - PRD-Ref: FR-020
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/97 (merge f3b6013)
 - Depends-On: ISSUE-060
 
 ### Goal
@@ -2354,8 +2407,9 @@ arq worker job `og_bake(quote_card_id)` composites the 1080×1920 image (backgro
 - PRD-Ref: US-02, FR-003
 - Priority: P1
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/92 (merge 871ad82)
 - Depends-On: ISSUE-026, ISSUE-057
 
 ### Goal
@@ -2390,8 +2444,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: US-15, US-16, FR-026, FR-027
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/107 (merge e48f610)
 - Depends-On: ISSUE-022, ISSUE-026
 
 ### Goal
@@ -2426,8 +2481,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-011, US-05
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/107 (merge e48f610)
 - Depends-On: ISSUE-029, ISSUE-063
 
 ### Goal
@@ -2464,8 +2520,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-028, US-16
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/115 (merge 76adbe5)
 - Depends-On: ISSUE-063, ISSUE-066
 
 ### Goal
@@ -2500,8 +2557,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-028, US-16
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/115 (merge 76adbe5)
 - Depends-On: ISSUE-015, ISSUE-038, ISSUE-063
 
 ### Goal
@@ -2536,8 +2594,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-026, US-12
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/117 (merge 4f43a93)
 - Depends-On: ISSUE-063, ISSUE-044, ISSUE-068
 
 ### Goal
@@ -2572,8 +2631,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-022, US-12
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/115 (merge 76adbe5)
 - Depends-On: ISSUE-014, ISSUE-044, ISSUE-045
 
 ### Goal
@@ -2608,8 +2668,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-022, US-12
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/117 (merge 4f43a93)
 - Depends-On: ISSUE-067, ISSUE-068
 
 ### Goal
@@ -2643,8 +2704,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-025, US-11
 - Priority: P2
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/119 (merge 5264ed8)
 - Depends-On: ISSUE-069
 
 ### Goal
@@ -2678,8 +2740,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-029, US-17
 - Priority: P1
 - Estimate: 1.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/115 (merge 76adbe5)
 - Depends-On: ISSUE-010, ISSUE-029, ISSUE-063
 
 ### Goal
@@ -2715,8 +2778,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: NFR-005 (GDPR/PIPA)
 - Priority: P2
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/107 (merge e48f610)
 - Depends-On: ISSUE-008, ISSUE-063
 
 ### Goal
@@ -2750,8 +2814,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: FR-026, US-12
 - Priority: P1
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/115 (merge 76adbe5)
 - Depends-On: ISSUE-014
 
 ### Goal
@@ -2786,8 +2851,9 @@ On signup, any `quote_cards` / `readings` rows owned by the linked device transf
 - PRD-Ref: NFR-005 (PIPA/GDPR)
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/124 (merge 9d787e1)
 - Depends-On: ISSUE-002
 
 ### Goal
@@ -2822,8 +2888,9 @@ Three legal pages render the finalized ToS, Privacy Policy, and Refund Policy in
 - PRD-Ref: FR-033, FR-036
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/125 (merge d2d734c)
 - Depends-On: ISSUE-021, ISSUE-022
 
 ### Goal
@@ -2857,8 +2924,9 @@ Three error screens render gracefully with character voice and recovery CTAs.
 - PRD-Ref: FR-023, FR-033
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/125 (merge d2d734c)
 - Depends-On: ISSUE-013, ISSUE-014, ISSUE-039, ISSUE-045
 
 ### Goal
@@ -2893,8 +2961,9 @@ arq job `refund_for_reading(reading_id)` calls Toss refund API; on failure, cred
 - PRD-Ref: NFR-001, NFR-002, NFR-003, NFR-004, NFR-011, NFR-016
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/128 (merge cd9dc9e)
 - Depends-On: ISSUE-039
 
 ### Goal
@@ -2928,8 +2997,9 @@ OpenTelemetry SDK is wired in FastAPI; key spans (entitlement_check, chart_compu
 - PRD-Ref: NFR-016
 - Priority: P1
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/129 (merge 0b30e0a)
 - Depends-On: ISSUE-001, ISSUE-002
 
 ### Goal
@@ -2963,8 +3033,9 @@ Sentry SDK is wired into both backend (Python) and frontend (Next.js) with PII r
 - PRD-Ref: NFR-005, OWASP A09
 - Priority: P1
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/126 (merge 125a5d6)
 - Depends-On: ISSUE-001
 
 ### Goal
@@ -2998,8 +3069,9 @@ All backend logs are JSON-structured to stdout with request_id, user_id, and a r
 - PRD-Ref: NFR-016 (success metrics §10.2)
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/135 (merge cb8c770)
 - Depends-On: ISSUE-024, ISSUE-026
 
 ### Goal
@@ -3033,8 +3105,9 @@ Frontend emits funnel events (`onboarding_step`, `paywall_view`, `paywall_pay`, 
 - PRD-Ref: NFR-016, OWASP A07
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/133 (merge 20b1ad2)
 - Depends-On: ISSUE-004, ISSUE-026
 
 ### Goal
@@ -3067,8 +3140,9 @@ Token-bucket rate limit applied to auth + payment endpoints (architecture §11.4
 - PRD-Ref: OWASP A01
 - Priority: P1
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/131 (merge ef211c2)
 - Depends-On: ISSUE-026
 
 ### Goal
@@ -3102,8 +3176,9 @@ All non-GET requests require a valid `X-VS-CSRF` header matching the session sec
 - PRD-Ref: NFR-016
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/136 (merge 06fd68d)
 - Depends-On: ISSUE-006, ISSUE-038
 
 ### Goal
@@ -3209,8 +3284,9 @@ Frontend is deployed to Vercel with environment variables connected to staging b
 - PRD-Ref: US-01, US-06
 - Priority: P1
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/137 (merge 153f05e)
 - Depends-On: ISSUE-021, ISSUE-024
 
 ### Goal
@@ -3244,7 +3320,7 @@ Frontend is deployed to Vercel with environment variables connected to staging b
 - PRD-Ref: NFR-016
 - Priority: P1
 - Estimate: 0.5d
-- Status: backlog
+- Status: deferred
 - Owner:
 - Depends-On: ISSUE-077, ISSUE-084, ISSUE-085
 
@@ -3278,8 +3354,9 @@ External uptime monitor (Uptime Robot or Better Stack) checks `/healthz` every 6
 - PRD-Ref: NFR-005 (privacy)
 - Priority: P2
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/138 (merge 83c50d4)
 - Depends-On: ISSUE-072, ISSUE-018
 
 ### Goal
@@ -3313,8 +3390,9 @@ Daily cron worker iterates `users WHERE deleted_at < now() - 30 days` and hard-d
 - PRD-Ref: NFR-001, NFR-002, NFR-007, NFR-011
 - Priority: P2
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/141 (merge ea2358e)
 - Depends-On: ISSUE-077
 
 ### Goal
@@ -3347,8 +3425,9 @@ Grafana dashboard shows reading e2e p95, TTS first chunk p95, LLM cost p50/p95, 
 - PRD-Ref: FR-032
 - Priority: P0
 - Estimate: 0.5d
-- Status: backlog
+- Status: done
 - Owner:
+- PR: https://github.com/pillip/voicesaju/pull/142 (merge f00454f)
 - Depends-On: ISSUE-019, ISSUE-020
 
 ### Goal
@@ -3385,11 +3464,11 @@ CI workflow runs tone evalset regression on every PR + on every merge to `main`;
 - PRD-Ref: FR-037, NFR-012
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
 - Branch:
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/156 (merge 9501f9a)
 - Depends-On: ISSUE-021
 
 ### Goal
@@ -3428,11 +3507,11 @@ The v2 token palette (vermilion + hanji + baekrim), brush/mincho/serif fonts, gr
 - PRD-Ref: FR-038
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
 - Branch:
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/145 (merge 1278fa7)
 - Depends-On: ISSUE-091
 
 ### Goal
@@ -3472,11 +3551,11 @@ A reusable `<Seal hanja size tilt category aria-label>` component renders the ve
 - PRD-Ref: FR-005, FR-039
 - Priority: P0
 - Estimate: 1d
-- Status: backlog
+- Status: done
 - Owner:
 - Branch:
 - GH-Issue:
-- PR:
+- PR: https://github.com/pillip/voicesaju/pull/146 (merge 4d4fc42)
 - Depends-On: ISSUE-091
 
 ### Goal
